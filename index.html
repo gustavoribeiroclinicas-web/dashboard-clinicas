@@ -8,259 +8,56 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #f5f4f0;
-    --surface: #ffffff;
-    --surface2: #efefeb;
-    --border: #e0dfd8;
-    --text: #1a1a18;
-    --muted: #6b6b66;
-    --hint: #a0a09a;
-    --green: #3b6d11;
-    --green-bg: #eaf3de;
-    --amber: #854f0b;
-    --amber-bg: #faeeda;
-    --red: #a32d2d;
-    --red-bg: #fcebeb;
-    --accent: #185fa5;
-    --accent-bg: #e6f1fb;
-    --radius: 12px;
-    --radius-sm: 8px;
+    --bg: #f5f4f0; --surface: #ffffff; --surface2: #efefeb; --border: #e0dfd8;
+    --text: #1a1a18; --muted: #6b6b66; --hint: #a0a09a;
+    --green: #3b6d11; --green-bg: #eaf3de;
+    --amber: #854f0b; --amber-bg: #faeeda;
+    --red: #a32d2d; --red-bg: #fcebeb;
+    --accent: #185fa5; --accent-bg: #e6f1fb;
+    --radius: 12px; --radius-sm: 8px;
   }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 2rem 1.5rem;
-  }
-
-  header {
-    max-width: 1100px;
-    margin: 0 auto 2rem;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .header-left h1 {
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-  }
-
-  .header-left p {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .meta-box {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 6px 12px;
-  }
-
-  .meta-box label {
-    font-size: 13px;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  .meta-box input {
-    width: 54px;
-    font-size: 14px;
-    font-weight: 600;
-    font-family: 'DM Mono', monospace;
-    border: none;
-    background: transparent;
-    color: var(--text);
-    text-align: center;
-    outline: none;
-  }
-
-  button {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 7px 16px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: background 0.15s, border-color 0.15s;
-  }
-
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1.5rem; }
+  header { max-width: 1100px; margin: 0 auto 1.25rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  .header-left h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .control-box { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; }
+  .control-box label { font-size: 13px; color: var(--muted); white-space: nowrap; }
+  .control-box input[type=number] { width: 54px; font-size: 14px; font-weight: 600; font-family: 'DM Mono', monospace; border: none; background: transparent; color: var(--text); text-align: center; outline: none; }
+  .control-box select { font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; border: none; background: transparent; color: var(--text); outline: none; cursor: pointer; padding: 0 2px; }
+  button { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background 0.15s, border-color 0.15s; }
   button:hover { background: var(--surface2); border-color: #ccc; }
-
-  #btn-login {
-    background: #fff;
-    border-color: #dadce0;
-    color: #3c4043;
-    font-weight: 500;
-  }
-
+  #btn-login { background: #fff; border-color: #dadce0; color: #3c4043; font-weight: 500; }
   #btn-login svg { width: 16px; height: 16px; }
-
-  #status-bar {
-    max-width: 1100px;
-    margin: 0 auto 1.25rem;
-    font-size: 13px;
-    color: var(--muted);
-    min-height: 18px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--hint);
-    display: inline-block;
-  }
+  #status-bar { max-width: 1100px; margin: 0 auto 0.75rem; font-size: 13px; color: var(--muted); min-height: 18px; display: flex; align-items: center; gap: 6px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--hint); flex-shrink: 0; display: inline-block; }
   .dot.ok { background: var(--green); }
   .dot.err { background: var(--red); }
-
-  #cards-grid {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
-    gap: 12px;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem 1.1rem;
-    transition: box-shadow 0.2s;
-    animation: fadeIn 0.3s ease both;
-  }
-
+  #mes-badge { max-width: 1100px; margin: 0 auto 1.25rem; font-size: 13px; color: var(--muted); }
+  #mes-badge strong { color: var(--text); font-weight: 600; }
+  #cards-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; transition: box-shadow 0.2s; animation: fadeIn 0.3s ease both; }
   .card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .card-name {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    color: var(--text);
-    margin-bottom: 10px;
-  }
-
-  .card-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-
-  .card-label {
-    font-size: 12px;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .card-value {
-    font-size: 18px;
-    font-weight: 600;
-    font-family: 'DM Mono', monospace;
-    color: var(--text);
-  }
-
-  .progress-track {
-    height: 5px;
-    border-radius: 3px;
-    background: var(--surface2);
-    overflow: hidden;
-    margin: 4px 0 6px;
-  }
-
-  .progress-fill {
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
-  }
-
-  .card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 11px;
-  }
-
-  .badge {
-    font-size: 11px;
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 20px;
-  }
-
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .card-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .card-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .card-label { font-size: 12px; color: var(--muted); }
+  .card-value { font-size: 17px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--text); }
+  .card-value-sm { font-size: 14px; font-weight: 500; font-family: 'DM Mono', monospace; color: var(--muted); }
+  .divider { height: 1px; background: var(--border); margin: 8px 0; }
+  .progress-track { height: 5px; border-radius: 3px; background: var(--surface2); overflow: hidden; margin: 4px 0 6px; }
+  .progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+  .card-footer { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+  .badge { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
   .badge-green { background: var(--green-bg); color: var(--green); }
   .badge-amber { background: var(--amber-bg); color: var(--amber); }
-  .badge-red   { background: var(--red-bg);   color: var(--red);   }
-  .badge-blue  { background: var(--accent-bg); color: var(--accent); }
-
-  .card-skeleton {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem 1.1rem;
-    min-height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .skeleton-name {
-    font-size: 12px;
-    color: var(--hint);
-  }
-
-  .card-error {
-    background: var(--surface);
-    border: 1px solid #f0c0c0;
-    border-radius: var(--radius);
-    padding: 1rem 1.1rem;
-  }
-
-  .card-error .card-name { color: var(--text); }
-  .card-error .err-msg { font-size: 12px; color: var(--red); margin-top: 4px; }
-
-  footer {
-    max-width: 1100px;
-    margin: 2rem auto 0;
-    font-size: 12px;
-    color: var(--hint);
-    text-align: center;
-  }
+  .badge-red   { background: var(--red-bg);   color: var(--red); }
+  .card-skeleton { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; min-height: 130px; display: flex; align-items: center; justify-content: center; }
+  .skeleton-name { font-size: 12px; color: var(--hint); }
+  .card-error { background: var(--surface); border: 1px solid #f0c0c0; border-radius: var(--radius); padding: 1rem 1.1rem; }
+  .err-msg { font-size: 12px; color: var(--red); margin-top: 6px; }
+  footer { max-width: 1100px; margin: 2rem auto 0; font-size: 12px; color: var(--hint); text-align: center; }
 </style>
 </head>
 <body>
@@ -271,7 +68,24 @@
     <p id="last-update">Faça login para carregar os dados</p>
   </div>
   <div class="header-right">
-    <div class="meta-box">
+    <div class="control-box">
+      <label>📅 Mês:</label>
+      <select id="mes-select">
+        <option value="1">Janeiro</option>
+        <option value="2">Fevereiro</option>
+        <option value="3">Março</option>
+        <option value="4">Abril</option>
+        <option value="5">Maio</option>
+        <option value="6">Junho</option>
+        <option value="7">Julho</option>
+        <option value="8">Agosto</option>
+        <option value="9">Setembro</option>
+        <option value="10">Outubro</option>
+        <option value="11">Novembro</option>
+        <option value="12">Dezembro</option>
+      </select>
+    </div>
+    <div class="control-box">
       <label>🎯 Meta psicológica:</label>
       <input type="number" id="meta-input" value="55" min="1" />
       <button onclick="updateMeta()" style="padding:4px 10px;font-size:12px;">salvar</button>
@@ -285,16 +99,13 @@
       </svg>
       Entrar com Google
     </button>
-    <button id="btn-refresh" onclick="loadData()" style="display:none;">
-      ↻ Atualizar
-    </button>
+    <button id="btn-refresh" onclick="loadData()" style="display:none;">↻ Atualizar</button>
   </div>
 </header>
 
 <div id="status-bar"><span class="dot"></span> <span id="status-text">Aguardando login</span></div>
-
+<div id="mes-badge" style="display:none;"></div>
 <div id="cards-grid"></div>
-
 <footer>Dados lidos diretamente do Google Sheets · Atualização manual</footer>
 
 <script src="https://accounts.google.com/gsi/client" async></script>
@@ -302,24 +113,20 @@
 const SHEET_ID = '18rajQPaYrzqijxCGLPl2CSGO5eoZ6y-JN5DFG33zS5o';
 const CLIENT_ID = '874687957081-3pk9k0khdbhqj70mok912jvf32s6jr1h.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly';
-
-const CLINICAS = [
-  'Boa Vista','Bacacheri','ColomboMed','Etika SJP','FRG','GPTRAN',
-  'Galeb','Hauer','Lifetran','MM','PrimeMed','PPTRAN','Rio Sul','São José','Tolmac'
-];
-
-const MEDICAS = new Set(['FRG','GPTRAN','Lifetran','MM','PrimeMed','PPTRAN','Rio Sul','Tolmac']);
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const CLINICAS = ['Boa Vista','Bacacheri','ColomboMed','Etika SJP','FRG','GPTRAN','Galeb','Hauer','Lifetran','MM','PrimeMed','PPTRAN','Rio Sul','São José','Tolmac'];
 
 let tokenClient = null;
 let accessToken = null;
 let metaVal = parseInt(localStorage.getItem('meta_psico') || '55') || 55;
 document.getElementById('meta-input').value = metaVal;
+document.getElementById('mes-select').value = new Date().getMonth() + 1;
+
+function getMesNome() { return MESES[parseInt(document.getElementById('mes-select').value) - 1]; }
 
 function setStatus(msg, type) {
-  const dot = document.querySelector('.dot');
-  const txt = document.getElementById('status-text');
-  txt.textContent = msg;
-  dot.className = 'dot' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
+  document.querySelector('.dot').className = 'dot' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
+  document.getElementById('status-text').textContent = msg;
 }
 
 function updateMeta() {
@@ -330,15 +137,10 @@ function updateMeta() {
 }
 
 function handleLogin() {
-  if (!window.google) {
-    setStatus('Carregando autenticação...', '');
-    setTimeout(handleLogin, 600);
-    return;
-  }
+  if (!window.google) { setStatus('Carregando autenticação...', ''); setTimeout(handleLogin, 600); return; }
   if (!tokenClient) {
     tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
+      client_id: CLIENT_ID, scope: SCOPES,
       callback: (resp) => {
         if (resp.error) { setStatus('Erro: ' + resp.error, 'err'); return; }
         accessToken = resp.access_token;
@@ -351,108 +153,66 @@ function handleLogin() {
   tokenClient.requestAccessToken();
 }
 
-function showSkeletons() {
-  const grid = document.getElementById('cards-grid');
-  grid.innerHTML = CLINICAS.map(c => `
-    <div class="card-skeleton" id="card-${cssId(c)}">
-      <span class="skeleton-name">${c}</span>
-    </div>`).join('');
-}
+function cssId(n) { return n.replace(/[\sãêéâôóúíà]/g, m => ({' ':'_','ã':'a','ê':'e','é':'e','â':'a','ô':'o','ó':'o','ú':'u','í':'i','à':'a'})[m]||m); }
 
-function cssId(name) { return name.replace(/\s|ã|ê|é|â|ô|ó|ú|í|à/g, m => ({' ':'_','ã':'a','ê':'e','é':'e','â':'a','ô':'o','ó':'o','ú':'u','í':'i','à':'a'})[m]||m); }
+function showSkeletons() {
+  document.getElementById('cards-grid').innerHTML = CLINICAS.map(c =>
+    `<div class="card-skeleton" id="card-${cssId(c)}"><span class="skeleton-name">${c}</span></div>`).join('');
+}
 
 async function loadData() {
   if (!accessToken) { setStatus('Faça login primeiro.', 'err'); return; }
-  setStatus('Carregando dados da planilha...', '');
+  const mesNome = getMesNome();
+  setStatus('Carregando dados — ' + mesNome + '...', '');
   showSkeletons();
+  const badge = document.getElementById('mes-badge');
+  badge.style.display = 'block';
+  badge.innerHTML = `📅 Exibindo: <strong>${mesNome}</strong> &nbsp;·&nbsp; 🎯 Meta psicológica: <strong>${metaVal} atendimentos</strong>`;
   const results = [];
-
   for (const clinica of CLINICAS) {
     try {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(clinica)}!A1:F34`;
-      const res = await fetch(url, { headers: { Authorization: 'Bearer ' + accessToken } });
-      if (!res.ok) {
-        const err = await res.json();
-        const r = { clinica, error: err.error?.message || 'Aba não encontrada' };
-        results.push(r); renderCard(r); continue;
-      }
+      const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(clinica)}!A1:F34`, { headers: { Authorization: 'Bearer ' + accessToken } });
+      if (!res.ok) { const e = await res.json(); const r={clinica,error:e.error?.message||'Aba não encontrada'}; results.push(r); renderCard(r); continue; }
       const data = await res.json();
-      const rows = (data.values || []).slice(1);
-      const isMed = MEDICAS.has(clinica);
-      let med = 0, psico = 0;
-
-      if (isMed) {
-        rows.forEach(row => { med += parseInt(row[1]) || 0; });
-      } else {
-        rows.forEach(row => {
-          psico += (parseInt(row[1]) || 0) + (parseInt(row[2]) || 0);
-        });
-      }
-
-      const r = { clinica, med, psico, isMed };
-      results.push(r);
-      renderCard(r);
-    } catch(e) {
-      const r = { clinica, error: e.message };
+      const rows = (data.values||[]).slice(1);
+      let psico = 0, med = 0;
+      rows.forEach(row => {
+        const entrevistas  = parseInt(row[1]) || 0;
+        const estrangeiros = parseInt(row[2]) || 0;
+        psico += entrevistas + estrangeiros;
+        med   += entrevistas;
+      });
+      const r = { clinica, psico, med };
       results.push(r); renderCard(r);
-    }
+    } catch(e) { const r={clinica,error:e.message}; results.push(r); renderCard(r); }
   }
-
   window._lastData = results;
   const now = new Date();
-  document.getElementById('last-update').textContent =
-    'Atualizado às ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) +
-    ' de ' + now.toLocaleDateString('pt-BR');
+  document.getElementById('last-update').textContent = 'Atualizado às ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) + ' de ' + now.toLocaleDateString('pt-BR');
   setStatus('Dados carregados com sucesso.', 'ok');
 }
 
 function renderCard(r) {
-  const id = 'card-' + cssId(r.clinica);
-  const el = document.getElementById(id);
+  const el = document.getElementById('card-' + cssId(r.clinica));
   if (!el) return;
-
-  if (r.error) {
-    el.className = 'card-error';
-    el.innerHTML = `<div class="card-name">${r.clinica}</div><div class="err-msg">⚠ ${r.error}</div>`;
-    return;
-  }
-
-  const isMed = r.isMed;
-  const pct = isMed ? 0 : Math.min(100, Math.round((r.psico / metaVal) * 100));
-  const faltam = isMed ? 0 : Math.max(0, metaVal - r.psico);
-  const atingiu = !isMed && r.psico >= metaVal;
+  if (r.error) { el.className='card-error'; el.innerHTML=`<div class="card-name">${r.clinica}</div><div class="err-msg">⚠ ${r.error}</div>`; return; }
+  const pct = Math.min(100, Math.round((r.psico / metaVal) * 100));
+  const faltam = Math.max(0, metaVal - r.psico);
+  const atingiu = r.psico >= metaVal;
   const barColor = atingiu ? '#639922' : pct >= 70 ? '#BA7517' : '#E24B4A';
   const badgeClass = atingiu ? 'badge-green' : pct >= 70 ? 'badge-amber' : 'badge-red';
   const badgeText = atingiu ? '✓ Meta atingida' : `faltam ${faltam}`;
-
   el.className = 'card';
   el.innerHTML = `
     <div class="card-name">${r.clinica}</div>
-    ${isMed ? `
-    <div class="card-row">
-      <span class="card-label">🩺 Médico</span>
-      <span class="card-value">${r.med}</span>
-    </div>
-    <div style="margin-top:6px;"><span class="badge badge-blue">Sem meta mensal</span></div>
-    ` : `
-    <div class="card-row">
-      <span class="card-label">🧠 Psicológico</span>
-      <span class="card-value">${r.psico}</span>
-    </div>
-    <div class="progress-track">
-      <div class="progress-fill" style="width:${pct}%;background:${barColor};"></div>
-    </div>
-    <div class="card-footer">
-      <span class="badge ${badgeClass}">${badgeText}</span>
-      <span style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace;">${pct}%</span>
-    </div>
-    `}`;
+    <div class="card-row"><span class="card-label">🧠 Psicológico</span><span class="card-value">${r.psico}</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${barColor};"></div></div>
+    <div class="card-footer"><span class="badge ${badgeClass}">${badgeText}</span><span style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace;">${pct}%</span></div>
+    <div class="divider"></div>
+    <div class="card-row"><span class="card-label">🩺 Médico</span><span class="card-value-sm">${r.med}</span></div>`;
 }
 
-function renderCards(results) {
-  showSkeletons();
-  results.forEach(r => renderCard(r));
-}
+function renderCards(results) { showSkeletons(); results.forEach(r => renderCard(r)); }
 </script>
 </body>
 </html>
