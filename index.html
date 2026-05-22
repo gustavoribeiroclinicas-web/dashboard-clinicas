@@ -14,26 +14,21 @@
   --green:#3b6d11;--green-bg:#eaf3de;
   --amber:#854f0b;--amber-bg:#faeeda;
   --red:#a32d2d;--red-bg:#fcebeb;
-  --blue:#185fa5;--blue-bg:#e6f1fb;
+  --blue:#185fa5;
   --purple:#534AB7;--purple-dark:#3C3489;
-  --pink:#D4537E;--pink-dark:#993556;
+  --pink-dark:#993556;
   --radius:12px;--radius-sm:8px;
 }
+*{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-
-/* TOPBAR */
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;position:sticky;top:0;z-index:100;gap:0}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;position:sticky;top:0;z-index:100}
 .brand{font-size:15px;font-weight:600;color:var(--purple);padding:1rem 1.5rem 1rem 0;border-right:1px solid var(--border);margin-right:1.5rem;white-space:nowrap}
 .nav-tab{padding:1rem 1.1rem;cursor:pointer;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;user-select:none}
 .nav-tab.active{color:var(--purple);border-bottom-color:var(--purple);font-weight:600}
 .nav-tab:hover:not(.active){color:var(--text);background:var(--bg)}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:0.5rem 0}
-
-/* PAGES */
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;padding:0.5rem 0;flex-wrap:wrap}
 .page{display:none;padding:1.5rem 2rem;max-width:1200px;margin:0 auto}
 .page.active{display:block}
-
-/* HERO */
 .hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
 .hero-section{display:flex;flex-direction:column;gap:4px}
 .hero-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
@@ -41,26 +36,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .hero-val.psico{color:var(--pink-dark)}
 .hero-val.med{color:var(--blue)}
 .hero-divider{width:1px;background:var(--border);height:48px;align-self:center}
-.meta-wrap{display:flex;align-items:center;gap:8px}
+.meta-wrap{display:flex;align-items:center;gap:8px;margin-top:6px}
 .meta-wrap input{width:80px;font-size:15px;font-family:'DM Mono',monospace;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);text-align:center}
 .controls{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap}
-.controls select{font-size:13px;padding:7px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif}
+.controls select,.sel{font-size:13px;padding:7px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif}
 .updated{font-size:12px;color:var(--muted)}
-
-/* BUTTONS */
 .btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .12s}
 .btn:hover{background:var(--surface2)}
 .btn-purple{background:var(--purple);border-color:var(--purple);color:#fff}
 .btn-purple:hover{background:var(--purple-dark)}
 .btn-google{background:#fff;border-color:#dadce0;color:#3c4043}
-
-/* STATUS */
 .status-bar{font-size:13px;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:6px;min-height:20px}
 .sdot{width:6px;height:6px;border-radius:50%;background:var(--hint);flex-shrink:0;display:inline-block}
 .sdot.ok{background:var(--green)}
 .sdot.err{background:var(--red)}
-
-/* CLINIC GRID */
 .clinic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
 .ccard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;transition:box-shadow .2s;animation:fadeIn .3s ease both}
 .ccard:hover{box-shadow:0 2px 12px rgba(0,0,0,.07)}
@@ -79,8 +68,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .bg-amber{background:var(--amber-bg);color:var(--amber)}
 .bg-red{background:var(--red-bg);color:var(--red)}
 .cskel{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;min-height:130px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--hint)}
-
-/* PAGAMENTOS */
 .page-header{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
 .page-header h2{font-size:18px;font-weight:700;flex:1}
 .pag-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden}
@@ -100,23 +87,14 @@ table.ptable{width:100%;border-collapse:collapse;font-size:13px}
 .total-card-label{font-size:13px;opacity:.85}
 .total-card-val{font-size:26px;font-weight:700;font-family:'DM Mono',monospace}
 .loading-msg{text-align:center;padding:4rem 2rem;color:var(--muted);font-size:14px}
-
-/* CONFIG */
-.cfg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;max-width:620px}
+.cfg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;max-width:640px}
 .cfg-title{font-size:14px;font-weight:600;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--surface2)}
 .fg{margin-bottom:12px}
 .fg label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
 .fg input{width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif}
-.fg input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(83,74,183,.12)}
-.hint{font-size:11px;color:var(--muted);margin-top:4px}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .status-ok{color:var(--green);font-size:12px;font-weight:500}
-.status-err{color:var(--red);font-size:12px;font-weight:500}
-.nome-header{display:grid;grid-template-columns:150px 1fr 1fr;gap:8px;margin-bottom:6px}
-.nome-header span{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-.nome-row{display:grid;grid-template-columns:150px 1fr 1fr;gap:8px;align-items:center;margin-bottom:6px}
-.nome-row .cl-label{font-size:12px;font-weight:500;color:var(--muted)}
-.nome-row input{padding:6px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;width:100%}
+.hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -151,7 +129,7 @@ table.ptable{width:100%;border-collapse:collapse;font-size:13px}
     <div class="hero-divider"></div>
     <div class="hero-section" style="flex:1;min-width:220px">
       <span class="hero-label">🎯 Meta psicológica mensal</span>
-      <div class="meta-wrap" style="margin-top:6px">
+      <div class="meta-wrap">
         <input type="number" id="meta-in" value="55" min="1">
         <button class="btn btn-purple" onclick="salvarMeta()">Salvar meta</button>
       </div>
@@ -176,13 +154,13 @@ table.ptable{width:100%;border-collapse:collapse;font-size:13px}
 <div id="page-pagamentos" class="page">
   <div class="page-header">
     <h2>Cálculo de pagamentos</h2>
-    <select id="mes-pag" onchange="renderPag()" style="font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;cursor:pointer">
+    <select class="sel" id="mes-pag" onchange="renderPag()">
       <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
       <option value="4">Abril</option><option value="5" selected>Maio</option><option value="6">Junho</option>
       <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
       <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
     </select>
-    <select id="ano-pag" onchange="renderPag()" style="font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;cursor:pointer">
+    <select class="sel" id="ano-pag" onchange="renderPag()">
       <option value="2025">2025</option><option value="2026" selected>2026</option>
     </select>
   </div>
@@ -204,18 +182,15 @@ table.ptable{width:100%;border-collapse:collapse;font-size:13px}
       <span id="val-st"></span>
     </div>
   </div>
-
   <div class="cfg-card">
-    <div class="cfg-title">👩‍⚕️ Nomes dos profissionais por clínica</div>
-    <p class="hint" style="margin-bottom:1rem">A 1ª tabela de cada aba (4 colunas) = psicóloga. A 2ª tabela (2 colunas) = médica.</p>
-    <div class="nome-header">
-      <span>Clínica</span>
-      <span style="color:var(--pink-dark)">Psicóloga</span>
-      <span style="color:var(--blue)">Médica</span>
-    </div>
-    <div id="nomes-grid"></div>
-    <button class="btn btn-purple" onclick="salvarNomes()" style="margin-top:10px">Salvar nomes</button>
-    <span id="nomes-st" style="margin-left:10px"></span>
+    <div class="cfg-title">ℹ️ Como funciona a leitura dos profissionais</div>
+    <p class="hint">
+      O sistema lê automaticamente o nome de cada profissional diretamente da planilha.<br><br>
+      <strong>Psicóloga:</strong> tabela com 4 colunas — a 2ª coluna do cabeçalho deve ter o nome (ex: "Meriley").<br>
+      <strong>Médica:</strong> tabela com 2 colunas — a 1ª coluna do cabeçalho deve ter o nome (ex: "Claudia").<br><br>
+      Para adicionar uma substituta, basta criar uma nova tabela na aba da clínica seguindo o mesmo padrão.
+      O sistema soma todos os atendimentos por profissional automaticamente.
+    </p>
   </div>
 </div>
 
@@ -227,19 +202,18 @@ const SCOPES='https://www.googleapis.com/auth/spreadsheets.readonly';
 const CLINICAS=['Boa Vista','Bacacheri','ColomboMed','Etika SJP','FRG','GPTRAN','Galeb','Hauer','Lifetran','MM','PrimeMed','PPTRAN','Rio Sul','São José','Tolmac'];
 const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-let tokenClient=null, accessToken=null;
+let tokenClient=null,accessToken=null;
 let cache={};
-let cfg={valP:50,valM:48,imp:10,meta:55,nomes:{}};
+let cfg={valP:50,valM:48,imp:10,meta:55};
 
 function loadCfg(){
-  try{const s=localStorage.getItem('cl_cfg7');if(s)cfg=Object.assign(cfg,JSON.parse(s));}catch(e){}
+  try{const s=localStorage.getItem('cl_cfg8');if(s)cfg=Object.assign(cfg,JSON.parse(s));}catch(e){}
   document.getElementById('vp').value=cfg.valP;
   document.getElementById('vm').value=cfg.valM;
   document.getElementById('vi').value=cfg.imp;
   document.getElementById('meta-in').value=cfg.meta;
-  renderNomesGrid();
 }
-function saveCfg(){try{localStorage.setItem('cl_cfg7',JSON.stringify(cfg));}catch(e){}}
+function saveCfg(){try{localStorage.setItem('cl_cfg8',JSON.stringify(cfg));}catch(e){}}
 
 function showPage(p,el){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -272,35 +246,6 @@ function salvarVals(){
   renderPag();
 }
 
-function renderNomesGrid(){
-  const g=document.getElementById('nomes-grid');
-  g.innerHTML=CLINICAS.map(cl=>{
-    const n=cfg.nomes[cl]||{p:'',m:''};
-    return `<div class="nome-row">
-      <span class="cl-label">${cl}</span>
-      <input type="text" value="${n.p||''}" placeholder="Nome psicóloga" onchange="updateNome('${cl}','p',this.value)">
-      <input type="text" value="${n.m||''}" placeholder="Nome médica" onchange="updateNome('${cl}','m',this.value)">
-    </div>`;
-  }).join('');
-}
-
-function updateNome(cl,tipo,val){
-  if(!cfg.nomes[cl])cfg.nomes[cl]={p:'',m:''};
-  cfg.nomes[cl][tipo]=val;
-}
-
-function salvarNomes(){
-  saveCfg();
-  const st=document.getElementById('nomes-st');
-  st.textContent='✓ Salvo';st.className='status-ok';
-  setTimeout(()=>st.textContent='',2000);
-}
-
-function getNome(cl,tipo){
-  return (cfg.nomes[cl]&&cfg.nomes[cl][tipo])||( tipo==='p'?'Psicóloga':'Médica');
-}
-
-// LOGIN GOOGLE OAUTH
 function handleLogin(){
   if(!window.google){setStatus('Carregando autenticação...','');setTimeout(handleLogin,600);return;}
   if(!tokenClient){
@@ -324,65 +269,87 @@ function parseNum(v){
   return isNaN(n)?0:Math.max(0,n);
 }
 
-// PARSER CORRETO baseado no JSON real da API:
-// rows[0] = [] (vazio - nome do profissional não retorna via API)
-// rows[1] = ["Dia do Mês","Entrevistas","Estrangeiros","Total","","Dia do Mês","Entrevistas"]
-// rows[2..32] = dados por dia
-// rows[33] = ["Total","","","24","","Total","54"]
+// NOVA ESTRUTURA DA PLANILHA:
+// Linha 0: [] vazia (nome do profissional não retorna via API)
+// Linha 1: ["# Meriley", "Entrevistas", "Estrangeiros", "Total", "", "Claudia", "Entrevistas"]
 //
-// Detecta tabelas pelos cabeçalhos da linha 1:
-// Psicóloga: tem "Estrangeiros" → total = col "Total" (índice +3 a partir do "Dia do Mês")
-// Médica: não tem "Estrangeiros" → total = col "Entrevistas" (índice +1)
-function parsePlanilha(rows){
-  if(!rows||rows.length<3)return{psico:0,med:0};
+// Lógica de detecção:
+// - Psicóloga: quando encontramos "Entrevistas" seguido de "Estrangeiros"
+//   O nome está na coluna ANTERIOR a "Entrevistas" (col-1), com prefixo "#" removido
+//   Total está em col+2 relativo ao "Entrevistas"
+// - Médica: quando encontramos col com texto (nome) seguido de "Entrevistas" sem "Estrangeiros"
+//   O nome está na própria coluna, total em col+1
+//
+// Linha de totais: última linha onde qualquer célula contém "Total" (case insensitive)
 
-  // Cabeçalhos sempre na linha índice 1
+function parsePlanilha(rows){
+  if(!rows||rows.length<3)return{profs:[]};
+
   const hdr=rows[1]||[];
 
-  // Linha de totais: última linha cujo primeiro elemento (não vazio) seja "Total"
+  // Encontra linha de totais
   let totRow=null;
   for(let i=rows.length-1;i>=2;i--){
-    const c0=String(rows[i]&&rows[i][0]||'').trim().toLowerCase();
-    if(c0==='total'){totRow=rows[i];break;}
-  }
-  if(!totRow)return{psico:0,med:0};
-
-  let psico=0,med=0;
-  let col=0;
-
-  while(col<hdr.length){
-    const h=String(hdr[col]||'').trim().toLowerCase();
-    // Detecta início de tabela
-    if(h==='dia do mês'||h==='dia do mes'||h==='#'||h==='dia'){
-      // Verifica próximas colunas
-      const ahead=hdr.slice(col,col+6).map(x=>String(x||'').toLowerCase());
-      const temEstrang=ahead.some(x=>x.includes('estrangeiro'));
-      const temEntrev=ahead.some(x=>x.includes('entrevista'));
-
-      if(temEstrang){
-        // PSICÓLOGA: [Dia, Entrevistas, Estrangeiros, Total, separador]
-        // O total já calculado pela planilha está na coluna "Total" = col+3
-        psico+=parseNum(totRow[col+3]);
-        col+=5;
-      } else if(temEntrev){
-        // MÉDICA: [Dia, Entrevistas, separador]
-        med+=parseNum(totRow[col+1]);
-        col+=3;
-      } else {
-        col++;
-      }
-    } else {
-      col++;
+    const r=rows[i]||[];
+    // Linha total: primeira célula não vazia é "Total"
+    const first=r.find(c=>String(c||'').trim()!=='');
+    if(first&&String(first).trim().toLowerCase()==='total'){
+      totRow=r;break;
     }
   }
-  return{psico,med};
+  if(!totRow)return{profs:[]};
+
+  const profs=[];
+
+  // Varre colunas procurando "Entrevistas"
+  for(let col=0;col<hdr.length;col++){
+    const cell=String(hdr[col]||'').trim().toLowerCase();
+    if(cell!=='entrevistas')continue;
+
+    // Verifica se próxima coluna é "Estrangeiros" → psicóloga
+    const next=String(hdr[col+1]||'').trim().toLowerCase();
+    const temEstrang=next.includes('estrangeiro');
+
+    if(temEstrang){
+      // PSICÓLOGA
+      // Nome está na coluna anterior (col-1), remover prefixo "#" ou "#Meriley"
+      let nome='Psicóloga';
+      if(col>0){
+        const raw=String(hdr[col-1]||'').trim();
+        // Remove "#" do início e espaços
+        nome=raw.replace(/^#\s*/,'').trim()||'Psicóloga';
+      }
+      // Total está em col+2 (coluna "Total" da tabela psicóloga)
+      const total=parseNum(totRow[col+2]);
+      profs.push({nome,tipo:'p',total});
+      col+=3; // pula Entrevistas, Estrangeiros, Total
+    } else {
+      // MÉDICA
+      // Nome está na coluna anterior (col-1)
+      let nome='Médica';
+      if(col>0){
+        const raw=String(hdr[col-1]||'').trim();
+        nome=raw.replace(/^#\s*/,'').trim()||'Médica';
+      }
+      // Total está em col (própria coluna Entrevistas) na linha de totais
+      const total=parseNum(totRow[col]);
+      profs.push({nome,tipo:'m',total});
+      col+=1;
+    }
+  }
+
+  return{profs};
 }
 
-function cssId(n){return n.replace(/[\s\/çãêéâôóúíàÇÃÊÉÂÔÓÚÍÀ]/g,m=>({' ':'_','/':'_','ç':'c','ã':'a','ê':'e','é':'e','â':'a','ô':'o','ó':'o','ú':'u','í':'i','à':'a','Ç':'C','Ã':'A','Ê':'E','É':'E','Â':'A','Ô':'O','Ó':'O','Ú':'U','Í':'I','À':'A'})[m]||m);}
+function cssId(n){
+  return n.replace(/[\s\/çãêéâôóúíàÇÃÊÉÂÔÓÚÍÀ]/g,m=>
+    ({' ':'_','/':'_','ç':'c','ã':'a','ê':'e','é':'e','â':'a','ô':'o','ó':'o','ú':'u','í':'i','à':'a',
+      'Ç':'C','Ã':'A','Ê':'E','É':'E','Â':'A','Ô':'O','Ó':'O','Ú':'U','Í':'I','À':'A'})[m]||m);
+}
 
 function showSkeletons(){
-  document.getElementById('dash-grid').innerHTML=CLINICAS.map(c=>
-    `<div class="cskel" id="card-${cssId(c)}">${c}</div>`).join('');
+  document.getElementById('dash-grid').innerHTML=
+    CLINICAS.map(c=>`<div class="cskel" id="card-${cssId(c)}">${c}</div>`).join('');
 }
 
 async function loadData(){
@@ -413,7 +380,8 @@ async function loadData(){
     }
   }
 
-  document.getElementById('upd-label').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('upd-label').textContent=
+    'Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   setStatus('Dados carregados com sucesso.','ok');
   renderDash();
 }
@@ -424,7 +392,13 @@ function renderDash(){
   const key=mes+'_'+ano;
   const dados=cache[key]||{};
   let tp=0,tm=0;
-  CLINICAS.forEach(cl=>{const d=dados[cl]||{psico:0,med:0};tp+=d.psico;tm+=d.med;renderCardData(cl,d);});
+  CLINICAS.forEach(cl=>{
+    const d=dados[cl]||{profs:[]};
+    const sp=d.profs.filter(p=>p.tipo==='p').reduce((a,b)=>a+b.total,0);
+    const sm=d.profs.filter(p=>p.tipo==='m').reduce((a,b)=>a+b.total,0);
+    tp+=sp;tm+=sm;
+    renderCardData(cl,d);
+  });
   document.getElementById('total-p').textContent=tp;
   document.getElementById('total-m').textContent=tm;
 }
@@ -433,20 +407,28 @@ function renderCardData(cl,d){
   const el=document.getElementById('card-'+cssId(cl));
   if(!el)return;
   const meta=cfg.meta;
-  const pct=Math.min(100,Math.round((d.psico/meta)*100));
-  const falt=Math.max(0,meta-d.psico);
-  const atingiu=d.psico>=meta;
+  const sp=d.profs.filter(p=>p.tipo==='p').reduce((a,b)=>a+b.total,0);
+  const sm=d.profs.filter(p=>p.tipo==='m').reduce((a,b)=>a+b.total,0);
+  const pct=Math.min(100,Math.round((sp/meta)*100));
+  const falt=Math.max(0,meta-sp);
+  const atingiu=sp>=meta;
   const barColor=atingiu?'#639922':pct>=70?'#BA7517':'#E24B4A';
   const bc=atingiu?'bg-green':pct>=70?'bg-amber':'bg-red';
   const bt=atingiu?'✓ Meta atingida':'faltam '+falt;
+
+  // Nomes das psicólogas
+  const psicos=d.profs.filter(p=>p.tipo==='p');
+  const nomesP=psicos.length?psicos.map(p=>p.nome).join(', '):'—';
+
   el.className='ccard';
   el.innerHTML=`
     <div class="cname">${cl}</div>
-    <div class="crow"><span class="clabel">🧠 Psicológico</span><span class="cval">${d.psico}</span></div>
+    <div class="crow"><span class="clabel">🧠 Psicológico</span><span class="cval">${sp}</span></div>
+    <div style="font-size:11px;color:var(--hint);margin-bottom:4px">${nomesP}</div>
     <div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${barColor}"></div></div>
     <div class="cfooter"><span class="badge ${bc}">${bt}</span><span style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace">${pct}%</span></div>
     <div class="cdiv"></div>
-    <div class="crow"><span class="clabel">🩺 Médico</span><span class="cval-sm">${d.med}</span></div>`;
+    <div class="crow"><span class="clabel">🩺 Médico</span><span class="cval-sm">${sm}</span></div>`;
 }
 
 function renderCardError(cl,msg){
@@ -467,7 +449,7 @@ function renderPag(){
 
   if(!dados||!Object.keys(dados).length){
     pl.style.display='block';
-    pl.textContent='Carregue os dados no Dashboard primeiro (faça login e selecione o mês).';
+    pl.textContent='Carregue os dados no Dashboard primeiro.';
     pb.style.display='none';
     return;
   }
@@ -477,29 +459,31 @@ function renderPag(){
   let tg=0;let html='';
 
   CLINICAS.forEach(cl=>{
-    const d=dados[cl]||{psico:0,med:0};
-    if(!d.psico&&!d.med)return;
+    const d=dados[cl]||{profs:[]};
+    if(!d.profs.length)return;
     let tc=0;let rows='';
 
-    if(d.psico>0){
-      const br=d.psico*vp,iv=br*imp;tc+=br;
-      rows+=`<tr>
-        <td>${getNome(cl,'p')} <span class="badge-psico">Psicóloga</span></td>
-        <td>${d.psico}</td><td>${fmt(br)}</td>
-        <td class="imposto">− ${fmt(iv)} (${cfg.imp}%)</td>
-        <td style="font-weight:600">${fmt(br-iv)}</td>
-      </tr>`;
-    }
-    if(d.med>0){
-      const br=d.med*vm;tc+=br;
-      rows+=`<tr>
-        <td>${getNome(cl,'m')} <span class="badge-med">Médica</span></td>
-        <td>${d.med}</td><td>${fmt(br)}</td>
-        <td style="color:var(--muted)">—</td>
-        <td style="font-weight:600">${fmt(br)}</td>
-      </tr>`;
-    }
+    d.profs.forEach(p=>{
+      if(p.tipo==='p'){
+        const br=p.total*vp,iv=br*imp;tc+=br;
+        rows+=`<tr>
+          <td>${p.nome} <span class="badge-psico">Psicóloga</span></td>
+          <td>${p.total}</td><td>${fmt(br)}</td>
+          <td class="imposto">− ${fmt(iv)} (${cfg.imp}%)</td>
+          <td style="font-weight:600">${fmt(br-iv)}</td>
+        </tr>`;
+      } else {
+        const br=p.total*vm;tc+=br;
+        rows+=`<tr>
+          <td>${p.nome} <span class="badge-med">Médica</span></td>
+          <td>${p.total}</td><td>${fmt(br)}</td>
+          <td style="color:var(--muted)">—</td>
+          <td style="font-weight:600">${fmt(br)}</td>
+        </tr>`;
+      }
+    });
 
+    if(!rows)return;
     tg+=tc;
     html+=`<div class="pag-section">
       <div class="pag-head">
@@ -507,7 +491,9 @@ function renderPag(){
         <span class="pag-total-label">Total da clínica: <strong>${fmt(tc)}</strong></span>
       </div>
       <table class="ptable">
-        <thead><tr><th>Profissional</th><th>Atendimentos</th><th>Valor bruto</th><th>Imposto</th><th>Valor líquido</th></tr></thead>
+        <thead><tr>
+          <th>Profissional</th><th>Atendimentos</th><th>Valor bruto</th><th>Imposto</th><th>Valor líquido</th>
+        </tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </div>`;
@@ -515,7 +501,10 @@ function renderPag(){
 
   if(!html)html='<p style="color:var(--muted);font-size:13px">Nenhum dado encontrado.</p>';
   html+=`<div class="total-card">
-    <div><div class="total-card-label">Total geral de pagamentos</div><div style="font-size:12px;opacity:.7">${MESES[mes-1]} ${ano}</div></div>
+    <div>
+      <div class="total-card-label">Total geral de pagamentos</div>
+      <div style="font-size:12px;opacity:.7">${MESES[mes-1]} ${ano}</div>
+    </div>
     <div class="total-card-val">${fmt(tg)}</div>
   </div>`;
   pb.innerHTML=html;
@@ -524,7 +513,6 @@ function renderPag(){
 function fmt(v){return'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 
 loadCfg();
-// Seta mês atual
 document.getElementById('mes-sel').value=new Date().getMonth()+1;
 document.getElementById('mes-pag').value=new Date().getMonth()+1;
 </script>
