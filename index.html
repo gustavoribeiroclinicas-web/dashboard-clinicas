@@ -1,151 +1,316 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Painel de Atendimentos</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sistema de Clínicas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #f5f4f0; --surface: #ffffff; --surface2: #efefeb; --border: #e0dfd8;
-    --text: #1a1a18; --muted: #6b6b66; --hint: #a0a09a;
-    --green: #3b6d11; --green-bg: #eaf3de;
-    --amber: #854f0b; --amber-bg: #faeeda;
-    --red: #a32d2d; --red-bg: #fcebeb;
-    --accent: #185fa5; --accent-bg: #e6f1fb;
-    --radius: 12px; --radius-sm: 8px;
-  }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1.5rem; }
-  header { max-width: 1100px; margin: 0 auto 1.25rem; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-  .header-left h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
-  .header-left p { font-size: 13px; color: var(--muted); margin-top: 4px; }
-  .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .control-box { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; }
-  .control-box label { font-size: 13px; color: var(--muted); white-space: nowrap; }
-  .control-box input[type=number] { width: 54px; font-size: 14px; font-weight: 600; font-family: 'DM Mono', monospace; border: none; background: transparent; color: var(--text); text-align: center; outline: none; }
-  .control-box select { font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif; border: none; background: transparent; color: var(--text); outline: none; cursor: pointer; padding: 0 2px; }
-  button { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background 0.15s, border-color 0.15s; }
-  button:hover { background: var(--surface2); border-color: #ccc; }
-  #btn-login { background: #fff; border-color: #dadce0; color: #3c4043; font-weight: 500; }
-  #btn-login svg { width: 16px; height: 16px; }
-  #status-bar { max-width: 1100px; margin: 0 auto 0.75rem; font-size: 13px; color: var(--muted); min-height: 18px; display: flex; align-items: center; gap: 6px; }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--hint); flex-shrink: 0; display: inline-block; }
-  .dot.ok { background: var(--green); }
-  .dot.err { background: var(--red); }
-  #mes-badge { max-width: 1100px; margin: 0 auto 1.25rem; font-size: 13px; color: var(--muted); }
-  #mes-badge strong { color: var(--text); font-weight: 600; }
-  #cards-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; transition: box-shadow 0.2s; animation: fadeIn 0.3s ease both; }
-  .card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-  .card-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  .card-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-  .card-label { font-size: 12px; color: var(--muted); }
-  .card-value { font-size: 17px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--text); }
-  .card-value-sm { font-size: 14px; font-weight: 500; font-family: 'DM Mono', monospace; color: var(--muted); }
-  .divider { height: 1px; background: var(--border); margin: 8px 0; }
-  .progress-track { height: 5px; border-radius: 3px; background: var(--surface2); overflow: hidden; margin: 4px 0 6px; }
-  .progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
-  .card-footer { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
-  .badge { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
-  .badge-green { background: var(--green-bg); color: var(--green); }
-  .badge-amber { background: var(--amber-bg); color: var(--amber); }
-  .badge-red   { background: var(--red-bg);   color: var(--red); }
-  .card-skeleton { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; min-height: 130px; display: flex; align-items: center; justify-content: center; }
-  .skeleton-name { font-size: 12px; color: var(--hint); }
-  .card-error { background: var(--surface); border: 1px solid #f0c0c0; border-radius: var(--radius); padding: 1rem 1.1rem; }
-  .err-msg { font-size: 12px; color: var(--red); margin-top: 6px; }
-  footer { max-width: 1100px; margin: 2rem auto 0; font-size: 12px; color: var(--hint); text-align: center; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;--surface:#ffffff;--surface2:#efefeb;--border:#e0dfd8;
+  --text:#1a1a18;--muted:#6b6b66;--hint:#a0a09a;
+  --green:#3b6d11;--green-bg:#eaf3de;
+  --amber:#854f0b;--amber-bg:#faeeda;
+  --red:#a32d2d;--red-bg:#fcebeb;
+  --blue:#185fa5;--blue-bg:#e6f1fb;
+  --purple:#534AB7;--purple-dark:#3C3489;
+  --pink:#D4537E;--pink-dark:#993556;
+  --radius:12px;--radius-sm:8px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;position:sticky;top:0;z-index:100;gap:0}
+.brand{font-size:15px;font-weight:600;color:var(--purple);padding:1rem 1.5rem 1rem 0;border-right:1px solid var(--border);margin-right:1.5rem;white-space:nowrap}
+.nav-tab{padding:1rem 1.1rem;cursor:pointer;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;user-select:none}
+.nav-tab.active{color:var(--purple);border-bottom-color:var(--purple);font-weight:600}
+.nav-tab:hover:not(.active){color:var(--text);background:var(--bg)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:0.5rem 0}
+
+/* PAGES */
+.page{display:none;padding:1.5rem 2rem;max-width:1200px;margin:0 auto}
+.page.active{display:block}
+
+/* HERO */
+.hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+.hero-section{display:flex;flex-direction:column;gap:4px}
+.hero-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.hero-val{font-size:30px;font-weight:700;line-height:1;font-family:'DM Mono',monospace}
+.hero-val.psico{color:var(--pink-dark)}
+.hero-val.med{color:var(--blue)}
+.hero-divider{width:1px;background:var(--border);height:48px;align-self:center}
+.meta-wrap{display:flex;align-items:center;gap:8px}
+.meta-wrap input{width:80px;font-size:15px;font-family:'DM Mono',monospace;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);text-align:center}
+.controls{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap}
+.controls select{font-size:13px;padding:7px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif}
+.updated{font-size:12px;color:var(--muted)}
+
+/* BUTTONS */
+.btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .12s}
+.btn:hover{background:var(--surface2)}
+.btn-purple{background:var(--purple);border-color:var(--purple);color:#fff}
+.btn-purple:hover{background:var(--purple-dark)}
+.btn-google{background:#fff;border-color:#dadce0;color:#3c4043}
+
+/* STATUS */
+.status-bar{font-size:13px;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:6px;min-height:20px}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--hint);flex-shrink:0;display:inline-block}
+.sdot.ok{background:var(--green)}
+.sdot.err{background:var(--red)}
+
+/* CLINIC GRID */
+.clinic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.ccard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;transition:box-shadow .2s;animation:fadeIn .3s ease both}
+.ccard:hover{box-shadow:0 2px 12px rgba(0,0,0,.07)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.cname{font-size:13px;font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.crow{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.clabel{font-size:12px;color:var(--muted)}
+.cval{font-size:17px;font-weight:600;font-family:'DM Mono',monospace}
+.cval-sm{font-size:14px;font-weight:500;font-family:'DM Mono',monospace;color:var(--muted)}
+.cdiv{height:1px;background:var(--border);margin:8px 0}
+.prog-track{height:5px;border-radius:3px;background:var(--surface2);overflow:hidden;margin:4px 0 6px}
+.prog-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.cfooter{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+.badge{font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px}
+.bg-green{background:var(--green-bg);color:var(--green)}
+.bg-amber{background:var(--amber-bg);color:var(--amber)}
+.bg-red{background:var(--red-bg);color:var(--red)}
+.cskel{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;min-height:130px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--hint)}
+
+/* PAGAMENTOS */
+.page-header{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
+.page-header h2{font-size:18px;font-weight:700;flex:1}
+.pag-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden}
+.pag-head{padding:1rem 1.25rem;border-bottom:1px solid var(--surface2);display:flex;justify-content:space-between;align-items:center}
+.pag-head-name{font-size:14px;font-weight:600}
+.pag-total-label{font-size:13px;color:var(--muted)}
+.pag-total-label strong{color:var(--text)}
+table.ptable{width:100%;border-collapse:collapse;font-size:13px}
+.ptable th{padding:8px 1.25rem;text-align:left;font-size:11px;font-weight:600;color:var(--muted);background:var(--surface2);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.05em}
+.ptable td{padding:10px 1.25rem;border-bottom:1px solid var(--surface2)}
+.ptable tr:last-child td{border-bottom:none}
+.ptable tr:hover td{background:var(--surface2)}
+.imposto{color:var(--red);font-size:12px}
+.badge-psico{background:#FBEAF0;color:#72243E;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600}
+.badge-med{background:#E6F1FB;color:#0C447C;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600}
+.total-card{background:var(--green);border-radius:var(--radius);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;color:#fff;margin-top:1rem}
+.total-card-label{font-size:13px;opacity:.85}
+.total-card-val{font-size:26px;font-weight:700;font-family:'DM Mono',monospace}
+.loading-msg{text-align:center;padding:4rem 2rem;color:var(--muted);font-size:14px}
+
+/* CONFIG */
+.cfg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;max-width:620px}
+.cfg-title{font-size:14px;font-weight:600;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--surface2)}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.fg input{width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif}
+.fg input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(83,74,183,.12)}
+.hint{font-size:11px;color:var(--muted);margin-top:4px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.status-ok{color:var(--green);font-size:12px;font-weight:500}
+.status-err{color:var(--red);font-size:12px;font-weight:500}
+.nome-header{display:grid;grid-template-columns:150px 1fr 1fr;gap:8px;margin-bottom:6px}
+.nome-header span{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.nome-row{display:grid;grid-template-columns:150px 1fr 1fr;gap:8px;align-items:center;margin-bottom:6px}
+.nome-row .cl-label{font-size:12px;font-weight:500;color:var(--muted)}
+.nome-row input{padding:6px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;width:100%}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-left">
-    <h1>Painel de atendimentos</h1>
-    <p id="last-update">Faça login para carregar os dados</p>
-  </div>
-  <div class="header-right">
-    <div class="control-box">
-      <label>📅 Mês:</label>
-      <select id="mes-select">
-        <option value="1">Janeiro</option>
-        <option value="2">Fevereiro</option>
-        <option value="3">Março</option>
-        <option value="4">Abril</option>
-        <option value="5">Maio</option>
-        <option value="6">Junho</option>
-        <option value="7">Julho</option>
-        <option value="8">Agosto</option>
-        <option value="9">Setembro</option>
-        <option value="10">Outubro</option>
-        <option value="11">Novembro</option>
-        <option value="12">Dezembro</option>
-      </select>
-    </div>
-    <div class="control-box">
-      <label>🎯 Meta psicológica:</label>
-      <input type="number" id="meta-input" value="55" min="1" />
-      <button onclick="updateMeta()" style="padding:4px 10px;font-size:12px;">salvar</button>
-    </div>
-    <button id="btn-login" onclick="handleLogin()">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-      </svg>
+<div class="topbar">
+  <span class="brand">🏥 Clínicas</span>
+  <div class="nav-tab active" onclick="showPage('dashboard',this)">Dashboard</div>
+  <div class="nav-tab" onclick="showPage('pagamentos',this)">Pagamentos</div>
+  <div class="nav-tab" onclick="showPage('config',this)">Configurações</div>
+  <div class="topbar-right">
+    <button class="btn btn-google" id="btn-login" onclick="handleLogin()">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
       Entrar com Google
     </button>
-    <button id="btn-refresh" onclick="loadData()" style="display:none;">↻ Atualizar</button>
+    <button class="btn" id="btn-refresh" onclick="loadData()" style="display:none">↻ Atualizar</button>
+    <span id="upd-label" class="updated"></span>
   </div>
-</header>
+</div>
 
-<div id="status-bar"><span class="dot"></span> <span id="status-text">Aguardando login</span></div>
-<div id="mes-badge" style="display:none;"></div>
-<div id="cards-grid"></div>
-<footer>Dados lidos diretamente do Google Sheets · Atualização manual</footer>
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="hero">
+    <div class="hero-section">
+      <span class="hero-label">🧠 Total psicológico</span>
+      <span class="hero-val psico" id="total-p">—</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-section">
+      <span class="hero-label">🩺 Total médico</span>
+      <span class="hero-val med" id="total-m">—</span>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-section" style="flex:1;min-width:220px">
+      <span class="hero-label">🎯 Meta psicológica mensal</span>
+      <div class="meta-wrap" style="margin-top:6px">
+        <input type="number" id="meta-in" value="55" min="1">
+        <button class="btn btn-purple" onclick="salvarMeta()">Salvar meta</button>
+      </div>
+    </div>
+    <div class="controls">
+      <select id="mes-sel" onchange="loadData()">
+        <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+        <option value="4">Abril</option><option value="5" selected>Maio</option><option value="6">Junho</option>
+        <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+        <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+      </select>
+      <select id="ano-sel" onchange="loadData()">
+        <option value="2025">2025</option><option value="2026" selected>2026</option>
+      </select>
+    </div>
+  </div>
+  <div class="status-bar"><span class="sdot" id="sdot"></span><span id="status-text">Faça login com Google para carregar os dados</span></div>
+  <div id="dash-grid" class="clinic-grid"></div>
+</div>
+
+<!-- PAGAMENTOS -->
+<div id="page-pagamentos" class="page">
+  <div class="page-header">
+    <h2>Cálculo de pagamentos</h2>
+    <select id="mes-pag" onchange="renderPag()" style="font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;cursor:pointer">
+      <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+      <option value="4">Abril</option><option value="5" selected>Maio</option><option value="6">Junho</option>
+      <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+      <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+    </select>
+    <select id="ano-pag" onchange="renderPag()" style="font-size:13px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;cursor:pointer">
+      <option value="2025">2025</option><option value="2026" selected>2026</option>
+    </select>
+  </div>
+  <div id="pag-load" class="loading-msg">Carregue os dados no Dashboard primeiro.</div>
+  <div id="pag-body" style="display:none"></div>
+</div>
+
+<!-- CONFIG -->
+<div id="page-config" class="page">
+  <div class="cfg-card">
+    <div class="cfg-title">💰 Valores por atendimento</div>
+    <div class="two-col">
+      <div class="fg"><label>Psicóloga (R$)</label><input type="number" id="vp" value="50" min="0"></div>
+      <div class="fg"><label>Médica (R$)</label><input type="number" id="vm" value="48" min="0"></div>
+    </div>
+    <div class="fg"><label>Imposto psicóloga (%)</label><input type="number" id="vi" value="10" min="0" max="100" style="width:120px"></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="btn btn-purple" onclick="salvarVals()">Salvar valores</button>
+      <span id="val-st"></span>
+    </div>
+  </div>
+
+  <div class="cfg-card">
+    <div class="cfg-title">👩‍⚕️ Nomes dos profissionais por clínica</div>
+    <p class="hint" style="margin-bottom:1rem">A 1ª tabela de cada aba (4 colunas) = psicóloga. A 2ª tabela (2 colunas) = médica.</p>
+    <div class="nome-header">
+      <span>Clínica</span>
+      <span style="color:var(--pink-dark)">Psicóloga</span>
+      <span style="color:var(--blue)">Médica</span>
+    </div>
+    <div id="nomes-grid"></div>
+    <button class="btn btn-purple" onclick="salvarNomes()" style="margin-top:10px">Salvar nomes</button>
+    <span id="nomes-st" style="margin-left:10px"></span>
+  </div>
+</div>
 
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
-const SHEET_ID = '18rajQPaYrzqijxCGLPl2CSGO5eoZ6y-JN5DFG33zS5o';
-const CLIENT_ID = '874687957081-3pk9k0khdbhqj70mok912jvf32s6jr1h.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly';
-const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const CLINICAS = ['Boa Vista','Bacacheri','ColomboMed','Etika SJP','FRG','GPTRAN','Galeb','Hauer','Lifetran','MM','PrimeMed','PPTRAN','Rio Sul','São José','Tolmac'];
+const SHEET_ID='18rajQPaYrzqijxCGLPl2CSGO5eoZ6y-JN5DFG33zS5o';
+const CLIENT_ID='874687957081-3pk9k0khdbhqj70mok912jvf32s6jr1h.apps.googleusercontent.com';
+const SCOPES='https://www.googleapis.com/auth/spreadsheets.readonly';
+const CLINICAS=['Boa Vista','Bacacheri','ColomboMed','Etika SJP','FRG','GPTRAN','Galeb','Hauer','Lifetran','MM','PrimeMed','PPTRAN','Rio Sul','São José','Tolmac'];
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-let tokenClient = null;
-let accessToken = null;
-let metaVal = parseInt(localStorage.getItem('meta_psico') || '55') || 55;
-document.getElementById('meta-input').value = metaVal;
-document.getElementById('mes-select').value = new Date().getMonth() + 1;
+let tokenClient=null, accessToken=null;
+let cache={};
+let cfg={valP:50,valM:48,imp:10,meta:55,nomes:{}};
 
-function getMesNome() { return MESES[parseInt(document.getElementById('mes-select').value) - 1]; }
+function loadCfg(){
+  try{const s=localStorage.getItem('cl_cfg7');if(s)cfg=Object.assign(cfg,JSON.parse(s));}catch(e){}
+  document.getElementById('vp').value=cfg.valP;
+  document.getElementById('vm').value=cfg.valM;
+  document.getElementById('vi').value=cfg.imp;
+  document.getElementById('meta-in').value=cfg.meta;
+  renderNomesGrid();
+}
+function saveCfg(){try{localStorage.setItem('cl_cfg7',JSON.stringify(cfg));}catch(e){}}
 
-function setStatus(msg, type) {
-  document.querySelector('.dot').className = 'dot' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : '');
-  document.getElementById('status-text').textContent = msg;
+function showPage(p,el){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  el.classList.add('active');
+  if(p==='pagamentos')renderPag();
 }
 
-function updateMeta() {
-  metaVal = parseInt(document.getElementById('meta-input').value) || 55;
-  localStorage.setItem('meta_psico', metaVal);
-  if (window._lastData) renderCards(window._lastData);
-  setStatus('Meta atualizada para ' + metaVal + ' atendimentos.', 'ok');
+function setStatus(msg,type){
+  const dot=document.getElementById('sdot');
+  dot.className='sdot'+(type==='ok'?' ok':type==='err'?' err':'');
+  document.getElementById('status-text').textContent=msg;
 }
 
-function handleLogin() {
-  if (!window.google) { setStatus('Carregando autenticação...', ''); setTimeout(handleLogin, 600); return; }
-  if (!tokenClient) {
-    tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: CLIENT_ID, scope: SCOPES,
-      callback: (resp) => {
-        if (resp.error) { setStatus('Erro: ' + resp.error, 'err'); return; }
-        accessToken = resp.access_token;
-        document.getElementById('btn-login').style.display = 'none';
-        document.getElementById('btn-refresh').style.display = 'inline-flex';
+function salvarMeta(){
+  cfg.meta=parseInt(document.getElementById('meta-in').value)||55;
+  saveCfg();
+  if(Object.keys(cache).length)renderDash();
+}
+
+function salvarVals(){
+  cfg.valP=parseFloat(document.getElementById('vp').value)||50;
+  cfg.valM=parseFloat(document.getElementById('vm').value)||48;
+  cfg.imp=parseFloat(document.getElementById('vi').value)||10;
+  saveCfg();
+  const st=document.getElementById('val-st');
+  st.textContent='✓ Salvo';st.className='status-ok';
+  setTimeout(()=>st.textContent='',2000);
+  renderPag();
+}
+
+function renderNomesGrid(){
+  const g=document.getElementById('nomes-grid');
+  g.innerHTML=CLINICAS.map(cl=>{
+    const n=cfg.nomes[cl]||{p:'',m:''};
+    return `<div class="nome-row">
+      <span class="cl-label">${cl}</span>
+      <input type="text" value="${n.p||''}" placeholder="Nome psicóloga" onchange="updateNome('${cl}','p',this.value)">
+      <input type="text" value="${n.m||''}" placeholder="Nome médica" onchange="updateNome('${cl}','m',this.value)">
+    </div>`;
+  }).join('');
+}
+
+function updateNome(cl,tipo,val){
+  if(!cfg.nomes[cl])cfg.nomes[cl]={p:'',m:''};
+  cfg.nomes[cl][tipo]=val;
+}
+
+function salvarNomes(){
+  saveCfg();
+  const st=document.getElementById('nomes-st');
+  st.textContent='✓ Salvo';st.className='status-ok';
+  setTimeout(()=>st.textContent='',2000);
+}
+
+function getNome(cl,tipo){
+  return (cfg.nomes[cl]&&cfg.nomes[cl][tipo])||( tipo==='p'?'Psicóloga':'Médica');
+}
+
+// LOGIN GOOGLE OAUTH
+function handleLogin(){
+  if(!window.google){setStatus('Carregando autenticação...','');setTimeout(handleLogin,600);return;}
+  if(!tokenClient){
+    tokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:CLIENT_ID,scope:SCOPES,
+      callback:(resp)=>{
+        if(resp.error){setStatus('Erro no login: '+resp.error,'err');return;}
+        accessToken=resp.access_token;
+        document.getElementById('btn-login').style.display='none';
+        document.getElementById('btn-refresh').style.display='inline-flex';
         loadData();
       }
     });
@@ -153,66 +318,215 @@ function handleLogin() {
   tokenClient.requestAccessToken();
 }
 
-function cssId(n) { return n.replace(/[\sãêéâôóúíà]/g, m => ({' ':'_','ã':'a','ê':'e','é':'e','â':'a','ô':'o','ó':'o','ú':'u','í':'i','à':'a'})[m]||m); }
-
-function showSkeletons() {
-  document.getElementById('cards-grid').innerHTML = CLINICAS.map(c =>
-    `<div class="card-skeleton" id="card-${cssId(c)}"><span class="skeleton-name">${c}</span></div>`).join('');
+function parseNum(v){
+  if(!v&&v!==0)return 0;
+  const n=parseFloat(String(v).replace(',','.').replace(/[^\d.-]/g,''));
+  return isNaN(n)?0:Math.max(0,n);
 }
 
-async function loadData() {
-  if (!accessToken) { setStatus('Faça login primeiro.', 'err'); return; }
-  const mesNome = getMesNome();
-  setStatus('Carregando dados — ' + mesNome + '...', '');
-  showSkeletons();
-  const badge = document.getElementById('mes-badge');
-  badge.style.display = 'block';
-  badge.innerHTML = `📅 Exibindo: <strong>${mesNome}</strong> &nbsp;·&nbsp; 🎯 Meta psicológica: <strong>${metaVal} atendimentos</strong>`;
-  const results = [];
-  for (const clinica of CLINICAS) {
-    try {
-      const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(clinica)}!A1:F34`, { headers: { Authorization: 'Bearer ' + accessToken } });
-      if (!res.ok) { const e = await res.json(); const r={clinica,error:e.error?.message||'Aba não encontrada'}; results.push(r); renderCard(r); continue; }
-      const data = await res.json();
-      const rows = (data.values||[]).slice(1);
-      let psico = 0, med = 0;
-      rows.forEach(row => {
-        const entrevistas  = parseInt(row[1]) || 0;
-        const estrangeiros = parseInt(row[2]) || 0;
-        psico += entrevistas + estrangeiros;
-        med   += entrevistas;
-      });
-      const r = { clinica, psico, med };
-      results.push(r); renderCard(r);
-    } catch(e) { const r={clinica,error:e.message}; results.push(r); renderCard(r); }
+// PARSER CORRETO baseado no JSON real da API:
+// rows[0] = [] (vazio - nome do profissional não retorna via API)
+// rows[1] = ["Dia do Mês","Entrevistas","Estrangeiros","Total","","Dia do Mês","Entrevistas"]
+// rows[2..32] = dados por dia
+// rows[33] = ["Total","","","24","","Total","54"]
+//
+// Detecta tabelas pelos cabeçalhos da linha 1:
+// Psicóloga: tem "Estrangeiros" → total = col "Total" (índice +3 a partir do "Dia do Mês")
+// Médica: não tem "Estrangeiros" → total = col "Entrevistas" (índice +1)
+function parsePlanilha(rows){
+  if(!rows||rows.length<3)return{psico:0,med:0};
+
+  // Cabeçalhos sempre na linha índice 1
+  const hdr=rows[1]||[];
+
+  // Linha de totais: última linha cujo primeiro elemento (não vazio) seja "Total"
+  let totRow=null;
+  for(let i=rows.length-1;i>=2;i--){
+    const c0=String(rows[i]&&rows[i][0]||'').trim().toLowerCase();
+    if(c0==='total'){totRow=rows[i];break;}
   }
-  window._lastData = results;
-  const now = new Date();
-  document.getElementById('last-update').textContent = 'Atualizado às ' + now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) + ' de ' + now.toLocaleDateString('pt-BR');
-  setStatus('Dados carregados com sucesso.', 'ok');
+  if(!totRow)return{psico:0,med:0};
+
+  let psico=0,med=0;
+  let col=0;
+
+  while(col<hdr.length){
+    const h=String(hdr[col]||'').trim().toLowerCase();
+    // Detecta início de tabela
+    if(h==='dia do mês'||h==='dia do mes'||h==='#'||h==='dia'){
+      // Verifica próximas colunas
+      const ahead=hdr.slice(col,col+6).map(x=>String(x||'').toLowerCase());
+      const temEstrang=ahead.some(x=>x.includes('estrangeiro'));
+      const temEntrev=ahead.some(x=>x.includes('entrevista'));
+
+      if(temEstrang){
+        // PSICÓLOGA: [Dia, Entrevistas, Estrangeiros, Total, separador]
+        // O total já calculado pela planilha está na coluna "Total" = col+3
+        psico+=parseNum(totRow[col+3]);
+        col+=5;
+      } else if(temEntrev){
+        // MÉDICA: [Dia, Entrevistas, separador]
+        med+=parseNum(totRow[col+1]);
+        col+=3;
+      } else {
+        col++;
+      }
+    } else {
+      col++;
+    }
+  }
+  return{psico,med};
 }
 
-function renderCard(r) {
-  const el = document.getElementById('card-' + cssId(r.clinica));
-  if (!el) return;
-  if (r.error) { el.className='card-error'; el.innerHTML=`<div class="card-name">${r.clinica}</div><div class="err-msg">⚠ ${r.error}</div>`; return; }
-  const pct = Math.min(100, Math.round((r.psico / metaVal) * 100));
-  const faltam = Math.max(0, metaVal - r.psico);
-  const atingiu = r.psico >= metaVal;
-  const barColor = atingiu ? '#639922' : pct >= 70 ? '#BA7517' : '#E24B4A';
-  const badgeClass = atingiu ? 'badge-green' : pct >= 70 ? 'badge-amber' : 'badge-red';
-  const badgeText = atingiu ? '✓ Meta atingida' : `faltam ${faltam}`;
-  el.className = 'card';
-  el.innerHTML = `
-    <div class="card-name">${r.clinica}</div>
-    <div class="card-row"><span class="card-label">🧠 Psicológico</span><span class="card-value">${r.psico}</span></div>
-    <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${barColor};"></div></div>
-    <div class="card-footer"><span class="badge ${badgeClass}">${badgeText}</span><span style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace;">${pct}%</span></div>
-    <div class="divider"></div>
-    <div class="card-row"><span class="card-label">🩺 Médico</span><span class="card-value-sm">${r.med}</span></div>`;
+function cssId(n){return n.replace(/[\s\/çãêéâôóúíàÇÃÊÉÂÔÓÚÍÀ]/g,m=>({' ':'_','/':'_','ç':'c','ã':'a','ê':'e','é':'e','â':'a','ô':'o','ó':'o','ú':'u','í':'i','à':'a','Ç':'C','Ã':'A','Ê':'E','É':'E','Â':'A','Ô':'O','Ó':'O','Ú':'U','Í':'I','À':'A'})[m]||m);}
+
+function showSkeletons(){
+  document.getElementById('dash-grid').innerHTML=CLINICAS.map(c=>
+    `<div class="cskel" id="card-${cssId(c)}">${c}</div>`).join('');
 }
 
-function renderCards(results) { showSkeletons(); results.forEach(r => renderCard(r)); }
+async function loadData(){
+  if(!accessToken){setStatus('Faça login com Google para carregar os dados','');return;}
+  const mes=parseInt(document.getElementById('mes-sel').value);
+  const ano=document.getElementById('ano-sel').value;
+  const key=mes+'_'+ano;
+
+  setStatus('Carregando dados — '+MESES[mes-1]+'/'+ano+'...','');
+  showSkeletons();
+  cache[key]={};
+
+  for(const cl of CLINICAS){
+    try{
+      const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(cl)}?majorDimension=ROWS`;
+      const r=await fetch(url,{headers:{Authorization:'Bearer '+accessToken}});
+      if(!r.ok){
+        const e=await r.json();
+        renderCardError(cl,e.error?.message||'Aba não encontrada');
+        continue;
+      }
+      const d=await r.json();
+      const parsed=parsePlanilha(d.values||[]);
+      cache[key][cl]=parsed;
+      renderCardData(cl,parsed);
+    }catch(e){
+      renderCardError(cl,e.message);
+    }
+  }
+
+  document.getElementById('upd-label').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  setStatus('Dados carregados com sucesso.','ok');
+  renderDash();
+}
+
+function renderDash(){
+  const mes=parseInt(document.getElementById('mes-sel').value);
+  const ano=document.getElementById('ano-sel').value;
+  const key=mes+'_'+ano;
+  const dados=cache[key]||{};
+  let tp=0,tm=0;
+  CLINICAS.forEach(cl=>{const d=dados[cl]||{psico:0,med:0};tp+=d.psico;tm+=d.med;renderCardData(cl,d);});
+  document.getElementById('total-p').textContent=tp;
+  document.getElementById('total-m').textContent=tm;
+}
+
+function renderCardData(cl,d){
+  const el=document.getElementById('card-'+cssId(cl));
+  if(!el)return;
+  const meta=cfg.meta;
+  const pct=Math.min(100,Math.round((d.psico/meta)*100));
+  const falt=Math.max(0,meta-d.psico);
+  const atingiu=d.psico>=meta;
+  const barColor=atingiu?'#639922':pct>=70?'#BA7517':'#E24B4A';
+  const bc=atingiu?'bg-green':pct>=70?'bg-amber':'bg-red';
+  const bt=atingiu?'✓ Meta atingida':'faltam '+falt;
+  el.className='ccard';
+  el.innerHTML=`
+    <div class="cname">${cl}</div>
+    <div class="crow"><span class="clabel">🧠 Psicológico</span><span class="cval">${d.psico}</span></div>
+    <div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${barColor}"></div></div>
+    <div class="cfooter"><span class="badge ${bc}">${bt}</span><span style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace">${pct}%</span></div>
+    <div class="cdiv"></div>
+    <div class="crow"><span class="clabel">🩺 Médico</span><span class="cval-sm">${d.med}</span></div>`;
+}
+
+function renderCardError(cl,msg){
+  const el=document.getElementById('card-'+cssId(cl));
+  if(!el)return;
+  el.className='ccard';
+  el.style.borderColor='#f0c0c0';
+  el.innerHTML=`<div class="cname">${cl}</div><div style="font-size:12px;color:var(--red);margin-top:6px">⚠ ${msg}</div>`;
+}
+
+function renderPag(){
+  const mes=parseInt(document.getElementById('mes-pag').value);
+  const ano=document.getElementById('ano-pag').value;
+  const key=mes+'_'+ano;
+  const dados=cache[key];
+  const pb=document.getElementById('pag-body');
+  const pl=document.getElementById('pag-load');
+
+  if(!dados||!Object.keys(dados).length){
+    pl.style.display='block';
+    pl.textContent='Carregue os dados no Dashboard primeiro (faça login e selecione o mês).';
+    pb.style.display='none';
+    return;
+  }
+  pl.style.display='none';pb.style.display='block';
+
+  const vp=cfg.valP,vm=cfg.valM,imp=cfg.imp/100;
+  let tg=0;let html='';
+
+  CLINICAS.forEach(cl=>{
+    const d=dados[cl]||{psico:0,med:0};
+    if(!d.psico&&!d.med)return;
+    let tc=0;let rows='';
+
+    if(d.psico>0){
+      const br=d.psico*vp,iv=br*imp;tc+=br;
+      rows+=`<tr>
+        <td>${getNome(cl,'p')} <span class="badge-psico">Psicóloga</span></td>
+        <td>${d.psico}</td><td>${fmt(br)}</td>
+        <td class="imposto">− ${fmt(iv)} (${cfg.imp}%)</td>
+        <td style="font-weight:600">${fmt(br-iv)}</td>
+      </tr>`;
+    }
+    if(d.med>0){
+      const br=d.med*vm;tc+=br;
+      rows+=`<tr>
+        <td>${getNome(cl,'m')} <span class="badge-med">Médica</span></td>
+        <td>${d.med}</td><td>${fmt(br)}</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="font-weight:600">${fmt(br)}</td>
+      </tr>`;
+    }
+
+    tg+=tc;
+    html+=`<div class="pag-section">
+      <div class="pag-head">
+        <span class="pag-head-name">${cl}</span>
+        <span class="pag-total-label">Total da clínica: <strong>${fmt(tc)}</strong></span>
+      </div>
+      <table class="ptable">
+        <thead><tr><th>Profissional</th><th>Atendimentos</th><th>Valor bruto</th><th>Imposto</th><th>Valor líquido</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  });
+
+  if(!html)html='<p style="color:var(--muted);font-size:13px">Nenhum dado encontrado.</p>';
+  html+=`<div class="total-card">
+    <div><div class="total-card-label">Total geral de pagamentos</div><div style="font-size:12px;opacity:.7">${MESES[mes-1]} ${ano}</div></div>
+    <div class="total-card-val">${fmt(tg)}</div>
+  </div>`;
+  pb.innerHTML=html;
+}
+
+function fmt(v){return'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+
+loadCfg();
+// Seta mês atual
+document.getElementById('mes-sel').value=new Date().getMonth()+1;
+document.getElementById('mes-pag').value=new Date().getMonth()+1;
 </script>
 </body>
 </html>
