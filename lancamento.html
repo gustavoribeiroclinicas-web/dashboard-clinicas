@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lançamento Diário</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;--surface:#ffffff;--surface2:#efefeb;--border:#e0dfd8;
+  --text:#1a1a18;--muted:#6b6b66;--hint:#a0a09a;
+  --green:#3b6d11;--green-bg:#eaf3de;--green-border:#b5d98a;
+  --red:#a32d2d;--red-bg:#fcebeb;--red-border:#f7c1c1;
+  --blue:#185fa5;--blue-bg:#e6f1fb;
+  --purple:#534AB7;--purple-dark:#3C3489;
+  --pink:#D4537E;--pink-dark:#993556;
+  --amber:#854f0b;--amber-bg:#faeeda;
+  --radius:16px;--radius-sm:10px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem 1rem 4rem;}
+.container{max-width:480px;margin:0 auto;}
+
+/* HEADER */
+.header{text-align:center;margin-bottom:2rem;}
+.header h1{font-size:20px;font-weight:600;margin-bottom:4px;}
+.header .data-badge{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;padding:5px 14px;border-radius:99px;font-size:13px;font-weight:500;margin-top:8px;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;}
+.card-title{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem;}
+
+/* SELECT CLÍNICA */
+.clinica-select{width:100%;padding:12px 14px;font-size:15px;font-family:'DM Sans',sans-serif;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b6b66' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.clinica-select:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(83,74,183,.12);}
+
+/* PROFISSIONAIS */
+.prof-block{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:10px;}
+.prof-block:last-child{margin-bottom:0;}
+.prof-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.prof-nome{font-size:14px;font-weight:600;}
+.badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;}
+.badge-psico{background:#FBEAF0;color:#72243E;}
+.badge-med{background:#E6F1FB;color:#0C447C;}
+
+.campos{display:grid;gap:8px;}
+.campo-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.campo-label{font-size:13px;color:var(--muted);flex:1;}
+.campo-input-wrap{display:flex;align-items:center;gap:8px;}
+.campo-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);font-size:18px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .1s;flex-shrink:0;}
+.campo-btn:active{transform:scale(.92);}
+.campo-btn.minus{color:var(--red);}
+.campo-btn.plus{color:var(--green);background:var(--green-bg);border-color:var(--green-border);}
+.campo-val{width:56px;text-align:center;font-size:18px;font-weight:600;font-family:'DM Mono',monospace;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:6px 4px;background:var(--surface);color:var(--text);}
+.campo-val:focus{outline:none;border-color:var(--purple);}
+.campo-val.zero{color:var(--hint);}
+.campo-val.filled{color:var(--text);}
+
+/* SEM ATENDIMENTO */
+.sem-atend-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-top:1px solid var(--border);margin-top:10px;}
+.sem-atend-label{font-size:13px;color:var(--muted);}
+.toggle-wrap{display:flex;align-items:center;gap:8px;}
+.toggle{position:relative;width:44px;height:24px;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--border);border-radius:99px;transition:.2s;}
+.slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.2s;}
+input:checked+.slider{background:var(--red);}
+input:checked+.slider:before{transform:translateX(20px);}
+.toggle-label{font-size:12px;color:var(--muted);}
+
+/* BOTÃO SALVAR */
+.btn-salvar{width:100%;padding:15px;font-size:16px;font-weight:600;font-family:'DM Sans',sans-serif;background:var(--purple);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:background .15s;margin-top:1rem;}
+.btn-salvar:hover{background:var(--purple-dark);}
+.btn-salvar:disabled{background:var(--hint);cursor:not-allowed;}
+
+/* ESTADOS */
+.estado-vazio{text-align:center;padding:3rem 1rem;color:var(--hint);}
+.estado-vazio svg{margin-bottom:1rem;opacity:.4;}
+.loading-profs{text-align:center;padding:2rem;color:var(--muted);font-size:14px;}
+
+/* ALERTAS */
+.alerta{border-radius:var(--radius-sm);padding:1rem;font-size:13px;margin-bottom:1rem;display:flex;align-items:flex-start;gap:10px;}
+.alerta.erro{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
+.alerta.sucesso{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+.alerta.aviso{background:var(--amber-bg);color:var(--amber);border:1px solid #f5d08a;}
+.alerta-icon{font-size:18px;flex-shrink:0;margin-top:-1px;}
+
+/* LOGIN */
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;text-align:center;}
+.login-card h2{font-size:18px;font-weight:600;margin-bottom:6px;}
+.login-card p{font-size:13px;color:var(--muted);margin-bottom:1.5rem;}
+.btn-google{width:100%;padding:12px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;background:#fff;color:#3c4043;border:1.5px solid #dadce0;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .12s;}
+.btn-google:hover{background:#f8f8f8;}
+
+/* SUCESSO FINAL */
+.sucesso-final{text-align:center;padding:2rem;}
+.sucesso-final .check{font-size:56px;margin-bottom:1rem;}
+.sucesso-final h2{font-size:20px;font-weight:600;margin-bottom:8px;}
+.sucesso-final p{font-size:14px;color:var(--muted);margin-bottom:1.5rem;}
+.btn-novo{padding:10px 24px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>🏥 Lançamento Diário</h1>
+    <div class="data-badge" id="data-badge">Carregando...</div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="tela-login">
+    <div class="login-card">
+      <h2>Bem-vinda!</h2>
+      <p>Faça login com sua conta Google para registrar os atendimentos do dia.</p>
+      <button class="btn-google" onclick="handleLogin()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Entrar com Google
+      </button>
+    </div>
+  </div>
+
+  <!-- FORMULÁRIO PRINCIPAL -->
+  <div id="tela-form" style="display:none">
+    <div id="alerta-topo"></div>
+
+    <!-- SELEÇÃO DE CLÍNICA -->
+    <div class="card">
+      <div class="card-title">Sua clínica</div>
+      <select class="clinica-select" id="clinica-sel" onchange="carregarProfissionais()">
+        <option value="">Selecione a clínica...</option>
+        <option value="Boa Vista">Boa Vista</option>
+        <option value="Bacacheri">Bacacheri</option>
+        <option value="ColomboMed">ColomboMed</option>
+        <option value="Etika SJP">Etika SJP</option>
+        <option value="FRG">FRG</option>
+        <option value="GPTRAN">GPTRAN</option>
+        <option value="Galeb">Galeb</option>
+        <option value="Hauer">Hauer</option>
+        <option value="Lifetran">Lifetran</option>
+        <option value="MM">MM</option>
+        <option value="PrimeMed">PrimeMed</option>
+        <option value="PPTRAN">PPTRAN</option>
+        <option value="Rio Sul">Rio Sul</option>
+        <option value="São José">São José</option>
+        <option value="Tolmac">Tolmac</option>
+      </select>
+    </div>
+
+    <!-- PROFISSIONAIS -->
+    <div id="area-profs"></div>
+
+    <!-- BOTÃO SALVAR -->
+    <div id="area-salvar" style="display:none">
+      <button class="btn-salvar" id="btn-salvar" onclick="salvar()">
+        Registrar atendimentos
+      </button>
+    </div>
+  </div>
+
+  <!-- SUCESSO -->
+  <div id="tela-sucesso" style="display:none">
+    <div class="sucesso-final">
+      <div class="check">✅</div>
+      <h2>Registrado com sucesso!</h2>
+      <p id="msg-sucesso"></p>
+      <button class="btn-novo" onclick="novoLancamento()">Fazer outro lançamento</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script>
+const SHEET_ID = '18rajQPaYrzqijxCGLPl2CSGO5eoZ6y-JN5DFG33zS5o';
+const CLIENT_ID = '874687957081-3pk9k0khdbhqj70mok912jvf32s6jr1h.apps.googleusercontent.com';
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+
+let accessToken = null;
+let tokenClient = null;
+let profissionaisData = []; // [{nome, tipo, colEntrev, colEstrang}]
+let hoje = new Date();
+
+// ── DATA ─────────────────────────────────────────────
+function formatarData(d) {
+  return d.toLocaleDateString('pt-BR', {weekday:'long', day:'2-digit', month:'long', year:'numeric'});
+}
+
+function diaDoMes() {
+  return hoje.getDate();
+}
+
+document.getElementById('data-badge').textContent = formatarData(hoje);
+
+// ── LOGIN ─────────────────────────────────────────────
+function handleLogin() {
+  if (!window.google) { setTimeout(handleLogin, 500); return; }
+  if (!tokenClient) {
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: CLIENT_ID,
+      scope: SCOPES,
+      callback: (resp) => {
+        if (resp.error) { mostrarAlerta('Erro no login: ' + resp.error, 'erro'); return; }
+        accessToken = resp.access_token;
+        document.getElementById('tela-login').style.display = 'none';
+        document.getElementById('tela-form').style.display = 'block';
+      }
+    });
+  }
+  tokenClient.requestAccessToken();
+}
+
+// ── CARREGAR PROFISSIONAIS DA PLANILHA ────────────────
+async function carregarProfissionais() {
+  const clinica = document.getElementById('clinica-sel').value;
+  const areaProfs = document.getElementById('area-profs');
+  const areaSalvar = document.getElementById('area-salvar');
+
+  if (!clinica) {
+    areaProfs.innerHTML = '';
+    areaSalvar.style.display = 'none';
+    return;
+  }
+
+  areaProfs.innerHTML = '<div class="loading-profs">⏳ Carregando profissionais...</div>';
+  areaSalvar.style.display = 'none';
+  profissionaisData = [];
+
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS`;
+    const r = await fetch(url, { headers: { Authorization: 'Bearer ' + accessToken } });
+    if (!r.ok) throw new Error('Erro ao acessar planilha');
+    const d = await r.json();
+    const rows = d.values || [];
+
+    if (rows.length < 2) throw new Error('Planilha vazia ou sem dados');
+
+    const hdr = rows[1] || [];
+    profissionaisData = [];
+
+    // Detecta profissionais pelos cabeçalhos
+    for (let col = 0; col < hdr.length; col++) {
+      const cell = String(hdr[col] || '').trim().toLowerCase();
+      if (cell !== 'entrevistas') continue;
+
+      const next = String(hdr[col + 1] || '').trim().toLowerCase();
+      const temEstrang = next.includes('estrangeiro');
+
+      // Nome está em col-1
+      let nome = temEstrang ? 'Psicóloga' : 'Médica';
+      if (col > 0) {
+        const raw = String(hdr[col - 1] || '').trim();
+        nome = raw.replace(/^#\s*/, '').trim() || nome;
+      }
+
+      if (temEstrang) {
+        // Psicóloga: col-1=nome, col=entrevistas, col+1=estrangeiros, col+2=total
+        profissionaisData.push({
+          nome, tipo: 'psico',
+          colNome: col - 1,    // coluna 0-indexed
+          colEntrev: col,
+          colEstrang: col + 1,
+          colTotal: col + 2
+        });
+        col += 3;
+      } else {
+        // Médica: col-1=nome, col=entrevistas
+        profissionaisData.push({
+          nome, tipo: 'med',
+          colNome: col - 1,
+          colEntrev: col,
+          colEstrang: null,
+          colTotal: null
+        });
+        col += 1;
+      }
+    }
+
+    if (!profissionaisData.length) throw new Error('Nenhum profissional encontrado na aba ' + clinica);
+
+    renderizarProfissionais();
+    areaSalvar.style.display = 'block';
+
+  } catch (e) {
+    areaProfs.innerHTML = `<div class="alerta erro"><span class="alerta-icon">⚠️</span>${e.message}</div>`;
+  }
+}
+
+// ── RENDERIZAR FORMULÁRIO ─────────────────────────────
+function renderizarProfissionais() {
+  const dia = diaDoMes();
+  let html = `<div class="card"><div class="card-title">Atendimentos do dia ${dia}</div>`;
+
+  profissionaisData.forEach((p, idx) => {
+    const isPsico = p.tipo === 'psico';
+    html += `
+    <div class="prof-block">
+      <div class="prof-header">
+        <span class="prof-nome">${p.nome}</span>
+        <span class="badge ${isPsico ? 'badge-psico' : 'badge-med'}">${isPsico ? 'Psicóloga' : 'Médica'}</span>
+      </div>
+      <div class="campos">`;
+
+    if (isPsico) {
+      html += `
+        <div class="campo-row">
+          <span class="campo-label">🧠 Entrevistas</span>
+          <div class="campo-input-wrap">
+            <button class="campo-btn minus" onclick="alterar(${idx},'entrevista',-1)">−</button>
+            <input class="campo-val zero" type="number" id="entrev_${idx}" value="0" min="0"
+              onchange="validarInput(this)" oninput="validarInput(this)">
+            <button class="campo-btn plus" onclick="alterar(${idx},'entrevista',1)">+</button>
+          </div>
+        </div>
+        <div class="campo-row">
+          <span class="campo-label">🌍 Estrangeiros</span>
+          <div class="campo-input-wrap">
+            <button class="campo-btn minus" onclick="alterar(${idx},'estrangeiro',-1)">−</button>
+            <input class="campo-val zero" type="number" id="estrang_${idx}" value="0" min="0"
+              onchange="validarInput(this)" oninput="validarInput(this)">
+            <button class="campo-btn plus" onclick="alterar(${idx},'estrangeiro',1)">+</button>
+          </div>
+        </div>`;
+    } else {
+      html += `
+        <div class="campo-row">
+          <span class="campo-label">🩺 Atendimentos médicos</span>
+          <div class="campo-input-wrap">
+            <button class="campo-btn minus" onclick="alterar(${idx},'medico',-1)">−</button>
+            <input class="campo-val zero" type="number" id="medico_${idx}" value="0" min="0"
+              onchange="validarInput(this)" oninput="validarInput(this)">
+            <button class="campo-btn plus" onclick="alterar(${idx},'medico',1)">+</button>
+          </div>
+        </div>`;
+    }
+
+    // Toggle "não atendeu hoje"
+    html += `
+        <div class="sem-atend-row">
+          <span class="sem-atend-label">Não atendeu hoje</span>
+          <div class="toggle-wrap">
+            <label class="toggle">
+              <input type="checkbox" id="ausente_${idx}" onchange="toggleAusente(${idx})">
+              <span class="slider"></span>
+            </label>
+            <span class="toggle-label" id="ausente-label_${idx}">Não</span>
+          </div>
+        </div>`;
+
+    html += `</div></div>`;
+  });
+
+  html += `</div>`;
+  document.getElementById('area-profs').innerHTML = html;
+}
+
+function alterar(idx, tipo, delta) {
+  const id = tipo === 'entrevista' ? `entrev_${idx}` : tipo === 'estrangeiro' ? `estrang_${idx}` : `medico_${idx}`;
+  const input = document.getElementById(id);
+  if (!input) return;
+  const ausente = document.getElementById(`ausente_${idx}`);
+  if (ausente && ausente.checked) return;
+  const atual = parseInt(input.value) || 0;
+  const novo = Math.max(0, atual + delta);
+  input.value = novo;
+  input.className = 'campo-val ' + (novo === 0 ? 'zero' : 'filled');
+}
+
+function validarInput(el) {
+  const v = parseInt(el.value);
+  if (isNaN(v) || v < 0) el.value = 0;
+  el.className = 'campo-val ' + (parseInt(el.value) === 0 ? 'zero' : 'filled');
+}
+
+function toggleAusente(idx) {
+  const cb = document.getElementById(`ausente_${idx}`);
+  const label = document.getElementById(`ausente-label_${idx}`);
+  const ausente = cb.checked;
+  label.textContent = ausente ? 'Sim' : 'Não';
+
+  // Bloqueia/desbloqueia os campos
+  const p = profissionaisData[idx];
+  ['entrev', 'estrang', 'medico'].forEach(prefix => {
+    const el = document.getElementById(`${prefix}_${idx}`);
+    if (el) {
+      el.disabled = ausente;
+      if (ausente) { el.value = 0; el.className = 'campo-val zero'; }
+    }
+  });
+}
+
+// ── SALVAR NA PLANILHA ────────────────────────────────
+async function salvar() {
+  const clinica = document.getElementById('clinica-sel').value;
+  if (!clinica) return;
+
+  const btn = document.getElementById('btn-salvar');
+  btn.disabled = true;
+  btn.textContent = '⏳ Salvando...';
+  document.getElementById('alerta-topo').innerHTML = '';
+
+  try {
+    // Busca dados atuais da planilha para encontrar a linha do dia
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS`;
+    const r = await fetch(url, { headers: { Authorization: 'Bearer ' + accessToken } });
+    if (!r.ok) throw new Error('Erro ao ler planilha');
+    const d = await r.json();
+    const rows = d.values || [];
+
+    const dia = diaDoMes();
+
+    // Encontra a linha do dia (dias ficam nas linhas a partir do índice 2)
+    let rowIdx = -1;
+    for (let i = 2; i < rows.length; i++) {
+      const diaCell = String(rows[i] && rows[i][0] || '').trim();
+      if (parseInt(diaCell) === dia) { rowIdx = i; break; }
+    }
+
+    if (rowIdx === -1) throw new Error(`Dia ${dia} não encontrado na planilha`);
+
+    // Monta as atualizações
+    const atualizacoes = [];
+
+    profissionaisData.forEach((p, idx) => {
+      const ausente = document.getElementById(`ausente_${idx}`);
+      const estaAusente = ausente && ausente.checked;
+
+      if (p.tipo === 'psico') {
+        const entrev = estaAusente ? 0 : parseInt(document.getElementById(`entrev_${idx}`)?.value) || 0;
+        const estrang = estaAusente ? 0 : parseInt(document.getElementById(`estrang_${idx}`)?.value) || 0;
+        const total = entrev + estrang;
+
+        // Coluna de Entrevistas (rowIdx+1 porque sheets é 1-indexed, +2 para pular header)
+        const sheetRow = rowIdx + 1;
+        atualizacoes.push({ range: `${clinica}!${colLetra(p.colEntrev)}${sheetRow}`, values: [[entrev || '']] });
+        atualizacoes.push({ range: `${clinica}!${colLetra(p.colEstrang)}${sheetRow}`, values: [[estrang || '']] });
+        // Total é calculado pela fórmula da planilha, mas se quiser forçar:
+        // atualizacoes.push({ range: `${clinica}!${colLetra(p.colTotal)}${sheetRow}`, values: [[total]] });
+
+      } else {
+        const medico = estaAusente ? 0 : parseInt(document.getElementById(`medico_${idx}`)?.value) || 0;
+        const sheetRow = rowIdx + 1;
+        atualizacoes.push({ range: `${clinica}!${colLetra(p.colEntrev)}${sheetRow}`, values: [[medico || '']] });
+      }
+    });
+
+    // Envia todas as atualizações de uma vez
+    const batchUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values:batchUpdate`;
+    const body = {
+      valueInputOption: 'USER_ENTERED',
+      data: atualizacoes
+    };
+
+    const resp = await fetch(batchUrl, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json();
+      throw new Error(err.error?.message || 'Erro ao salvar');
+    }
+
+    // Registra o lançamento para controle de dias sem preenchimento
+    await registrarLancamento(clinica, dia);
+
+    // Mostra sucesso
+    const resumo = profissionaisData.map((p, idx) => {
+      const ausente = document.getElementById(`ausente_${idx}`)?.checked;
+      if (ausente) return `${p.nome}: sem atendimento`;
+      if (p.tipo === 'psico') {
+        const e = parseInt(document.getElementById(`entrev_${idx}`)?.value) || 0;
+        const s = parseInt(document.getElementById(`estrang_${idx}`)?.value) || 0;
+        return `${p.nome}: ${e} entrevistas, ${s} estrangeiros`;
+      } else {
+        const m = parseInt(document.getElementById(`medico_${idx}`)?.value) || 0;
+        return `${p.nome}: ${m} atendimentos`;
+      }
+    }).join(' · ');
+
+    document.getElementById('tela-form').style.display = 'none';
+    document.getElementById('tela-sucesso').style.display = 'block';
+    document.getElementById('msg-sucesso').textContent = `${clinica} — dia ${dia}. ${resumo}`;
+
+  } catch (e) {
+    mostrarAlerta('Erro ao salvar: ' + e.message, 'erro');
+    btn.disabled = false;
+    btn.textContent = 'Registrar atendimentos';
+  }
+}
+
+// Registra em uma aba especial de controle para o dashboard detectar dias sem preenchimento
+async function registrarLancamento(clinica, dia) {
+  try {
+    const mes = hoje.getMonth() + 1;
+    const ano = hoje.getFullYear();
+    const chave = `${clinica}|${dia}|${mes}|${ano}`;
+    const now = new Date().toLocaleString('pt-BR');
+
+    // Tenta gravar na aba "Controle" (cria automaticamente se não existir)
+    const appendUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Controle!A:E:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+    await fetch(appendUrl, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ values: [[clinica, dia, mes, ano, now]] })
+    });
+  } catch (e) {
+    // Silencioso — não impede o salvamento principal
+  }
+}
+
+function colLetra(col) {
+  // Converte índice 0-based para letra de coluna (A, B, C... Z, AA...)
+  let letra = '';
+  let n = col + 1;
+  while (n > 0) {
+    n--;
+    letra = String.fromCharCode(65 + (n % 26)) + letra;
+    n = Math.floor(n / 26);
+  }
+  return letra;
+}
+
+function mostrarAlerta(msg, tipo) {
+  const icon = tipo === 'erro' ? '⚠️' : tipo === 'sucesso' ? '✅' : 'ℹ️';
+  document.getElementById('alerta-topo').innerHTML =
+    `<div class="alerta ${tipo}"><span class="alerta-icon">${icon}</span>${msg}</div>`;
+}
+
+function novoLancamento() {
+  document.getElementById('tela-sucesso').style.display = 'none';
+  document.getElementById('tela-form').style.display = 'block';
+  document.getElementById('clinica-sel').value = '';
+  document.getElementById('area-profs').innerHTML = '';
+  document.getElementById('area-salvar').style.display = 'none';
+  document.getElementById('alerta-topo').innerHTML = '';
+}
+</script>
+</body>
+</html>
