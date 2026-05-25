@@ -366,11 +366,68 @@ function loadState(){
     const d=localStorage.getItem('cl_lanc');if(d)dadosLanc=JSON.parse(d);
   }catch(e){}
 }
-function saveState(){
+
+async function loadStateFromCloud(){
+  // Carrega configurações da nuvem (Apps Script) se disponível
+  const url=cfg.scriptUrl||localStorage.getItem('cl_script_url')||'';
+  if(!url)return;
+  try{
+    const r=await fetch(`${url}?acao=carregarConfig`);
+    if(!r.ok)return;
+    const d=await r.json();
+    if(d.sucesso&&d.dados&&Object.keys(d.dados).length){
+      // Mescla configurações da nuvem com as locais
+      // Nuvem tem prioridade para senhas, sheets, valores
+      const nuvem=d.dados;
+      if(nuvem.senhas)cfg.senhas=nuvem.senhas;
+      if(nuvem.sheets)cfg.sheets=nuvem.sheets;
+      if(nuvem.valP)cfg.valP=parseFloat(nuvem.valP)||50;
+      if(nuvem.valM)cfg.valM=parseFloat(nuvem.valM)||48;
+      if(nuvem.imp)cfg.imp=parseFloat(nuvem.imp)||10;
+      if(nuvem.meta)cfg.meta=parseInt(nuvem.meta)||55;
+      if(nuvem.apiKey)cfg.apiKey=nuvem.apiKey;
+      if(nuvem.scriptUrl)cfg.scriptUrl=nuvem.scriptUrl;
+      // Salva localmente também
+      saveStateLocal();
+      console.log('✓ Configurações carregadas da nuvem');
+    }
+  }catch(e){console.warn('Nuvem indisponível, usando configurações locais');}
+}
+
+function saveStateLocal(){
   try{
     localStorage.setItem('cl_v3',JSON.stringify(cfg));
     localStorage.setItem('cl_lanc',JSON.stringify(dadosLanc));
+    if(cfg.scriptUrl)localStorage.setItem('cl_script_url',cfg.scriptUrl);
   }catch(e){}
+}
+
+async function saveState(){
+  // Salva localmente sempre
+  saveStateLocal();
+  // Salva na nuvem se tiver URL configurada
+  if(cfg.scriptUrl){
+    try{
+      await fetch(cfg.scriptUrl,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({
+          acao:'salvarConfig',
+          cfg:{
+            senhas:cfg.senhas,
+            sheets:cfg.sheets,
+            valP:cfg.valP,
+            valM:cfg.valM,
+            imp:cfg.imp,
+            meta:cfg.meta,
+            apiKey:cfg.apiKey,
+            scriptUrl:cfg.scriptUrl
+          }
+        })
+      });
+      console.log('✓ Configurações salvas na nuvem');
+    }catch(e){console.warn('Erro ao salvar na nuvem:',e);}
+  }
 }
 function chave(m,a){return `${m}_${a}`;}
 function hoje(){return new Date();}
@@ -402,13 +459,16 @@ function handleLoginGoogle(){
   tokenClient.requestAccessToken();
 }
 
-function entrarEstagiaria(){
-  const senha = document.getElementById('inp-senha').value.trim();
+async function entrarEstagiaria(){
+  const senha=document.getElementById('inp-senha').value.trim();
   if(!senha){showErro('Digite a senha.');return;}
-  // Procura a clínica pela senha
-  const clinica = Object.entries(cfg.senhas).find(([cl,pw])=>pw===senha)?.[0];
+
+  // Carrega configs da nuvem para ter as senhas atualizadas
+  await loadStateFromCloud();
+
+  const clinica=Object.entries(cfg.senhas).find(([cl,pw])=>pw===senha)?.[0];
   if(!clinica){showErro('Senha incorreta.');return;}
-  perfilAtual = clinica;
+  perfilAtual=clinica;
   iniciarEstagiaria(clinica);
 }
 
@@ -417,13 +477,16 @@ function showErro(msg){
   el.style.display='block'; el.textContent=msg;
 }
 
-function iniciarGestor(){
+async function iniciarGestor(){
   perfilAtual='gestor';
   document.getElementById('tela-login').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('user-chip').textContent='👤 Gestor';
-  // Mostra todas as abas
   ['tab-dash','tab-pag','tab-lanc','tab-cfg'].forEach(id=>document.getElementById(id).style.display='');
+
+  // Carrega configurações da nuvem primeiro
+  await loadStateFromCloud();
+
   initConfig();
   const agora=hoje();
   document.getElementById('mes-sel').value=agora.getMonth()+1;
@@ -434,13 +497,16 @@ function iniciarGestor(){
   showPage('dashboard',document.getElementById('tab-dash'));
 }
 
-function iniciarEstagiaria(clinica){
+async function iniciarEstagiaria(clinica){
   document.getElementById('tela-login').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('user-chip').textContent='🏥 '+clinica;
-  // Esconde abas desnecessárias
   ['tab-dash','tab-pag','tab-cfg'].forEach(id=>document.getElementById(id).style.display='none');
   document.getElementById('tab-lanc').style.display='';
+
+  // Carrega configurações da nuvem (sheets, apiKey etc)
+  await loadStateFromCloud();
+
   showPage('lancamento',document.getElementById('tab-lanc'));
   initLancamento(clinica);
 }
@@ -955,6 +1021,11 @@ function fmt(v){return'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d
 
 // ── INIT ──────────────────────────────────────────────
 loadState();
+// Recupera URL do script salva localmente (para funcionar mesmo sem configurar de novo)
+if(!cfg.scriptUrl){
+  const urlLocal=localStorage.getItem('cl_script_url');
+  if(urlLocal)cfg.scriptUrl=urlLocal;
+}
 const _ag=new Date();
 document.getElementById('mes-sel').value=_ag.getMonth()+1;
 document.getElementById('mes-pag').value=_ag.getMonth()+1;
