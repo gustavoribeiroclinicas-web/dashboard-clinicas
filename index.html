@@ -13,41 +13,47 @@
   --text:#1a1a18;--muted:#6b6b66;--hint:#a0a09a;
   --green:#3b6d11;--green-bg:#eaf3de;--green-border:#b5d98a;
   --red:#a32d2d;--red-bg:#fcebeb;--red-border:#f7c1c1;
-  --blue:#185fa5;--blue-bg:#e6f1fb;
+  --blue:#185fa5;
   --purple:#534AB7;--purple-dark:#3C3489;--purple-light:#EEEDFE;
-  --pink:#D4537E;--pink-dark:#993556;
+  --pink-dark:#993556;
   --amber:#854f0b;--amber-bg:#faeeda;--amber-border:#f5c842;
-  --radius:12px;--radius-sm:8px;--radius-xs:6px;
+  --radius:12px;--radius-sm:8px;
 }
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-
-/* ── TOPBAR ── */
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;position:sticky;top:0;z-index:100;gap:0;min-height:52px}
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;position:sticky;top:0;z-index:100;min-height:52px}
 .brand{font-size:15px;font-weight:700;color:var(--purple);padding:.75rem 1.25rem .75rem 0;border-right:1px solid var(--border);margin-right:1.25rem;white-space:nowrap}
-.nav-tab{padding:.75rem 1rem;cursor:pointer;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;user-select:none;display:flex;align-items:center;gap:5px}
+.nav-tab{padding:.75rem 1rem;cursor:pointer;font-size:13px;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;user-select:none}
 .nav-tab.active{color:var(--purple);border-bottom-color:var(--purple);font-weight:600}
 .nav-tab:hover:not(.active){color:var(--text);background:var(--bg)}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:.3rem 0}
-.user-chip{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);background:var(--surface2);padding:4px 10px;border-radius:99px;border:1px solid var(--border)}
-
-/* ── PAGES ── */
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.user-chip{font-size:12px;color:var(--muted);background:var(--surface2);padding:4px 10px;border-radius:99px;border:1px solid var(--border)}
+/* PAGES */
 .page{display:none;padding:1.25rem 1.5rem;max-width:1280px;margin:0 auto}
 .page.active{display:block}
-
-/* ── BUTTONS ── */
+/* BUTTONS */
 .btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:7px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .12s;white-space:nowrap}
 .btn:hover{background:var(--surface2)}
 .btn-purple{background:var(--purple);border-color:var(--purple);color:#fff}
 .btn-purple:hover{background:var(--purple-dark)}
-.btn-google{background:#fff;border-color:#dadce0;color:#3c4043}
-.btn-sm{padding:5px 10px;font-size:12px}
-.btn-full{width:100%;justify-content:center;padding:13px}
+.btn-full{width:100%;justify-content:center;padding:13px;font-size:15px}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-
-/* ── SELECT ── */
+.btn-sm{padding:5px 10px;font-size:12px}
 .sel{font-size:13px;padding:6px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif}
-
-/* ── HERO BAR ── */
+/* LOGIN */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;text-align:center;max-width:380px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.login-card h1{font-size:22px;font-weight:700;margin-bottom:6px}
+.login-card p{font-size:14px;color:var(--muted);margin-bottom:1.5rem}
+.login-tabs{display:flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:1.5rem}
+.login-tab{flex:1;padding:9px;font-size:13px;font-weight:500;cursor:pointer;background:var(--surface2);color:var(--muted);border:none;font-family:'DM Sans',sans-serif;transition:all .15s}
+.login-tab.active{background:var(--purple);color:#fff}
+.inp{width:100%;padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);margin-bottom:10px}
+.inp:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(83,74,183,.1)}
+.btn-google-lg{width:100%;padding:12px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;background:#fff;color:#3c4043;border:1.5px solid #dadce0;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .12s;margin-bottom:10px}
+.btn-google-lg:hover{background:#f8f8f8}
+.login-erro{background:var(--red-bg);color:var(--red);padding:.75rem 1rem;border-radius:var(--radius-sm);font-size:13px;margin-top:10px;border:1px solid var(--red-border);display:none}
+/* HERO */
 .hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
 .hero-stat{display:flex;flex-direction:column;gap:3px}
 .hero-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
@@ -58,42 +64,37 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .meta-wrap{display:flex;align-items:center;gap:8px;margin-top:5px}
 .meta-input{width:80px;font-size:14px;font-family:'DM Mono',monospace;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);text-align:center}
 .controls{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap}
-
-/* ── ALERTAS ── */
+/* ALERTAS */
 .alertas-wrap{margin-bottom:1rem}
 .alerta-box{border-radius:var(--radius-sm);padding:.85rem 1rem;font-size:13px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;border:1px solid}
-.alerta-box.erro{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
 .alerta-box.aviso{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
 .alerta-box.ok{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
-.alerta-icon{font-size:16px;flex-shrink:0;margin-top:1px}
-.alerta-txt{flex:1;line-height:1.5}
-
-/* ── GRID CLÍNICAS ── */
+.alerta-box.erro{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+/* GRID */
 .clinic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
 .ccard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;transition:box-shadow .2s,border-color .2s;position:relative}
-.ccard:hover{box-shadow:0 2px 12px rgba(0,0,0,.07);border-color:#c8c7c0}
-.ccard.sem-lancamento{border-color:var(--amber-border);background:#fffef8}
-.ccard.sem-lancamento::before{content:'';position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--amber)}
+.ccard:hover{box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.ccard.alerta{border-color:var(--amber-border)}
+.ccard.alerta::before{content:'';position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--amber)}
 .cname{font-size:13px;font-weight:600;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--border)}
 .crow{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
-.clabel{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.clabel{font-size:12px;color:var(--muted)}
 .cval{font-size:16px;font-weight:700;font-family:'DM Mono',monospace}
-.csub{font-size:11px;color:var(--hint);margin-bottom:6px;line-height:1.3}
+.csub{font-size:11px;color:var(--hint);margin-bottom:5px}
 .prog{height:4px;border-radius:3px;background:var(--surface2);overflow:hidden;margin:5px 0 4px}
 .prog-fill{height:100%;border-radius:3px;transition:width .5s}
 .cfooter{display:flex;justify-content:space-between;font-size:11px;align-items:center}
-.badge-small{font-size:10px;font-weight:600;padding:1px 7px;border-radius:99px}
+.bdg{font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px}
 .bg-green{background:var(--green-bg);color:var(--green)}
 .bg-amber{background:var(--amber-bg);color:var(--amber)}
 .bg-red{background:var(--red-bg);color:var(--red)}
-.cdivider{height:1px;background:var(--border);margin:7px 0}
-
-/* ── PAGAMENTOS ── */
+.cdiv{height:1px;background:var(--border);margin:7px 0}
+/* PAGAMENTOS */
 .pag-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;overflow:hidden}
 .pag-head{padding:.9rem 1.25rem;border-bottom:1px solid var(--surface2);display:flex;justify-content:space-between;align-items:center}
 .pag-head-name{font-size:14px;font-weight:600}
-.pag-total-lbl{font-size:13px;color:var(--muted)}
-.pag-total-lbl strong{color:var(--text)}
+.pag-tot{font-size:13px;color:var(--muted)}
+.pag-tot strong{color:var(--text)}
 table.pt{width:100%;border-collapse:collapse;font-size:13px}
 .pt th{padding:7px 1.25rem;text-align:left;font-size:11px;font-weight:600;color:var(--muted);background:var(--surface2);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
 .pt td{padding:9px 1.25rem;border-bottom:1px solid var(--surface2)}
@@ -104,30 +105,28 @@ table.pt{width:100%;border-collapse:collapse;font-size:13px}
 .bm{background:#E6F1FB;color:#0C447C;font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600}
 .total-card{background:var(--green);border-radius:var(--radius);padding:1.1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;color:#fff;margin-top:1rem}
 .total-card-val{font-size:24px;font-weight:700;font-family:'DM Mono',monospace}
-
-/* ── LANÇAMENTO ── */
-.lanc-container{max-width:480px;margin:0 auto}
+/* LANÇAMENTO */
+.lanc-wrap{max-width:460px;margin:0 auto}
 .lanc-header{text-align:center;margin-bottom:1.5rem}
 .lanc-header h2{font-size:20px;font-weight:700}
-.lanc-header .data-chip{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;padding:4px 14px;border-radius:99px;font-size:13px;font-weight:500;margin-top:6px}
+.data-chip{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;padding:4px 14px;border-radius:99px;font-size:13px;font-weight:500;margin-top:6px}
+.clinica-chip{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);padding:4px 14px;border-radius:99px;font-size:13px;font-weight:600;margin-top:6px;border:1px solid var(--green-border)}
 .lanc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1rem}
 .lanc-card-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.9rem}
-.clinica-sel{width:100%;padding:11px 14px;font-size:15px;font-family:'DM Sans',sans-serif;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b6b66' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
-.clinica-sel:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(83,74,183,.12)}
 .prof-block{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.9rem 1rem;margin-bottom:8px}
 .prof-header{display:flex;align-items:center;gap:8px;margin-bottom:.8rem}
 .prof-nome{font-size:14px;font-weight:600}
 .campo-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
 .campo-label{font-size:13px;color:var(--muted);flex:1}
 .campo-ctrl{display:flex;align-items:center;gap:6px}
-.cbtn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);font-size:18px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);flex-shrink:0;transition:all .1s}
+.cbtn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);font-size:18px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s}
 .cbtn:active{transform:scale(.9)}
 .cbtn.minus{color:var(--red)}
 .cbtn.plus{color:var(--green);background:var(--green-bg);border-color:var(--green-border)}
 .cnum{width:52px;text-align:center;font-size:17px;font-weight:600;font-family:'DM Mono',monospace;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 3px;background:var(--surface);color:var(--hint)}
 .cnum.filled{color:var(--text)}
 .cnum:focus{outline:none;border-color:var(--purple)}
-.sem-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem 0;border-top:1px solid var(--border);margin-top:8px}
+.sem-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-top:1px solid var(--border);margin-top:8px}
 .sem-label{font-size:13px;color:var(--muted)}
 .toggle{position:relative;width:42px;height:22px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0}
@@ -139,43 +138,26 @@ input:checked+.slider:before{transform:translateX(20px)}
 .sucesso-screen .check{font-size:52px;margin-bottom:1rem}
 .sucesso-screen h2{font-size:20px;font-weight:700;margin-bottom:6px}
 .sucesso-screen p{font-size:14px;color:var(--muted);margin-bottom:1.5rem;line-height:1.6}
-
-/* ── CONFIG ── */
+/* CONFIG */
 .cfg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1rem;max-width:640px}
 .cfg-title{font-size:14px;font-weight:600;margin-bottom:.9rem;padding-bottom:.7rem;border-bottom:1px solid var(--surface2)}
 .fg{margin-bottom:10px}
 .fg label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
 .fg input{width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif}
-.fg input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(83,74,183,.1)}
+.fg input:focus{outline:none;border-color:var(--purple)}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .hint{font-size:11px;color:var(--muted);line-height:1.5;margin-top:4px}
-.email-row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
-.email-row input{flex:1;padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif}
 .status-ok{color:var(--green);font-size:12px;font-weight:500}
-.status-err{color:var(--red);font-size:12px;font-weight:500}
-
-/* ── LOGIN ── */
-.login-screen{min-height:80vh;display:flex;align-items:center;justify-content:center;padding:2rem}
-.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2.5rem 2rem;text-align:center;max-width:380px;width:100%}
-.login-card h1{font-size:22px;font-weight:700;margin-bottom:6px}
-.login-card p{font-size:14px;color:var(--muted);margin-bottom:2rem;line-height:1.6}
-.btn-google-lg{width:100%;padding:13px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;background:#fff;color:#3c4043;border:1.5px solid #dadce0;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .12s}
-.btn-google-lg:hover{background:#f8f8f8}
-.sem-acesso{background:var(--red-bg);color:var(--red);padding:1rem;border-radius:var(--radius-sm);font-size:13px;margin-top:1rem;border:1px solid var(--red-border)}
-
-/* ── MISC ── */
+.pw-row{display:grid;grid-template-columns:120px 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+.pw-row .clinica-lbl{font-size:13px;font-weight:500}
+.pw-row input{padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace}
+.loading-msg{text-align:center;padding:3rem;color:var(--muted);font-size:14px}
 .page-header{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap}
 .page-header h2{font-size:18px;font-weight:700;flex:1}
-.loading-msg{text-align:center;padding:3rem;color:var(--muted);font-size:14px}
 .sdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--hint);margin-right:5px}
 .sdot.ok{background:var(--green)}.sdot.err{background:var(--red)}.sdot.warn{background:var(--amber)}
 .status-bar{font-size:12px;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:5px}
-.historico-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:.75rem}
-.hist-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;cursor:pointer;transition:border-color .15s}
-.hist-card:hover{border-color:var(--purple);background:var(--purple-light)}
-.hist-card.ativo{border-color:var(--purple);background:var(--purple-light)}
-.hist-mes{font-size:13px;font-weight:600}
-.hist-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.fds-box{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);border-radius:var(--radius-sm);padding:1rem;text-align:center;font-size:14px}
 </style>
 </head>
 <body>
@@ -185,26 +167,43 @@ input:checked+.slider:before{transform:translateX(20px)}
   <div class="login-card">
     <div style="font-size:40px;margin-bottom:.75rem">🏥</div>
     <h1>Sistema de Clínicas</h1>
-    <p>Faça login com sua conta Google para acessar o sistema.</p>
-    <button class="btn-google-lg" onclick="handleLogin()">
-      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-      Entrar com Google
-    </button>
-    <div id="login-erro" style="display:none" class="sem-acesso"></div>
+    <p>Selecione seu perfil para entrar</p>
+
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="setLoginTipo('gestor',this)">Gestor</button>
+      <button class="login-tab" onclick="setLoginTipo('estagiaria',this)">Estagiária</button>
+    </div>
+
+    <!-- GESTOR -->
+    <div id="login-gestor">
+      <button class="btn-google-lg" onclick="handleLoginGoogle()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Entrar com Google
+      </button>
+    </div>
+
+    <!-- ESTAGIÁRIA -->
+    <div id="login-estagiaria" style="display:none">
+      <input class="inp" type="password" id="inp-senha" placeholder="Digite a senha da clínica" 
+        onkeydown="if(event.key==='Enter')entrarEstagiaria()">
+      <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px;font-size:14px" onclick="entrarEstagiaria()">Entrar</button>
+    </div>
+
+    <div class="login-erro" id="login-erro"></div>
   </div>
 </div>
 
-<!-- APP PRINCIPAL -->
+<!-- APP -->
 <div id="app" style="display:none">
   <div class="topbar">
     <span class="brand">🏥 Clínicas</span>
     <div class="nav-tab active" id="tab-dash" onclick="showPage('dashboard',this)">Dashboard</div>
     <div class="nav-tab" id="tab-pag" onclick="showPage('pagamentos',this)">Pagamentos</div>
     <div class="nav-tab" id="tab-lanc" onclick="showPage('lancamento',this)">Lançamento</div>
-    <div class="nav-tab" id="tab-cfg" onclick="showPage('config',this)" style="display:none">Configurações</div>
+    <div class="nav-tab" id="tab-cfg" onclick="showPage('config',this)">Configurações</div>
     <div class="topbar-right">
       <div class="user-chip" id="user-chip"></div>
-      <button class="btn btn-sm" onclick="handleLogout()">Sair</button>
+      <button class="btn btn-sm" onclick="sair()">Sair</button>
     </div>
   </div>
 
@@ -229,13 +228,13 @@ input:checked+.slider:before{transform:translateX(20px)}
         </div>
       </div>
       <div class="controls">
-        <select class="sel" id="mes-sel" onchange="trocarPeriodo()">
+        <select class="sel" id="mes-sel" onchange="renderDash()">
           <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
           <option value="4">Abril</option><option value="5" selected>Maio</option><option value="6">Junho</option>
           <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
           <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
         </select>
-        <select class="sel" id="ano-sel" onchange="trocarPeriodo()">
+        <select class="sel" id="ano-sel" onchange="renderDash()">
           <option value="2025">2025</option><option value="2026" selected>2026</option>
         </select>
         <button class="btn" onclick="atualizarDados()">↻ Atualizar</button>
@@ -261,55 +260,26 @@ input:checked+.slider:before{transform:translateX(20px)}
         <option value="2025">2025</option><option value="2026" selected>2026</option>
       </select>
     </div>
-    <div id="pag-load" class="loading-msg">Carregando pagamentos...</div>
-    <div id="pag-body" style="display:none"></div>
+    <div id="pag-body"><div class="loading-msg">Carregando...</div></div>
   </div>
 
   <!-- LANÇAMENTO -->
   <div id="page-lancamento" class="page">
-    <div class="lanc-container">
-      <div id="lanc-form-area">
+    <div class="lanc-wrap">
+      <div id="lanc-main">
         <div class="lanc-header">
           <h2>Lançamento diário</h2>
-          <div class="data-chip" id="data-chip-lanc"></div>
+          <div id="data-chip" class="data-chip"></div>
+          <div id="clinica-chip" class="clinica-chip" style="display:none"></div>
         </div>
-        <div id="aviso-fds" class="alerta-box aviso" style="display:none">
-          <span class="alerta-icon">ℹ️</span>
-          <span class="alerta-txt">Hoje é fim de semana — não há atendimentos para registrar.</span>
-        </div>
-        <div id="lanc-form-inner">
-          <div class="lanc-card">
-            <div class="lanc-card-title">Clínica</div>
-            <select class="clinica-sel" id="lanc-clinica" onchange="carregarProfsLanc()">
-              <option value="">Selecione a clínica...</option>
-              <option value="Boa Vista">Boa Vista</option>
-              <option value="Bacacheri">Bacacheri</option>
-              <option value="ColomboMed">ColomboMed</option>
-              <option value="Etika SJP">Etika SJP</option>
-              <option value="FRG">FRG</option>
-              <option value="GPTRAN">GPTRAN</option>
-              <option value="Galeb">Galeb</option>
-              <option value="Hauer">Hauer</option>
-              <option value="Lifetran">Lifetran</option>
-              <option value="MM">MM</option>
-              <option value="PrimeMed">PrimeMed</option>
-              <option value="PPTRAN">PPTRAN</option>
-              <option value="Rio Sul">Rio Sul</option>
-              <option value="São José">São José</option>
-              <option value="Tolmac">Tolmac</option>
-            </select>
-          </div>
-          <div id="lanc-profs-area"></div>
-          <div id="lanc-btn-area" style="display:none">
-            <button class="btn btn-purple btn-full" id="btn-lanc-salvar" onclick="salvarLancamento()">Registrar atendimentos</button>
-          </div>
-        </div>
+        <div id="fds-aviso" class="fds-box" style="display:none">🏖️ Final de semana — sem atendimentos!</div>
+        <div id="lanc-inner"></div>
       </div>
       <div id="lanc-sucesso" style="display:none" class="sucesso-screen">
         <div class="check">✅</div>
         <h2>Registrado!</h2>
-        <p id="lanc-sucesso-msg"></p>
-        <button class="btn" onclick="novoLancamento()">Novo lançamento</button>
+        <p id="sucesso-msg"></p>
+        <button class="btn btn-purple" onclick="novoLanc()">Novo lançamento</button>
       </div>
     </div>
   </div>
@@ -323,42 +293,30 @@ input:checked+.slider:before{transform:translateX(20px)}
         <div class="fg"><label>Médica (R$)</label><input type="number" id="vm" value="48" min="0"></div>
       </div>
       <div class="fg"><label>Imposto psicóloga (%)</label><input type="number" id="vi" value="10" min="0" style="width:120px"></div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <button class="btn btn-purple" onclick="salvarVals()">Salvar</button>
-        <span id="val-st"></span>
-      </div>
+      <button class="btn btn-purple" onclick="salvarVals()">Salvar</button>
+      <span id="val-st" style="margin-left:8px"></span>
     </div>
 
     <div class="cfg-card">
-      <div class="cfg-title">🔐 Emails com acesso — Gestores</div>
-      <p class="hint" style="margin-bottom:.75rem">Gestores veem o dashboard completo, pagamentos e configurações.</p>
-      <div id="emails-gestores"></div>
-      <div class="email-row" style="margin-top:8px">
-        <input type="email" id="novo-gestor" placeholder="email@gmail.com">
-        <button class="btn btn-sm" onclick="addEmail('gestor')">+ Adicionar</button>
+      <div class="cfg-title">🔑 Senhas das clínicas</div>
+      <p class="hint" style="margin-bottom:1rem">Cada clínica tem uma senha própria. A estagiária entra com a senha e já vai direto para o lançamento da clínica dela.</p>
+      <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--surface2)">
+        <span style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase">Clínica</span>
+        <span style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase">Senha</span>
       </div>
-    </div>
-
-    <div class="cfg-card">
-      <div class="cfg-title">📋 Emails com acesso — Estagiárias</div>
-      <p class="hint" style="margin-bottom:.75rem">Estagiárias só veem a tela de lançamento diário.</p>
-      <div id="emails-estagiarias"></div>
-      <div class="email-row" style="margin-top:8px">
-        <input type="email" id="nova-estagiaria" placeholder="estagiaria@gmail.com">
-        <button class="btn btn-sm" onclick="addEmail('estagiaria')">+ Adicionar</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-        <button class="btn btn-purple" onclick="salvarEmails()">Salvar acessos</button>
-        <span id="email-st"></span>
+      <div id="senhas-grid"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px">
+        <button class="btn btn-purple" onclick="salvarSenhas()">Salvar senhas</button>
+        <span id="senha-st"></span>
       </div>
     </div>
 
     <div class="cfg-card">
       <div class="cfg-title">📊 Planilhas por mês</div>
-      <p class="hint" style="margin-bottom:.75rem">Cole o ID de cada planilha mensal (da URL do Google Sheets).</p>
+      <p class="hint" style="margin-bottom:.75rem">Cole o ID de cada planilha (da URL do Google Sheets).</p>
       <div id="sheets-grid"></div>
       <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-        <button class="btn btn-purple" onclick="salvarSheets()">Salvar planilhas</button>
+        <button class="btn btn-purple" onclick="salvarSheets()">Salvar</button>
         <span id="sheet-st"></span>
       </div>
     </div>
@@ -367,754 +325,560 @@ input:checked+.slider:before{transform:translateX(20px)}
 
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
-// ════════════════════════════════════════════
-// CONSTANTES
-// ════════════════════════════════════════════
 const CLIENT_ID = '874687957081-3pk9k0khdbhqj70mok912jvf32s6jr1h.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.email';
 const CLINICAS = ['Boa Vista','Bacacheri','ColomboMed','Etika SJP','FRG','GPTRAN','Galeb','Hauer','Lifetran','MM','PrimeMed','PPTRAN','Rio Sul','São José','Tolmac'];
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const MESES_CURTO = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
-// ════════════════════════════════════════════
-// ESTADO GLOBAL
-// ════════════════════════════════════════════
 let tokenClient = null, accessToken = null;
-let userEmail = '', userNome = '';
-let isGestor = false, isEstagiaria = false;
-let cache = {};       // { "5_2026": { "Boa Vista": { profs:[...] } } }
-let dadosLanc = {};   // { "5_2026": { "Boa Vista": { "Meriley": {e:0,s:0,m:0}, ... }, dias_lancados:[5,8,12,...] } }
-let profsClinica = {};// cache de profissionais por clínica
+let perfilAtual = ''; // 'gestor' ou nome da clinica
+let profsCache = {};  // clinica → [{nome, tipo, colEntrev, colEstrang}]
 
 let cfg = {
-  valP: 50, valM: 48, imp: 10, meta: 55,
-  sheets: { '5_2026': '18rajQPaYrzqijxCGLPl2CSGO5eoZ6y-JN5DFG33zS5o' },
-  gestores: ['gustavoribeiro.clinicas@gmail.com'],
-  estagiarias: []
+  valP:50, valM:48, imp:10, meta:55,
+  sheets:{ '5_2026':'18rajQPaYrzqijxCGLPl2CSGO5eoZ6y-JN5DFG33zS5o' },
+  senhas:{} // { 'Boa Vista': 'boavista123', ... }
 };
+let dadosLanc = {}; // { '5_2026': { 'Boa Vista': { profs:{}, dias:[] } } }
+let cacheSheets = {};
 
-// ════════════════════════════════════════════
-// PERSISTÊNCIA
-// ════════════════════════════════════════════
-function loadState() {
-  try {
-    const c = localStorage.getItem('cl_cfg10');
-    if (c) cfg = Object.assign(cfg, JSON.parse(c));
-    const d = localStorage.getItem('cl_dados');
-    if (d) dadosLanc = JSON.parse(d);
-  } catch(e) {}
+function loadState(){
+  try{
+    const c=localStorage.getItem('cl_v3');if(c)cfg=Object.assign(cfg,JSON.parse(c));
+    const d=localStorage.getItem('cl_lanc');if(d)dadosLanc=JSON.parse(d);
+  }catch(e){}
+}
+function saveState(){
+  try{
+    localStorage.setItem('cl_v3',JSON.stringify(cfg));
+    localStorage.setItem('cl_lanc',JSON.stringify(dadosLanc));
+  }catch(e){}
+}
+function chave(m,a){return `${m}_${a}`;}
+function hoje(){return new Date();}
+function isDiaUtil(d){const dow=d.getDay();return dow!==0&&dow!==6;}
+
+// ── LOGIN ─────────────────────────────────────────────
+let loginTipo = 'gestor';
+function setLoginTipo(tipo, el){
+  loginTipo = tipo;
+  document.querySelectorAll('.login-tab').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('login-gestor').style.display = tipo==='gestor'?'block':'none';
+  document.getElementById('login-estagiaria').style.display = tipo==='estagiaria'?'block':'none';
+  document.getElementById('login-erro').style.display = 'none';
 }
 
-function saveState() {
-  try {
-    localStorage.setItem('cl_cfg10', JSON.stringify(cfg));
-    localStorage.setItem('cl_dados', JSON.stringify(dadosLanc));
-  } catch(e) {}
-}
-
-function chave(mes, ano) { return `${mes}_${ano}`; }
-
-// ════════════════════════════════════════════
-// AUTH
-// ════════════════════════════════════════════
-function handleLogin() {
-  if (!window.google) { setTimeout(handleLogin, 500); return; }
-  if (!tokenClient) {
-    tokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
-      callback: async (resp) => {
-        if (resp.error) { showLoginErro('Erro no login: ' + resp.error); return; }
-        accessToken = resp.access_token;
-        await carregarUsuario();
+function handleLoginGoogle(){
+  if(!window.google){setTimeout(handleLoginGoogle,500);return;}
+  if(!tokenClient){
+    tokenClient=google.accounts.oauth2.initTokenClient({
+      client_id:CLIENT_ID, scope:SCOPES,
+      callback:async(resp)=>{
+        if(resp.error){showErro('Erro no login: '+resp.error);return;}
+        accessToken=resp.access_token;
+        iniciarGestor();
       }
     });
   }
   tokenClient.requestAccessToken();
 }
 
-async function carregarUsuario() {
-  try {
-    const r = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-      headers: { Authorization: 'Bearer ' + accessToken }
-    });
-    const u = await r.json();
-    userEmail = (u.email || '').toLowerCase();
-    userNome = u.given_name || u.name || userEmail.split('@')[0];
+function entrarEstagiaria(){
+  const senha = document.getElementById('inp-senha').value.trim();
+  if(!senha){showErro('Digite a senha.');return;}
+  // Procura a clínica pela senha
+  const clinica = Object.entries(cfg.senhas).find(([cl,pw])=>pw===senha)?.[0];
+  if(!clinica){showErro('Senha incorreta.');return;}
+  perfilAtual = clinica;
+  iniciarEstagiaria(clinica);
+}
 
-    isGestor = cfg.gestores.map(e => e.toLowerCase()).includes(userEmail);
-    isEstagiaria = cfg.estagiarias.map(e => e.toLowerCase()).includes(userEmail);
+function showErro(msg){
+  const el=document.getElementById('login-erro');
+  el.style.display='block'; el.textContent=msg;
+}
 
-    if (!isGestor && !isEstagiaria) {
-      showLoginErro(`Acesso não autorizado para ${userEmail}. Peça ao gestor para adicionar seu email.`);
-      accessToken = null;
-      return;
-    }
+function iniciarGestor(){
+  perfilAtual='gestor';
+  document.getElementById('tela-login').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('user-chip').textContent='👤 Gestor';
+  // Mostra todas as abas
+  ['tab-dash','tab-pag','tab-lanc','tab-cfg'].forEach(id=>document.getElementById(id).style.display='');
+  initConfig();
+  const agora=hoje();
+  document.getElementById('mes-sel').value=agora.getMonth()+1;
+  document.getElementById('mes-pag').value=agora.getMonth()+1;
+  document.getElementById('ano-sel').value=agora.getFullYear();
+  document.getElementById('ano-pag').value=agora.getFullYear();
+  atualizarDados();
+  showPage('dashboard',document.getElementById('tab-dash'));
+}
 
-    iniciarApp();
-  } catch(e) {
-    showLoginErro('Erro ao verificar usuário.');
+function iniciarEstagiaria(clinica){
+  document.getElementById('tela-login').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('user-chip').textContent='🏥 '+clinica;
+  // Esconde abas desnecessárias
+  ['tab-dash','tab-pag','tab-cfg'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('tab-lanc').style.display='';
+  showPage('lancamento',document.getElementById('tab-lanc'));
+  initLancamento(clinica);
+}
+
+function sair(){
+  accessToken=null; perfilAtual='';
+  document.getElementById('app').style.display='none';
+  document.getElementById('tela-login').style.display='flex';
+  document.getElementById('inp-senha').value='';
+  document.getElementById('login-erro').style.display='none';
+}
+
+// ── NAVEGAÇÃO ─────────────────────────────────────────
+function showPage(p,el){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(el)el.classList.add('active');
+  if(p==='pagamentos')renderPag();
+  if(p==='lancamento'&&perfilAtual==='gestor')initLancamento(null);
+}
+
+// ── LANÇAMENTO ────────────────────────────────────────
+function initLancamento(clinicaFixa){
+  const agora=hoje();
+  const semana=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  document.getElementById('data-chip').textContent=`${semana[agora.getDay()]}, ${agora.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}`;
+
+  const chip=document.getElementById('clinica-chip');
+  const inner=document.getElementById('lanc-inner');
+  const fds=document.getElementById('fds-aviso');
+
+  if(!isDiaUtil(agora)){
+    fds.style.display='block'; inner.innerHTML=''; chip.style.display='none'; return;
   }
-}
+  fds.style.display='none';
 
-function showLoginErro(msg) {
-  const el = document.getElementById('login-erro');
-  el.style.display = 'block';
-  el.textContent = msg;
-}
-
-function handleLogout() {
-  accessToken = null; userEmail = ''; isGestor = false; isEstagiaria = false;
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('tela-login').style.display = 'flex';
-}
-
-function iniciarApp() {
-  document.getElementById('tela-login').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('user-chip').textContent = `👤 ${userNome}`;
-
-  // Configura visão por perfil
-  if (isEstagiaria && !isGestor) {
-    // Estagiária: só vê lançamento
-    document.getElementById('tab-dash').style.display = 'none';
-    document.getElementById('tab-pag').style.display = 'none';
-    document.getElementById('tab-cfg').style.display = 'none';
-    showPage('lancamento', document.getElementById('tab-lanc'));
+  if(clinicaFixa){
+    chip.textContent='🏥 '+clinicaFixa; chip.style.display='inline-flex';
+    renderLancForm(clinicaFixa, inner);
   } else {
-    // Gestor: vê tudo
-    document.getElementById('tab-cfg').style.display = '';
-    initConfig();
-    showPage('dashboard', document.getElementById('tab-dash'));
-    const agora = new Date();
-    document.getElementById('mes-sel').value = agora.getMonth() + 1;
-    document.getElementById('mes-pag').value = agora.getMonth() + 1;
-    atualizarDados();
+    chip.style.display='none';
+    // Gestor pode escolher qualquer clínica
+    inner.innerHTML=`<div class="lanc-card">
+      <div class="lanc-card-title">Clínica</div>
+      <select class="sel" style="width:100%;padding:11px 14px;font-size:15px" onchange="if(this.value)renderLancForm(this.value,document.getElementById('lanc-inner-profs'))">
+        <option value="">Selecione a clínica...</option>
+        ${CLINICAS.map(c=>`<option value="${c}">${c}</option>`).join('')}
+      </select>
+    </div>
+    <div id="lanc-inner-profs"></div>`;
   }
-
-  initLancamento();
 }
 
-// ════════════════════════════════════════════
-// NAVEGAÇÃO
-// ════════════════════════════════════════════
-function showPage(p, el) {
-  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(x => x.classList.remove('active'));
-  document.getElementById('page-' + p).classList.add('active');
-  if (el) el.classList.add('active');
-  if (p === 'pagamentos') renderPag();
-}
-
-// ════════════════════════════════════════════
-// DIAS ÚTEIS
-// ════════════════════════════════════════════
-function isDiaUtil(d) {
-  const dow = (d instanceof Date ? d : new Date(d)).getDay();
-  return dow !== 0 && dow !== 6; // 0=domingo, 6=sábado
-}
-
-function diasUteisMes(mes, ano) {
-  const dias = [];
-  const d = new Date(ano, mes - 1, 1);
-  while (d.getMonth() === mes - 1) {
-    if (isDiaUtil(d)) dias.push(d.getDate());
-    d.setDate(d.getDate() + 1);
-  }
-  return dias;
-}
-
-function hoje() { return new Date(); }
-
-// ════════════════════════════════════════════
-// LANÇAMENTO
-// ════════════════════════════════════════════
-function initLancamento() {
-  const agora = hoje();
-  const diasemana = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
-  const chip = document.getElementById('data-chip-lanc');
-  if (chip) chip.textContent = `${diasemana[agora.getDay()]}, ${agora.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}`;
-
-  const eFDS = !isDiaUtil(agora);
-  document.getElementById('aviso-fds').style.display = eFDS ? 'flex' : 'none';
-  document.getElementById('lanc-form-inner').style.display = eFDS ? 'none' : 'block';
-}
-
-async function carregarProfsLanc() {
-  const clinica = document.getElementById('lanc-clinica').value;
-  const area = document.getElementById('lanc-profs-area');
-  const btnArea = document.getElementById('lanc-btn-area');
-  if (!clinica) { area.innerHTML = ''; btnArea.style.display = 'none'; return; }
-
-  area.innerHTML = '<div class="loading-msg" style="padding:1.5rem">⏳ Carregando profissionais...</div>';
-  btnArea.style.display = 'none';
-
-  const profs = await buscarProfissionais(clinica);
-  profsClinica[clinica] = profs;
-
-  if (!profs.length) {
-    area.innerHTML = '<div class="alerta-box erro"><span class="alerta-icon">⚠️</span>Nenhum profissional encontrado.</div>';
-    return;
-  }
-
-  const dia = hoje().getDate();
-  let html = `<div class="lanc-card"><div class="lanc-card-title">Atendimentos — dia ${dia}</div>`;
-
-  profs.forEach((p, i) => {
-    const isPsico = p.tipo === 'psico';
-    html += `<div class="prof-block">
-      <div class="prof-header">
-        <span class="prof-nome">${p.nome}</span>
-        <span class="${isPsico ? 'bp' : 'bm'}" style="font-size:11px;padding:2px 8px;border-radius:99px;font-weight:600">${isPsico ? 'Psicóloga' : 'Médica'}</span>
-      </div>`;
-
-    if (isPsico) {
-      html += campoCtrl(i, 'entrevista', '🧠 Entrevistas');
-      html += campoCtrl(i, 'estrangeiro', '🌍 Estrangeiros');
-    } else {
-      html += campoCtrl(i, 'medico', '🩺 Atendimentos');
-    }
-
-    html += `<div class="sem-row">
-      <span class="sem-label">Não atendeu hoje</span>
-      <label class="toggle"><input type="checkbox" id="ausente_${i}" onchange="toggleAus(${i})"><span class="slider"></span></label>
+async function renderLancForm(clinica, container){
+  container.innerHTML='<div class="loading-msg" style="padding:1.5rem">⏳ Carregando profissionais...</div>';
+  const profs = await buscarProfs(clinica);
+  if(!profs.length){container.innerHTML='<div class="alerta-box erro">⚠️ Nenhum profissional encontrado.</div>';return;}
+  profsCache[clinica]=profs;
+  const dia=hoje().getDate();
+  let html=`<div class="lanc-card"><div class="lanc-card-title">Atendimentos — dia ${dia}</div>`;
+  profs.forEach((p,i)=>{
+    const isP=p.tipo==='psico';
+    html+=`<div class="prof-block">
+      <div class="prof-header"><span class="prof-nome">${p.nome}</span><span class="${isP?'bp':'bm'}" style="font-size:11px;padding:2px 8px;border-radius:99px;font-weight:600">${isP?'Psicóloga':'Médica'}</span></div>`;
+    if(isP){html+=cCtrl(i,'e','🧠 Entrevistas')+cCtrl(i,'s','🌍 Estrangeiros');}
+    else{html+=cCtrl(i,'m','🩺 Atendimentos');}
+    html+=`<div class="sem-row"><span class="sem-label">Não atendeu hoje</span>
+      <label class="toggle"><input type="checkbox" id="aus_${i}" onchange="togAus(${i})"><span class="slider"></span></label>
     </div></div>`;
   });
-
-  html += '</div>';
-  area.innerHTML = html;
-  btnArea.style.display = 'block';
+  html+=`</div><button class="btn btn-purple btn-full" id="btn-salvar-lanc" onclick="salvarLanc('${clinica}')">✓ Registrar atendimentos</button>`;
+  container.innerHTML=html;
 }
 
-function campoCtrl(idx, tipo, label) {
-  const id = `f_${idx}_${tipo}`;
-  return `<div class="campo-row">
-    <span class="campo-label">${label}</span>
+function cCtrl(i,t,label){
+  return `<div class="campo-row"><span class="campo-label">${label}</span>
     <div class="campo-ctrl">
-      <button class="cbtn minus" onclick="alt('${id}',-1)">−</button>
-      <input class="cnum" type="number" id="${id}" value="0" min="0" oninput="validN(this)">
-      <button class="cbtn plus" onclick="alt('${id}',1)">+</button>
-    </div>
-  </div>`;
+      <button class="cbtn minus" onclick="alt('n_${i}_${t}',-1)">−</button>
+      <input class="cnum" type="number" id="n_${i}_${t}" value="0" min="0" oninput="vN(this)">
+      <button class="cbtn plus" onclick="alt('n_${i}_${t}',1)">+</button>
+    </div></div>`;
 }
 
-function alt(id, delta) {
-  const el = document.getElementById(id);
-  if (!el || el.disabled) return;
-  const v = Math.max(0, (parseInt(el.value) || 0) + delta);
-  el.value = v; el.className = 'cnum' + (v > 0 ? ' filled' : '');
+function alt(id,d){const el=document.getElementById(id);if(!el||el.disabled)return;const v=Math.max(0,(parseInt(el.value)||0)+d);el.value=v;el.className='cnum'+(v>0?' filled':'');}
+function vN(el){const v=parseInt(el.value);if(isNaN(v)||v<0)el.value=0;el.className='cnum'+(parseInt(el.value)>0?' filled':'');}
+function togAus(i){
+  const cb=document.getElementById(`aus_${i}`);
+  ['e','s','m'].forEach(t=>{const el=document.getElementById(`n_${i}_${t}`);if(!el)return;el.disabled=cb.checked;if(cb.checked){el.value=0;el.className='cnum';}});
 }
 
-function validN(el) {
-  const v = parseInt(el.value);
-  if (isNaN(v) || v < 0) el.value = 0;
-  el.className = 'cnum' + (parseInt(el.value) > 0 ? ' filled' : '');
-}
+async function salvarLanc(clinica){
+  const btn=document.getElementById('btn-salvar-lanc');
+  btn.disabled=true; btn.textContent='⏳ Salvando...';
+  const agora=hoje();
+  const dia=agora.getDate(), mes=agora.getMonth()+1, ano=agora.getFullYear();
+  const k=chave(mes,ano);
+  if(!dadosLanc[k])dadosLanc[k]={};
+  if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={profs:{},dias:[]};
 
-function toggleAus(idx) {
-  const cb = document.getElementById(`ausente_${idx}`);
-  ['entrevista','estrangeiro','medico'].forEach(t => {
-    const el = document.getElementById(`f_${idx}_${t}`);
-    if (!el) return;
-    el.disabled = cb.checked;
-    if (cb.checked) { el.value = 0; el.className = 'cnum'; }
+  const profs=profsCache[clinica]||[];
+  const resumo=[];
+  profs.forEach((p,i)=>{
+    const aus=document.getElementById(`aus_${i}`)?.checked;
+    const e=aus?0:parseInt(document.getElementById(`n_${i}_e`)?.value)||0;
+    const s=aus?0:parseInt(document.getElementById(`n_${i}_s`)?.value)||0;
+    const m=aus?0:parseInt(document.getElementById(`n_${i}_m`)?.value)||0;
+    if(!dadosLanc[k][clinica].profs[p.nome])dadosLanc[k][clinica].profs[p.nome]={tipo:p.tipo,e:0,s:0,m:0};
+    dadosLanc[k][clinica].profs[p.nome].tipo=p.tipo;
+    dadosLanc[k][clinica].profs[p.nome].e+=e;
+    dadosLanc[k][clinica].profs[p.nome].s+=s;
+    dadosLanc[k][clinica].profs[p.nome].m+=m;
+    if(p.tipo==='psico')resumo.push(`${p.nome}: ${e} entrev, ${s} estrang`);
+    else resumo.push(`${p.nome}: ${m} atend`);
   });
-}
+  if(!dadosLanc[k][clinica].dias.includes(dia))dadosLanc[k][clinica].dias.push(dia);
 
-async function salvarLancamento() {
-  const clinica = document.getElementById('lanc-clinica').value;
-  if (!clinica) return;
-  const btn = document.getElementById('btn-lanc-salvar');
-  btn.disabled = true; btn.textContent = '⏳ Salvando...';
-
-  const agora = hoje();
-  const dia = agora.getDate();
-  const mes = agora.getMonth() + 1;
-  const ano = agora.getFullYear();
-  const k = chave(mes, ano);
-
-  if (!dadosLanc[k]) dadosLanc[k] = {};
-  if (!dadosLanc[k][clinica]) dadosLanc[k][clinica] = { profs: {}, dias: [] };
-
-  const profs = profsClinica[clinica] || [];
-  const resumo = [];
-
-  profs.forEach((p, i) => {
-    const ausente = document.getElementById(`ausente_${i}`)?.checked;
-    const e = ausente ? 0 : parseInt(document.getElementById(`f_${i}_entrevista`)?.value) || 0;
-    const s = ausente ? 0 : parseInt(document.getElementById(`f_${i}_estrangeiro`)?.value) || 0;
-    const m = ausente ? 0 : parseInt(document.getElementById(`f_${i}_medico`)?.value) || 0;
-
-    if (!dadosLanc[k][clinica].profs[p.nome]) {
-      dadosLanc[k][clinica].profs[p.nome] = { tipo: p.tipo, e: 0, s: 0, m: 0 };
-    }
-    dadosLanc[k][clinica].profs[p.nome].tipo = p.tipo;
-    dadosLanc[k][clinica].profs[p.nome].e += e;
-    dadosLanc[k][clinica].profs[p.nome].s += s;
-    dadosLanc[k][clinica].profs[p.nome].m += m;
-
-    if (p.tipo === 'psico') resumo.push(`${p.nome}: ${e} entrevistas, ${s} estrangeiros`);
-    else resumo.push(`${p.nome}: ${m} atendimentos`);
-  });
-
-  // Marca dia como lançado
-  if (!dadosLanc[k][clinica].dias.includes(dia)) dadosLanc[k][clinica].dias.push(dia);
-
-  // Salva também na planilha do Google Sheets (se configurado)
-  await salvarNoSheets(clinica, profs, dia, mes, ano);
+  // Salva no Sheets se gestor tiver token
+  if(accessToken)await syncSheets(clinica,profs,dia,mes,ano);
 
   saveState();
-
-  document.getElementById('lanc-form-area').style.display = 'none';
-  document.getElementById('lanc-sucesso').style.display = 'block';
-  document.getElementById('lanc-sucesso-msg').textContent = `${clinica} — ${dia}/${mes}. ${resumo.join(' · ')}`;
-
-  btn.disabled = false;
-  btn.textContent = 'Registrar atendimentos';
+  document.getElementById('lanc-main').style.display='none';
+  document.getElementById('lanc-sucesso').style.display='block';
+  document.getElementById('sucesso-msg').textContent=`${clinica} — dia ${dia}/${mes}. ${resumo.join(' · ')}`;
 }
 
-async function salvarNoSheets(clinica, profs, dia, mes, ano) {
-  const sid = cfg.sheets[chave(mes, ano)];
-  if (!sid || !accessToken) return;
-
-  try {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS`;
-    const r = await fetch(url, { headers: { Authorization: 'Bearer ' + accessToken } });
-    if (!r.ok) return;
-    const d = await r.json();
-    const rows = d.values || [];
-
-    // Encontra linha do dia
-    let rowIdx = -1;
-    for (let i = 2; i < rows.length; i++) {
-      if (parseInt(String(rows[i]?.[0] || '').trim()) === dia) { rowIdx = i; break; }
-    }
-    if (rowIdx === -1) return;
-
-    const hdr = rows[1] || [];
-    const updates = [];
-    const sheetRow = rowIdx + 1;
-
-    profs.forEach((p, idx) => {
-      const ausente = document.getElementById(`ausente_${idx}`)?.checked;
-      const e = ausente ? 0 : parseInt(document.getElementById(`f_${idx}_entrevista`)?.value) || 0;
-      const s = ausente ? 0 : parseInt(document.getElementById(`f_${idx}_estrangeiro`)?.value) || 0;
-      const m = ausente ? 0 : parseInt(document.getElementById(`f_${idx}_medico`)?.value) || 0;
-
-      if (p.tipo === 'psico' && p.colEntrev !== undefined) {
-        updates.push({ range: `${clinica}!${colL(p.colEntrev)}${sheetRow}`, values: [[e || '']] });
-        if (p.colEstrang !== undefined) updates.push({ range: `${clinica}!${colL(p.colEstrang)}${sheetRow}`, values: [[s || '']] });
-      } else if (p.tipo === 'med' && p.colEntrev !== undefined) {
-        updates.push({ range: `${clinica}!${colL(p.colEntrev)}${sheetRow}`, values: [[m || '']] });
-      }
-    });
-
-    if (!updates.length) return;
-    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values:batchUpdate`, {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ valueInputOption: 'USER_ENTERED', data: updates })
-    });
-  } catch(e) { console.warn('Sheets:', e); }
+function novoLanc(){
+  document.getElementById('lanc-sucesso').style.display='none';
+  document.getElementById('lanc-main').style.display='block';
+  if(perfilAtual!=='gestor')initLancamento(perfilAtual);
+  else initLancamento(null);
 }
 
-function novoLancamento() {
-  document.getElementById('lanc-sucesso').style.display = 'none';
-  document.getElementById('lanc-form-area').style.display = 'block';
-  document.getElementById('lanc-clinica').value = '';
-  document.getElementById('lanc-profs-area').innerHTML = '';
-  document.getElementById('lanc-btn-area').style.display = 'none';
-}
-
-// ════════════════════════════════════════════
-// BUSCAR PROFISSIONAIS DO SHEETS
-// ════════════════════════════════════════════
-async function buscarProfissionais(clinica) {
-  const agora = hoje();
-  const mes = agora.getMonth() + 1;
-  const ano = agora.getFullYear();
-  const sid = cfg.sheets[chave(mes, ano)];
-  if (!sid) return [];
-
-  try {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS`;
-    const r = await fetch(url, { headers: { Authorization: 'Bearer ' + accessToken } });
-    if (!r.ok) return [];
-    const d = await r.json();
-    return parseProfissionais(d.values || []);
-  } catch(e) { return []; }
-}
-
-function parseProfissionais(rows) {
-  if (!rows || rows.length < 2) return [];
-  const hdr = rows[1] || [];
-  const profs = [];
-
-  for (let col = 0; col < hdr.length; col++) {
-    const cell = String(hdr[col] || '').trim().toLowerCase();
-    if (cell !== 'entrevistas') continue;
-    const next = String(hdr[col + 1] || '').trim().toLowerCase();
-    const temEstrang = next.includes('estrangeiro');
-    let nome = temEstrang ? 'Psicóloga' : 'Médica';
-    if (col > 0) nome = String(hdr[col - 1] || '').trim().replace(/^#\s*/, '') || nome;
-
-    if (temEstrang) {
-      profs.push({ nome, tipo: 'psico', colEntrev: col, colEstrang: col + 1, colTotal: col + 2 });
-      col += 3;
+// ── SHEETS SYNC ───────────────────────────────────────
+async function buscarProfs(clinica){
+  const agora=hoje();
+  const sid=cfg.sheets[chave(agora.getMonth()+1,agora.getFullYear())];
+  // Se não tem token nem sid, retorna array vazio
+  if(!sid)return[];
+  // Se não tem token (estagiária), ainda assim precisa dos profs
+  // Tenta com token se disponível
+  const headers=accessToken?{Authorization:'Bearer '+accessToken}:{};
+  try{
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS&key=`;
+    // Para estagiária sem token, usa planilha pública se disponível
+    let r;
+    if(accessToken){
+      r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS`,{headers});
     } else {
-      profs.push({ nome, tipo: 'med', colEntrev: col, colEstrang: null });
-      col += 1;
+      // Usa a chave de API salva
+      const apiKey=cfg.apiKey||'';
+      if(!apiKey)return getFallbackProfs(clinica);
+      r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?key=${apiKey}`);
     }
+    if(!r.ok)return getFallbackProfs(clinica);
+    const d=await r.json();
+    return parseProfs(d.values||[]);
+  }catch(e){return getFallbackProfs(clinica);}
+}
+
+function getFallbackProfs(clinica){
+  // Retorna profissionais salvos localmente se disponível
+  const k=chave(hoje().getMonth()+1,hoje().getFullYear());
+  const local=dadosLanc[k]?.[clinica]?.profs||{};
+  return Object.entries(local).map(([nome,v])=>({nome,tipo:v.tipo,colEntrev:null,colEstrang:null}));
+}
+
+function parseProfs(rows){
+  if(!rows||rows.length<2)return[];
+  const hdr=rows[1]||[], profs=[];
+  for(let col=0;col<hdr.length;col++){
+    const cell=String(hdr[col]||'').trim().toLowerCase();
+    if(cell!=='entrevistas')continue;
+    const next=String(hdr[col+1]||'').trim().toLowerCase();
+    const temE=next.includes('estrangeiro');
+    let nome=temE?'Psicóloga':'Médica';
+    if(col>0)nome=String(hdr[col-1]||'').trim().replace(/^#\s*/,'')||nome;
+    if(temE){profs.push({nome,tipo:'psico',colEntrev:col,colEstrang:col+1,colTotal:col+2});col+=3;}
+    else{profs.push({nome,tipo:'med',colEntrev:col,colEstrang:null});col+=1;}
   }
   return profs;
 }
 
-// ════════════════════════════════════════════
-// DASHBOARD
-// ════════════════════════════════════════════
-function setStatus(msg, type) {
-  const dot = document.getElementById('sdot');
-  dot.className = 'sdot' + (type === 'ok' ? ' ok' : type === 'err' ? ' err' : type === 'warn' ? ' warn' : '');
-  document.getElementById('status-txt').textContent = msg;
+async function syncSheets(clinica,profs,dia,mes,ano){
+  const sid=cfg.sheets[chave(mes,ano)];
+  if(!sid||!accessToken)return;
+  try{
+    const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS`,{headers:{Authorization:'Bearer '+accessToken}});
+    if(!r.ok)return;
+    const d=await r.json();
+    const rows=d.values||[];
+    let rowIdx=-1;
+    for(let i=2;i<rows.length;i++){if(parseInt(String(rows[i]?.[0]||'').trim())===dia){rowIdx=i;break;}}
+    if(rowIdx===-1)return;
+    const upd=[];
+    const sr=rowIdx+1;
+    profs.forEach((p,i)=>{
+      const aus=document.getElementById(`aus_${i}`)?.checked;
+      const e=aus?0:parseInt(document.getElementById(`n_${i}_e`)?.value)||0;
+      const s=aus?0:parseInt(document.getElementById(`n_${i}_s`)?.value)||0;
+      const m=aus?0:parseInt(document.getElementById(`n_${i}_m`)?.value)||0;
+      if(p.tipo==='psico'&&p.colEntrev!=null){
+        upd.push({range:`${clinica}!${cL(p.colEntrev)}${sr}`,values:[[e||'']]});
+        if(p.colEstrang!=null)upd.push({range:`${clinica}!${cL(p.colEstrang)}${sr}`,values:[[s||'']]});
+      } else if(p.tipo==='med'&&p.colEntrev!=null){
+        upd.push({range:`${clinica}!${cL(p.colEntrev)}${sr}`,values:[[m||'']]});
+      }
+    });
+    if(!upd.length)return;
+    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values:batchUpdate`,{
+      method:'POST',
+      headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
+      body:JSON.stringify({valueInputOption:'USER_ENTERED',data:upd})
+    });
+  }catch(e){console.warn('sync:',e);}
 }
 
-function salvarMeta() {
-  cfg.meta = parseInt(document.getElementById('meta-in').value) || 55;
-  saveState(); renderDash();
+// ── DASHBOARD ─────────────────────────────────────────
+function setStatus(msg,t){
+  const dot=document.getElementById('sdot');
+  dot.className='sdot'+(t==='ok'?' ok':t==='err'?' err':t==='warn'?' warn':'');
+  document.getElementById('status-txt').textContent=msg;
 }
 
-function trocarPeriodo() { renderDash(); renderAlertas(); }
+function salvarMeta(){cfg.meta=parseInt(document.getElementById('meta-in').value)||55;saveState();renderDash();}
 
-async function atualizarDados() {
-  const mes = parseInt(document.getElementById('mes-sel').value);
-  const ano = parseInt(document.getElementById('ano-sel').value);
-  const k = chave(mes, ano);
-  const sid = cfg.sheets[k];
-
-  if (!sid) { setStatus('Sem planilha configurada para este mês', 'warn'); renderDash(); return; }
-
-  setStatus(`Carregando ${MESES[mes-1]}/${ano}...`, '');
-  cache[k] = {};
-
-  for (const cl of CLINICAS) {
-    try {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(cl)}?majorDimension=ROWS`;
-      const r = await fetch(url, { headers: { Authorization: 'Bearer ' + accessToken } });
-      if (!r.ok) continue;
-      const d = await r.json();
-      cache[k][cl] = calcTotaisPlanilha(d.values || []);
-    } catch(e) {}
+async function atualizarDados(){
+  if(!accessToken){renderDash();renderAlertas();return;}
+  const mes=parseInt(document.getElementById('mes-sel').value);
+  const ano=parseInt(document.getElementById('ano-sel').value);
+  const k=chave(mes,ano);
+  const sid=cfg.sheets[k];
+  if(!sid){setStatus('Sem planilha para este mês','warn');renderDash();return;}
+  setStatus(`Carregando ${MESES[mes-1]}/${ano}...`,'');
+  cacheSheets[k]={};
+  for(const cl of CLINICAS){
+    try{
+      const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(cl)}?majorDimension=ROWS`,{headers:{Authorization:'Bearer '+accessToken}});
+      if(!r.ok)continue;
+      const d=await r.json();
+      cacheSheets[k][cl]=parseTotais(d.values||[]);
+    }catch(e){}
   }
-
-  document.getElementById('upd-lbl').textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-  setStatus(`Dados de ${MESES[mes-1]}/${ano} carregados`, 'ok');
-  renderDash();
-  renderAlertas();
+  document.getElementById('upd-lbl').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  setStatus(`${MESES[mes-1]}/${ano} carregado`,'ok');
+  renderDash(); renderAlertas();
 }
 
-function calcTotaisPlanilha(rows) {
-  // Usa dados locais (lançamentos das estagiárias) se disponíveis, senão usa planilha
-  return parsePlanilhaTotais(rows);
-}
-
-function parsePlanilhaTotais(rows) {
-  if (!rows || rows.length < 3) return { profs: [] };
-  const hdr = rows[1] || [];
-  let totRow = null;
-  for (let i = rows.length - 1; i >= 2; i--) {
-    const f = rows[i]?.find(c => String(c || '').trim() !== '');
-    if (f && String(f).trim().toLowerCase() === 'total') { totRow = rows[i]; break; }
+function parseTotais(rows){
+  if(!rows||rows.length<3)return{profs:[]};
+  const hdr=rows[1]||[];
+  let totRow=null;
+  for(let i=rows.length-1;i>=2;i--){
+    const f=rows[i]?.find(c=>String(c||'').trim()!=='');
+    if(f&&String(f).trim().toLowerCase()==='total'){totRow=rows[i];break;}
   }
-  if (!totRow) return { profs: [] };
-
-  const profs = [];
-  for (let col = 0; col < hdr.length; col++) {
-    const cell = String(hdr[col] || '').trim().toLowerCase();
-    if (cell !== 'entrevistas') continue;
-    const next = String(hdr[col + 1] || '').trim().toLowerCase();
-    const temEstrang = next.includes('estrangeiro');
-    let nome = temEstrang ? 'Psicóloga' : 'Médica';
-    if (col > 0) nome = String(hdr[col - 1] || '').trim().replace(/^#\s*/, '') || nome;
-
-    if (temEstrang) {
-      const total = parseN(totRow[col + 2]);
-      profs.push({ nome, tipo: 'psico', total });
-      col += 3;
-    } else {
-      const total = parseN(totRow[col]);
-      profs.push({ nome, tipo: 'med', total });
-      col += 1;
-    }
+  if(!totRow)return{profs:[]};
+  const profs=[];
+  for(let col=0;col<hdr.length;col++){
+    const cell=String(hdr[col]||'').trim().toLowerCase();
+    if(cell!=='entrevistas')continue;
+    const next=String(hdr[col+1]||'').trim().toLowerCase();
+    const temE=next.includes('estrangeiro');
+    let nome=temE?'Psicóloga':'Médica';
+    if(col>0)nome=String(hdr[col-1]||'').trim().replace(/^#\s*/,'')||nome;
+    if(temE){profs.push({nome,tipo:'psico',total:pN(totRow[col+2])});col+=3;}
+    else{profs.push({nome,tipo:'med',total:pN(totRow[col])});col+=1;}
   }
-  return { profs };
+  return{profs};
 }
 
-function getTotais(clinica, mes, ano) {
-  const k = chave(mes, ano);
-  // Prioriza dados locais (lançamentos)
-  if (dadosLanc[k]?.[clinica]) {
-    const profs = Object.entries(dadosLanc[k][clinica].profs || {}).map(([nome, v]) => ({
-      nome, tipo: v.tipo, total: v.tipo === 'psico' ? (v.e + v.s) : v.m
+function getTotais(cl,mes,ano){
+  const k=chave(mes,ano);
+  // Prioriza lançamentos locais
+  if(dadosLanc[k]?.[cl]?.profs){
+    const profs=Object.entries(dadosLanc[k][cl].profs).map(([nome,v])=>({
+      nome,tipo:v.tipo,total:v.tipo==='psico'?(v.e+v.s):v.m
     }));
-    return { profs };
+    return{profs};
   }
-  // Fallback: dados da planilha
-  return cache[k]?.[clinica] || { profs: [] };
+  return cacheSheets[k]?.[cl]||{profs:[]};
 }
 
-function renderDash() {
-  const mes = parseInt(document.getElementById('mes-sel').value);
-  const ano = parseInt(document.getElementById('ano-sel').value);
-  const meta = cfg.meta;
-  let tp = 0, tm = 0;
-  document.getElementById('meta-in').value = cfg.meta;
+function renderDash(){
+  const mes=parseInt(document.getElementById('mes-sel').value);
+  const ano=parseInt(document.getElementById('ano-sel').value);
+  const meta=cfg.meta;
+  document.getElementById('meta-in').value=meta;
+  let tp=0,tm=0;
 
-  const html = CLINICAS.map(cl => {
-    const d = getTotais(cl, mes, ano);
-    const sp = d.profs.filter(p => p.tipo === 'psico').reduce((a, b) => a + b.total, 0);
-    const sm = d.profs.filter(p => p.tipo === 'med').reduce((a, b) => a + b.total, 0);
-    tp += sp; tm += sm;
-    const pct = Math.min(100, Math.round((sp / meta) * 100));
-    const falt = Math.max(0, meta - sp);
-    const atingiu = sp >= meta;
-    const cor = atingiu ? '#639922' : pct >= 70 ? '#BA7517' : '#E24B4A';
-    const bc = atingiu ? 'bg-green' : pct >= 70 ? 'bg-amber' : 'bg-red';
-    const nomesP = d.profs.filter(p => p.tipo === 'psico').map(p => p.nome).join(', ') || '—';
-    const semLanc = verificarSemLancamento(cl, mes, ano);
-
-    return `<div class="ccard${semLanc ? ' sem-lancamento' : ''}">
+  const html=CLINICAS.map(cl=>{
+    const d=getTotais(cl,mes,ano);
+    const sp=d.profs.filter(p=>p.tipo==='psico').reduce((a,b)=>a+b.total,0);
+    const sm=d.profs.filter(p=>p.tipo==='med').reduce((a,b)=>a+b.total,0);
+    tp+=sp;tm+=sm;
+    const pct=Math.min(100,Math.round((sp/meta)*100));
+    const falt=Math.max(0,meta-sp);
+    const ok=sp>=meta;
+    const cor=ok?'#639922':pct>=70?'#BA7517':'#E24B4A';
+    const bc=ok?'bg-green':pct>=70?'bg-amber':'bg-red';
+    const nomesP=d.profs.filter(p=>p.tipo==='psico').map(p=>p.nome).join(', ')||'—';
+    const semLanc=temDiaSemLancamento(cl,mes,ano);
+    return`<div class="ccard${semLanc?' alerta':''}">
       <div class="cname">${cl}</div>
       <div class="crow"><span class="clabel">🧠 Psicológico</span><span class="cval" style="color:var(--pink-dark)">${sp}</span></div>
       <div class="csub">${nomesP}</div>
       <div class="prog"><div class="prog-fill" style="width:${pct}%;background:${cor}"></div></div>
-      <div class="cfooter"><span class="badge-small ${bc}">${atingiu ? '✓ Meta' : 'faltam '+falt}</span><span style="color:var(--hint);font-family:'DM Mono',monospace;font-size:11px">${pct}%</span></div>
-      <div class="cdivider"></div>
+      <div class="cfooter"><span class="bdg ${bc}">${ok?'✓ Meta':'faltam '+falt}</span><span style="color:var(--hint);font-family:'DM Mono',monospace;font-size:11px">${pct}%</span></div>
+      <div class="cdiv"></div>
       <div class="crow"><span class="clabel">🩺 Médico</span><span style="font-size:14px;font-weight:600;font-family:'DM Mono',monospace;color:var(--blue)">${sm}</span></div>
     </div>`;
   }).join('');
 
-  document.getElementById('total-p').textContent = tp;
-  document.getElementById('total-m').textContent = tm;
-  document.getElementById('dash-grid').innerHTML = html;
+  document.getElementById('total-p').textContent=tp;
+  document.getElementById('total-m').textContent=tm;
+  document.getElementById('dash-grid').innerHTML=html;
 }
 
-function verificarSemLancamento(clinica, mes, ano) {
-  const agora = hoje();
-  if (mes !== agora.getMonth() + 1 || ano !== agora.getFullYear()) return false;
-  const diasUteis = diasUteisMes(mes, ano).filter(d => d < agora.getDate());
-  if (!diasUteis.length) return false;
-  const lancados = dadosLanc[chave(mes, ano)]?.[clinica]?.dias || [];
-  return diasUteis.some(d => !lancados.includes(d));
+function diasUteisMes(mes,ano){
+  const dias=[];
+  const d=new Date(ano,mes-1,1);
+  while(d.getMonth()===mes-1){if(isDiaUtil(d))dias.push(d.getDate());d.setDate(d.getDate()+1);}
+  return dias;
 }
 
-function renderAlertas() {
-  const mes = parseInt(document.getElementById('mes-sel').value);
-  const ano = parseInt(document.getElementById('ano-sel').value);
-  const agora = hoje();
-  const isMesAtual = mes === agora.getMonth() + 1 && ano === agora.getFullYear();
-  const area = document.getElementById('alertas-area');
+function temDiaSemLancamento(cl,mes,ano){
+  const agora=hoje();
+  if(mes!==agora.getMonth()+1||ano!==agora.getFullYear())return false;
+  const uteis=diasUteisMes(mes,ano).filter(d=>d<agora.getDate());
+  if(!uteis.length)return false;
+  const lancados=dadosLanc[chave(mes,ano)]?.[cl]?.dias||[];
+  return uteis.some(d=>!lancados.includes(d));
+}
 
-  if (!isMesAtual) { area.innerHTML = ''; return; }
+function renderAlertas(){
+  const mes=parseInt(document.getElementById('mes-sel').value);
+  const ano=parseInt(document.getElementById('ano-sel').value);
+  const agora=hoje();
+  const area=document.getElementById('alertas-area');
+  if(mes!==agora.getMonth()+1||ano!==agora.getFullYear()){area.innerHTML='';return;}
 
-  const diasUteis = diasUteisMes(mes, ano).filter(d => d < agora.getDate());
-  const problemas = [];
-
-  CLINICAS.forEach(cl => {
-    const lancados = dadosLanc[chave(mes, ano)]?.[cl]?.dias || [];
-    const faltando = diasUteis.filter(d => !lancados.includes(d));
-    if (faltando.length) {
-      const diasStr = faltando.map(d => `dia ${d}`).join(', ');
-      problemas.push(`<strong>${cl}</strong>: ${diasStr}`);
-    }
+  const uteis=diasUteisMes(mes,ano).filter(d=>d<agora.getDate());
+  const problemas=[];
+  CLINICAS.forEach(cl=>{
+    const lancados=dadosLanc[chave(mes,ano)]?.[cl]?.dias||[];
+    const faltando=uteis.filter(d=>!lancados.includes(d));
+    if(faltando.length)problemas.push(`<strong>${cl}</strong>: ${faltando.map(d=>'dia '+d).join(', ')}`);
   });
 
-  if (!problemas.length) {
-    area.innerHTML = `<div class="alerta-box ok"><span class="alerta-icon">✅</span><span class="alerta-txt">Todos os lançamentos em dia!</span></div>`;
+  if(!problemas.length){
+    area.innerHTML=`<div class="alerta-box ok"><span>✅</span><span>Todos os lançamentos em dia!</span></div>`;
   } else {
-    area.innerHTML = `<div class="alerta-box aviso">
-      <span class="alerta-icon">⚠️</span>
-      <span class="alerta-txt">
-        <strong>Dias sem lançamento:</strong><br>${problemas.join('<br>')}
-      </span>
-    </div>`;
+    area.innerHTML=`<div class="alerta-box aviso"><span style="font-size:16px">⚠️</span><span><strong>Dias sem lançamento:</strong><br>${problemas.join('<br>')}</span></div>`;
   }
 }
 
-// ════════════════════════════════════════════
-// PAGAMENTOS
-// ════════════════════════════════════════════
-function renderPag() {
-  const mes = parseInt(document.getElementById('mes-pag').value);
-  const ano = parseInt(document.getElementById('ano-pag').value);
-  const pb = document.getElementById('pag-body');
-  const pl = document.getElementById('pag-load');
-  const vp = cfg.valP, vm = cfg.valM, imp = cfg.imp / 100;
-  let tg = 0, html = '';
+// ── PAGAMENTOS ────────────────────────────────────────
+function renderPag(){
+  const mes=parseInt(document.getElementById('mes-pag').value);
+  const ano=parseInt(document.getElementById('ano-pag').value);
+  const vp=cfg.valP,vm=cfg.valM,imp=cfg.imp/100;
+  let tg=0,html='';
 
-  CLINICAS.forEach(cl => {
-    const d = getTotais(cl, mes, ano);
-    if (!d.profs.length) return;
-    let tc = 0, rows = '';
-
-    d.profs.forEach(p => {
-      if (p.tipo === 'psico') {
-        const br = p.total * vp, iv = br * imp; tc += br;
-        rows += `<tr><td>${p.nome} <span class="bp">Psicóloga</span></td><td>${p.total}</td><td>${fmt(br)}</td><td class="imposto">− ${fmt(iv)} (${cfg.imp}%)</td><td style="font-weight:600">${fmt(br - iv)}</td></tr>`;
-      } else {
-        const br = p.total * vm; tc += br;
-        rows += `<tr><td>${p.nome} <span class="bm">Médica</span></td><td>${p.total}</td><td>${fmt(br)}</td><td style="color:var(--muted)">—</td><td style="font-weight:600">${fmt(br)}</td></tr>`;
-      }
+  CLINICAS.forEach(cl=>{
+    const d=getTotais(cl,mes,ano);
+    if(!d.profs.length)return;
+    let tc=0,rows='';
+    d.profs.forEach(p=>{
+      if(p.tipo==='psico'){const br=p.total*vp,iv=br*imp;tc+=br;rows+=`<tr><td>${p.nome} <span class="bp">Psicóloga</span></td><td>${p.total}</td><td>${fmt(br)}</td><td class="imposto">− ${fmt(iv)} (${cfg.imp}%)</td><td style="font-weight:600">${fmt(br-iv)}</td></tr>`;}
+      else{const br=p.total*vm;tc+=br;rows+=`<tr><td>${p.nome} <span class="bm">Médica</span></td><td>${p.total}</td><td>${fmt(br)}</td><td style="color:var(--muted)">—</td><td style="font-weight:600">${fmt(br)}</td></tr>`;}
     });
-
-    if (!rows) return; tg += tc;
-    html += `<div class="pag-section"><div class="pag-head"><span class="pag-head-name">${cl}</span><span class="pag-total-lbl">Total: <strong>${fmt(tc)}</strong></span></div><table class="pt"><thead><tr><th>Profissional</th><th>Atendimentos</th><th>Valor bruto</th><th>Imposto</th><th>Valor líquido</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    if(!rows)return;tg+=tc;
+    html+=`<div class="pag-section"><div class="pag-head"><span class="pag-head-name">${cl}</span><span class="pag-tot">Total: <strong>${fmt(tc)}</strong></span></div><table class="pt"><thead><tr><th>Profissional</th><th>Atendimentos</th><th>Valor bruto</th><th>Imposto</th><th>Valor líquido</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   });
 
-  if (!html) html = `<div class="loading-msg">Nenhum dado para ${MESES[mes-1]}/${ano}.</div>`;
-  html += `<div class="total-card"><div><div style="font-size:13px;opacity:.85">Total geral</div><div style="font-size:12px;opacity:.65">${MESES[mes-1]} ${ano}</div></div><div class="total-card-val">${fmt(tg)}</div></div>`;
-
-  pl.style.display = 'none';
-  pb.style.display = 'block';
-  pb.innerHTML = html;
+  if(!html)html=`<div class="loading-msg">Nenhum dado para ${MESES[mes-1]}/${ano}.<br><small>Faça lançamentos ou atualize os dados no Dashboard.</small></div>`;
+  html+=`<div class="total-card"><div><div style="font-size:13px;opacity:.85">Total geral</div><div style="font-size:12px;opacity:.65">${MESES[mes-1]} ${ano}</div></div><div class="total-card-val">${fmt(tg)}</div></div>`;
+  document.getElementById('pag-body').innerHTML=html;
 }
 
-// ════════════════════════════════════════════
-// VIRADA DE MÊS
-// ════════════════════════════════════════════
-function verificarViadaMes() {
-  const agora = hoje();
-  const mes = agora.getMonth() + 1;
-  const ano = agora.getFullYear();
-  const ultimo = localStorage.getItem('cl_ultimo_mes');
-  const atual = `${mes}_${ano}`;
-
-  if (ultimo && ultimo !== atual) {
-    // Virou o mês — dados do mês anterior já estão salvos no localStorage
-    console.log('Virada de mês detectada:', ultimo, '→', atual);
-    // Não apaga dados antigos — apenas registra o novo mês atual
-  }
-  localStorage.setItem('cl_ultimo_mes', atual);
-}
-
-// ════════════════════════════════════════════
-// CONFIG
-// ════════════════════════════════════════════
-function initConfig() {
-  document.getElementById('vp').value = cfg.valP;
-  document.getElementById('vm').value = cfg.valM;
-  document.getElementById('vi').value = cfg.imp;
-  renderEmailLists();
+// ── CONFIG ────────────────────────────────────────────
+function initConfig(){
+  document.getElementById('vp').value=cfg.valP;
+  document.getElementById('vm').value=cfg.valM;
+  document.getElementById('vi').value=cfg.imp;
+  renderSenhasGrid();
   renderSheetsGrid();
 }
 
-function renderEmailLists() {
-  renderEmailList('emails-gestores', cfg.gestores, 'gestor');
-  renderEmailList('emails-estagiarias', cfg.estagiarias, 'estagiaria');
-}
-
-function renderEmailList(elId, arr, tipo) {
-  const el = document.getElementById(elId);
-  if (!arr.length) { el.innerHTML = '<p class="hint">Nenhum email cadastrado.</p>'; return; }
-  el.innerHTML = arr.map((e, i) => `
-    <div class="email-row">
-      <input type="email" value="${e}" readonly>
-      <button class="btn btn-sm" style="color:var(--red);border-color:var(--red-border)" onclick="removeEmail('${tipo}',${i})">Remover</button>
+function renderSenhasGrid(){
+  const el=document.getElementById('senhas-grid');
+  el.innerHTML=CLINICAS.map(cl=>`
+    <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;margin-bottom:8px;align-items:center">
+      <span style="font-size:13px;font-weight:500">${cl}</span>
+      <input type="text" placeholder="Digite a senha..." value="${cfg.senhas[cl]||''}"
+        style="padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace;${cfg.senhas[cl]?'border-color:#a8d5a2;background:#f6fff5':''}"
+        oninput="cfg.senhas['${cl}']=this.value.trim();this.style.borderColor=this.value?'#a8d5a2':'';this.style.background=this.value?'#f6fff5':''">
     </div>`).join('');
 }
 
-function addEmail(tipo) {
-  const id = tipo === 'gestor' ? 'novo-gestor' : 'nova-estagiaria';
-  const val = document.getElementById(id).value.trim().toLowerCase();
-  if (!val || !val.includes('@')) return;
-  if (tipo === 'gestor') { if (!cfg.gestores.includes(val)) cfg.gestores.push(val); }
-  else { if (!cfg.estagiarias.includes(val)) cfg.estagiarias.push(val); }
-  document.getElementById(id).value = '';
-  renderEmailLists();
-}
-
-function removeEmail(tipo, idx) {
-  if (tipo === 'gestor') cfg.gestores.splice(idx, 1);
-  else cfg.estagiarias.splice(idx, 1);
-  renderEmailLists();
-}
-
-function salvarEmails() {
+function salvarSenhas(){
   saveState();
-  const st = document.getElementById('email-st');
-  st.textContent = '✓ Salvo'; st.className = 'status-ok';
-  setTimeout(() => st.textContent = '', 2000);
+  const st=document.getElementById('senha-st');
+  st.textContent='✓ Senhas salvas!';st.className='status-ok';
+  setTimeout(()=>st.textContent='',2000);
 }
 
-function salvarVals() {
-  cfg.valP = parseFloat(document.getElementById('vp').value) || 50;
-  cfg.valM = parseFloat(document.getElementById('vm').value) || 48;
-  cfg.imp = parseFloat(document.getElementById('vi').value) || 10;
+function salvarVals(){
+  cfg.valP=parseFloat(document.getElementById('vp').value)||50;
+  cfg.valM=parseFloat(document.getElementById('vm').value)||48;
+  cfg.imp=parseFloat(document.getElementById('vi').value)||10;
   saveState();
-  const st = document.getElementById('val-st');
-  st.textContent = '✓ Salvo'; st.className = 'status-ok';
-  setTimeout(() => st.textContent = '', 2000);
+  const st=document.getElementById('val-st');
+  st.textContent='✓ Salvo';st.className='status-ok';
+  setTimeout(()=>st.textContent='',2000);
   renderPag();
 }
 
-function renderSheetsGrid() {
-  const el = document.getElementById('sheets-grid');
-  const anos = [2025, 2026];
-  let html = '';
-  anos.forEach(ano => {
-    html += `<div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;margin:10px 0 6px">${ano}</div>`;
-    html += '<div style="display:grid;grid-template-columns:80px 1fr;gap:6px;margin-bottom:4px"><span style="font-size:11px;color:var(--muted);font-weight:600">Mês</span><span style="font-size:11px;color:var(--muted);font-weight:600">ID da planilha</span></div>';
-    for (let m = 1; m <= 12; m++) {
-      const k = chave(m, ano);
-      const val = cfg.sheets[k] || '';
-      html += `<div style="display:grid;grid-template-columns:80px 1fr;gap:6px;margin-bottom:6px;align-items:center">
+function renderSheetsGrid(){
+  const el=document.getElementById('sheets-grid');
+  let html='';
+  [2025,2026].forEach(ano=>{
+    html+=`<div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;margin:10px 0 6px">${ano}</div>`;
+    for(let m=1;m<=12;m++){
+      const k=chave(m,ano),val=cfg.sheets[k]||'';
+      html+=`<div style="display:grid;grid-template-columns:80px 1fr;gap:6px;margin-bottom:6px;align-items:center">
         <span style="font-size:13px;font-weight:500">${MESES_CURTO[m-1]}/${String(ano).slice(2)}</span>
-        <input type="text" style="padding:6px 10px;font-size:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace;${val?'border-color:#a8d5a2;background:#f6fff5':''}" 
-          placeholder="Cole o ID..." value="${val}"
+        <input type="text" placeholder="Cole o ID..." value="${val}"
+          style="padding:6px 10px;font-size:12px;border:1px solid ${val?'#a8d5a2':'var(--border)'};border-radius:var(--radius-sm);font-family:'DM Mono',monospace;background:${val?'#f6fff5':'var(--surface)'}"
           oninput="cfg.sheets['${k}']=this.value.trim();this.style.borderColor=this.value?'#a8d5a2':'';this.style.background=this.value?'#f6fff5':''">
       </div>`;
     }
   });
-  el.innerHTML = html;
+  el.innerHTML=html;
 }
 
-function salvarSheets() {
+function salvarSheets(){
   saveState();
-  const st = document.getElementById('sheet-st');
-  st.textContent = '✓ Salvo'; st.className = 'status-ok';
-  setTimeout(() => st.textContent = '', 2000);
+  const st=document.getElementById('sheet-st');
+  st.textContent='✓ Salvo';st.className='status-ok';
+  setTimeout(()=>st.textContent='',2000);
 }
 
-// ════════════════════════════════════════════
-// UTILITÁRIOS
-// ════════════════════════════════════════════
-function parseN(v) {
-  if (!v && v !== 0) return 0;
-  const n = parseFloat(String(v).replace(',', '.').replace(/[^\d.-]/g, ''));
-  return isNaN(n) ? 0 : Math.max(0, n);
-}
+// ── UTILITÁRIOS ───────────────────────────────────────
+function pN(v){if(!v&&v!==0)return 0;const n=parseFloat(String(v).replace(',','.').replace(/[^\d.-]/g,''));return isNaN(n)?0:Math.max(0,n);}
+function cL(col){let l='';let n=col+1;while(n>0){n--;l=String.fromCharCode(65+n%26)+l;n=Math.floor(n/26);}return l;}
+function fmt(v){return'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 
-function colL(col) {
-  let l = ''; let n = col + 1;
-  while (n > 0) { n--; l = String.fromCharCode(65 + n % 26) + l; n = Math.floor(n / 26); }
-  return l;
-}
-
-function fmt(v) {
-  return 'R$ ' + (v || 0).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}
-
-// ════════════════════════════════════════════
-// INICIALIZAÇÃO
-// ════════════════════════════════════════════
+// ── INIT ──────────────────────────────────────────────
 loadState();
-verificarViadaMes();
-
-// Seta mês atual nos selects
-const _agora = new Date();
-document.getElementById('mes-sel').value = _agora.getMonth() + 1;
-document.getElementById('mes-pag').value = _agora.getMonth() + 1;
-document.getElementById('ano-sel').value = _agora.getFullYear();
-document.getElementById('ano-pag').value = _agora.getFullYear();
+const _ag=new Date();
+document.getElementById('mes-sel').value=_ag.getMonth()+1;
+document.getElementById('mes-pag').value=_ag.getMonth()+1;
+document.getElementById('ano-sel').value=_ag.getFullYear();
+document.getElementById('ano-pag').value=_ag.getFullYear();
 </script>
 </body>
 </html>
