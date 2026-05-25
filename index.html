@@ -298,6 +298,19 @@ input:checked+.slider:before{transform:translateX(20px)}
     </div>
 
     <div class="cfg-card">
+      <div class="cfg-title">🔌 Chave de API do Google Sheets</div>
+      <p class="hint" style="margin-bottom:.75rem">Necessária para que as estagiárias consigam ler os profissionais da planilha sem precisar de login Google.</p>
+      <div class="fg">
+        <label>Chave de API</label>
+        <input type="text" id="inp-apikey" placeholder="AIza..." style="font-family:'DM Mono',monospace">
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn btn-purple" onclick="salvarApiKey()">Salvar chave</button>
+        <span id="apikey-st"></span>
+      </div>
+    </div>
+
+    <div class="cfg-card">
       <div class="cfg-title">🔑 Senhas das clínicas</div>
       <p class="hint" style="margin-bottom:1rem">Cada clínica tem uma senha própria. A estagiária entra com a senha e já vai direto para o lançamento da clínica dela.</p>
       <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--surface2)">
@@ -809,8 +822,17 @@ function initConfig(){
   document.getElementById('vp').value=cfg.valP;
   document.getElementById('vm').value=cfg.valM;
   document.getElementById('vi').value=cfg.imp;
+  document.getElementById('inp-apikey').value=cfg.apiKey||'';
   renderSenhasGrid();
   renderSheetsGrid();
+}
+
+function salvarApiKey(){
+  cfg.apiKey=document.getElementById('inp-apikey').value.trim();
+  saveState();
+  const st=document.getElementById('apikey-st');
+  st.textContent='✓ Salvo';st.className='status-ok';
+  setTimeout(()=>st.textContent='',2000);
 }
 
 function renderSenhasGrid(){
