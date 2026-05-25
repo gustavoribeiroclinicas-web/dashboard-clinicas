@@ -298,14 +298,18 @@ input:checked+.slider:before{transform:translateX(20px)}
     </div>
 
     <div class="cfg-card">
-      <div class="cfg-title">🔌 Chave de API do Google Sheets</div>
-      <p class="hint" style="margin-bottom:.75rem">Necessária para que as estagiárias consigam ler os profissionais da planilha sem precisar de login Google.</p>
+      <div class="cfg-title">🔌 Integração Google Sheets</div>
+      <p class="hint" style="margin-bottom:.75rem">Cole a URL do Apps Script e a chave de API. Isso permite que as estagiárias gravem e leiam dados da planilha sem precisar de login Google.</p>
       <div class="fg">
-        <label>Chave de API</label>
+        <label>URL do Apps Script (Web App)</label>
+        <input type="text" id="inp-script-url" placeholder="https://script.google.com/macros/s/..." style="font-family:'DM Mono',monospace;font-size:12px">
+      </div>
+      <div class="fg">
+        <label>Chave de API do Google</label>
         <input type="text" id="inp-apikey" placeholder="AIza..." style="font-family:'DM Mono',monospace">
       </div>
       <div style="display:flex;align-items:center;gap:8px">
-        <button class="btn btn-purple" onclick="salvarApiKey()">Salvar chave</button>
+        <button class="btn btn-purple" onclick="salvarIntegracao()">Salvar</button>
         <span id="apikey-st"></span>
       </div>
     </div>
@@ -573,28 +577,44 @@ function novoLanc(){
 // ── SHEETS SYNC ───────────────────────────────────────
 async function buscarProfs(clinica){
   const agora=hoje();
-  const sid=cfg.sheets[chave(agora.getMonth()+1,agora.getFullYear())];
-  // Se não tem token nem sid, retorna array vazio
-  if(!sid)return[];
-  // Se não tem token (estagiária), ainda assim precisa dos profs
-  // Tenta com token se disponível
-  const headers=accessToken?{Authorization:'Bearer '+accessToken}:{};
-  try{
-    const url=`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS&key=`;
-    // Para estagiária sem token, usa planilha pública se disponível
-    let r;
-    if(accessToken){
-      r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS`,{headers});
-    } else {
-      // Usa a chave de API salva
-      const apiKey=cfg.apiKey||'';
-      if(!apiKey)return getFallbackProfs(clinica);
-      r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?key=${apiKey}`);
+  const mes=agora.getMonth()+1;
+  const ano=agora.getFullYear();
+
+  // Com token Google (gestor) — lê direto da planilha
+  if(accessToken){
+    const sid=cfg.sheets[chave(mes,ano)];
+    if(sid){
+      try{
+        const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS`,{headers:{Authorization:'Bearer '+accessToken}});
+        if(r.ok){const d=await r.json();return parseProfs(d.values||[]);}
+      }catch(e){}
     }
-    if(!r.ok)return getFallbackProfs(clinica);
-    const d=await r.json();
-    return parseProfs(d.values||[]);
-  }catch(e){return getFallbackProfs(clinica);}
+  }
+
+  // Sem token (estagiária) — usa Apps Script
+  if(cfg.scriptUrl){
+    try{
+      const url=`${cfg.scriptUrl}?acao=profissionais&clinica=${encodeURIComponent(clinica)}`;
+      const r=await fetch(url);
+      if(r.ok){
+        const d=await r.json();
+        if(d.sucesso&&Array.isArray(d.dados))return d.dados;
+      }
+    }catch(e){}
+  }
+
+  // Fallback — usa chave de API pública
+  if(cfg.apiKey){
+    const sid=cfg.sheets[chave(mes,ano)];
+    if(sid){
+      try{
+        const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?key=${cfg.apiKey}`);
+        if(r.ok){const d=await r.json();return parseProfs(d.values||[]);}
+      }catch(e){}
+    }
+  }
+
+  return getFallbackProfs(clinica);
 }
 
 function getFallbackProfs(clinica){
@@ -621,6 +641,44 @@ function parseProfs(rows){
 }
 
 async function syncSheets(clinica,profs,dia,mes,ano){
+  const agora=hoje();
+
+  // Monta payload de profissionais
+  const profissionais=profs.map((p,i)=>{
+    const aus=document.getElementById(`aus_${i}`)?.checked;
+    return{
+      nome:p.nome,tipo:p.tipo,
+      e:aus?0:parseInt(document.getElementById(`n_${i}_e`)?.value)||0,
+      s:aus?0:parseInt(document.getElementById(`n_${i}_s`)?.value)||0,
+      m:aus?0:parseInt(document.getElementById(`n_${i}_m`)?.value)||0
+    };
+  });
+
+  // COM TOKEN (gestor) — grava direto na planilha
+  if(accessToken){
+    await syncSheetsComToken(clinica,profs,dia,mes,ano);
+    return;
+  }
+
+  // SEM TOKEN (estagiária) — usa Apps Script
+  if(cfg.scriptUrl){
+    try{
+      const payload={clinica,dia,mes,ano,profissionais};
+      const r=await fetch(cfg.scriptUrl,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain'}, // Apps Script não aceita application/json em CORS
+        body:JSON.stringify(payload)
+      });
+      if(r.ok){
+        const d=await r.json();
+        if(d.sucesso)console.log('Gravado via Apps Script:',d.dados);
+        else console.warn('Apps Script erro:',d.dados);
+      }
+    }catch(e){console.warn('Apps Script:',e);}
+  }
+}
+
+async function syncSheetsComToken(clinica,profs,dia,mes,ano){
   const sid=cfg.sheets[chave(mes,ano)];
   if(!sid||!accessToken)return;
   try{
@@ -631,8 +689,7 @@ async function syncSheets(clinica,profs,dia,mes,ano){
     let rowIdx=-1;
     for(let i=2;i<rows.length;i++){if(parseInt(String(rows[i]?.[0]||'').trim())===dia){rowIdx=i;break;}}
     if(rowIdx===-1)return;
-    const upd=[];
-    const sr=rowIdx+1;
+    const upd=[];const sr=rowIdx+1;
     profs.forEach((p,i)=>{
       const aus=document.getElementById(`aus_${i}`)?.checked;
       const e=aus?0:parseInt(document.getElementById(`n_${i}_e`)?.value)||0;
@@ -641,7 +698,7 @@ async function syncSheets(clinica,profs,dia,mes,ano){
       if(p.tipo==='psico'&&p.colEntrev!=null){
         upd.push({range:`${clinica}!${cL(p.colEntrev)}${sr}`,values:[[e||'']]});
         if(p.colEstrang!=null)upd.push({range:`${clinica}!${cL(p.colEstrang)}${sr}`,values:[[s||'']]});
-      } else if(p.tipo==='med'&&p.colEntrev!=null){
+      }else if(p.tipo==='med'&&p.colEntrev!=null){
         upd.push({range:`${clinica}!${cL(p.colEntrev)}${sr}`,values:[[m||'']]});
       }
     });
@@ -651,7 +708,7 @@ async function syncSheets(clinica,profs,dia,mes,ano){
       headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
       body:JSON.stringify({valueInputOption:'USER_ENTERED',data:upd})
     });
-  }catch(e){console.warn('sync:',e);}
+  }catch(e){console.warn('sync direto:',e);}
 }
 
 // ── DASHBOARD ─────────────────────────────────────────
@@ -823,12 +880,14 @@ function initConfig(){
   document.getElementById('vm').value=cfg.valM;
   document.getElementById('vi').value=cfg.imp;
   document.getElementById('inp-apikey').value=cfg.apiKey||'';
+  document.getElementById('inp-script-url').value=cfg.scriptUrl||'';
   renderSenhasGrid();
   renderSheetsGrid();
 }
 
-function salvarApiKey(){
+function salvarIntegracao(){
   cfg.apiKey=document.getElementById('inp-apikey').value.trim();
+  cfg.scriptUrl=document.getElementById('inp-script-url').value.trim();
   saveState();
   const st=document.getElementById('apikey-st');
   st.textContent='✓ Salvo';st.className='status-ok';
