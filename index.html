@@ -503,12 +503,16 @@ function loadState(){
   }catch(e){}
 }
 
+// URL do Apps Script — fallback para funcionar em qualquer dispositivo sem configuração
+const SCRIPT_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbzYpGh-El81ezpz4giwQNOPkgv7YyjQwAYafm-vDfvROrfVZoiGU2BaiT9Mm-78L7qsGA/exec';
+
 async function loadStateFromCloud(){
-  const url=cfg.scriptUrl||localStorage.getItem('cl_script_url')||'';
+  // Usa URL configurada ou o padrão hardcoded
+  const url=cfg.scriptUrl||localStorage.getItem('cl_script_url')||SCRIPT_URL_DEFAULT;
   if(!url)return;
   try{
     const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),5000); // timeout 5s
+    const timeout=setTimeout(()=>controller.abort(),8000);
     const r=await fetch(`${url}?acao=carregarConfig`,{signal:controller.signal});
     clearTimeout(timeout);
     if(!r.ok)return;
@@ -516,6 +520,7 @@ async function loadStateFromCloud(){
     if(d.sucesso&&d.dados&&Object.keys(d.dados).length){
       const nuvem=d.dados;
       if(nuvem.senhas)cfg.senhas=nuvem.senhas;
+      if(nuvem.senhasDiretores)cfg.senhasDiretores=nuvem.senhasDiretores;
       if(nuvem.sheets)cfg.sheets=nuvem.sheets;
       if(nuvem.valP)cfg.valP=parseFloat(nuvem.valP)||50;
       if(nuvem.valM)cfg.valM=parseFloat(nuvem.valM)||48;
@@ -526,7 +531,6 @@ async function loadStateFromCloud(){
       saveStateLocal();
     }
   }catch(e){
-    // Silencioso — usa configs locais se nuvem falhar
     console.warn('Config nuvem indisponível, usando local.');
   }
 }
@@ -552,6 +556,7 @@ async function saveState(){
           acao:'salvarConfig',
           cfg:{
             senhas:cfg.senhas,
+            senhasDiretores:cfg.senhasDiretores||[],
             sheets:cfg.sheets,
             valP:cfg.valP,
             valM:cfg.valM,
@@ -600,18 +605,12 @@ function handleLoginGoogle(){
 async function entrarDiretor(){
   const senha=document.getElementById('inp-senha-diretor').value.trim();
   if(!senha){showErro('Digite a senha.');return;}
-
-  // Tenta local primeiro
-  let ok=(cfg.senhasDiretores||[]).includes(senha);
-
-  if(!ok){
-    const btnEl=document.querySelector('#login-diretor button');
-    if(btnEl){btnEl.textContent='⏳ Verificando...';btnEl.disabled=true;}
-    await loadStateFromCloud();
-    if(btnEl){btnEl.textContent='Entrar';btnEl.disabled=false;}
-    ok=(cfg.senhasDiretores||[]).includes(senha);
-  }
-
+  const btnEl=document.querySelector('#login-diretor button');
+  if(btnEl){btnEl.textContent='⏳ Verificando...';btnEl.disabled=true;}
+  // Sempre busca da nuvem — garante funcionar em qualquer dispositivo
+  await loadStateFromCloud();
+  if(btnEl){btnEl.textContent='Entrar';btnEl.disabled=false;}
+  const ok=(cfg.senhasDiretores||[]).includes(senha);
   if(!ok){showErro('Senha incorreta.');return;}
   perfilAtual='gestor';
   iniciarGestor();
@@ -620,19 +619,12 @@ async function entrarDiretor(){
 async function entrarEstagiaria(){
   const senha=document.getElementById('inp-senha').value.trim();
   if(!senha){showErro('Digite a senha.');return;}
-
-  // Tenta primeiro com configs locais
-  let clinica=Object.entries(cfg.senhas).find(([cl,pw])=>pw===senha)?.[0];
-
-  // Se não achou localmente, tenta carregar da nuvem
-  if(!clinica){
-    const btnEl=document.querySelector('#login-estagiaria button');
-    if(btnEl){btnEl.textContent='⏳ Verificando...';btnEl.disabled=true;}
-    await loadStateFromCloud();
-    if(btnEl){btnEl.textContent='Entrar';btnEl.disabled=false;}
-    clinica=Object.entries(cfg.senhas).find(([cl,pw])=>pw===senha)?.[0];
-  }
-
+  const btnEl=document.querySelector('#login-estagiaria button');
+  if(btnEl){btnEl.textContent='⏳ Verificando...';btnEl.disabled=true;}
+  // Sempre busca da nuvem — garante funcionar em qualquer dispositivo
+  await loadStateFromCloud();
+  if(btnEl){btnEl.textContent='Entrar';btnEl.disabled=false;}
+  const clinica=Object.entries(cfg.senhas||{}).find(([cl,pw])=>pw===senha)?.[0];
   if(!clinica){showErro('Senha incorreta.');return;}
   perfilAtual=clinica;
   iniciarEstagiaria(clinica);
