@@ -435,16 +435,16 @@ function loadState(){
 }
 
 async function loadStateFromCloud(){
-  // Carrega configurações da nuvem (Apps Script) se disponível
   const url=cfg.scriptUrl||localStorage.getItem('cl_script_url')||'';
   if(!url)return;
   try{
-    const r=await fetch(`${url}?acao=carregarConfig`);
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),5000); // timeout 5s
+    const r=await fetch(`${url}?acao=carregarConfig`,{signal:controller.signal});
+    clearTimeout(timeout);
     if(!r.ok)return;
     const d=await r.json();
     if(d.sucesso&&d.dados&&Object.keys(d.dados).length){
-      // Mescla configurações da nuvem com as locais
-      // Nuvem tem prioridade para senhas, sheets, valores
       const nuvem=d.dados;
       if(nuvem.senhas)cfg.senhas=nuvem.senhas;
       if(nuvem.sheets)cfg.sheets=nuvem.sheets;
@@ -454,11 +454,12 @@ async function loadStateFromCloud(){
       if(nuvem.meta)cfg.meta=parseInt(nuvem.meta)||55;
       if(nuvem.apiKey)cfg.apiKey=nuvem.apiKey;
       if(nuvem.scriptUrl)cfg.scriptUrl=nuvem.scriptUrl;
-      // Salva localmente também
       saveStateLocal();
-      console.log('✓ Configurações carregadas da nuvem');
     }
-  }catch(e){console.warn('Nuvem indisponível, usando configurações locais');}
+  }catch(e){
+    // Silencioso — usa configs locais se nuvem falhar
+    console.warn('Config nuvem indisponível, usando local.');
+  }
 }
 
 function saveStateLocal(){
@@ -530,10 +531,18 @@ async function entrarEstagiaria(){
   const senha=document.getElementById('inp-senha').value.trim();
   if(!senha){showErro('Digite a senha.');return;}
 
-  // Carrega configs da nuvem para ter as senhas atualizadas
-  await loadStateFromCloud();
+  // Tenta primeiro com configs locais
+  let clinica=Object.entries(cfg.senhas).find(([cl,pw])=>pw===senha)?.[0];
 
-  const clinica=Object.entries(cfg.senhas).find(([cl,pw])=>pw===senha)?.[0];
+  // Se não achou localmente, tenta carregar da nuvem
+  if(!clinica){
+    const btnEl=document.querySelector('#login-estagiaria button');
+    if(btnEl){btnEl.textContent='⏳ Verificando...';btnEl.disabled=true;}
+    await loadStateFromCloud();
+    if(btnEl){btnEl.textContent='Entrar';btnEl.disabled=false;}
+    clinica=Object.entries(cfg.senhas).find(([cl,pw])=>pw===senha)?.[0];
+  }
+
   if(!clinica){showErro('Senha incorreta.');return;}
   perfilAtual=clinica;
   iniciarEstagiaria(clinica);
@@ -551,17 +560,22 @@ async function iniciarGestor(){
   document.getElementById('user-chip').textContent='👤 Gestor';
   ['tab-dash','tab-pag','tab-lanc','tab-cfg'].forEach(id=>document.getElementById(id).style.display='');
 
-  // Carrega configurações da nuvem primeiro
-  await loadStateFromCloud();
-
+  // Inicializa já com dados locais (não bloqueia o login)
   initConfig();
   const agora=hoje();
   document.getElementById('mes-sel').value=agora.getMonth()+1;
   document.getElementById('mes-pag').value=agora.getMonth()+1;
   document.getElementById('ano-sel').value=agora.getFullYear();
   document.getElementById('ano-pag').value=agora.getFullYear();
-  atualizarDados();
   showPage('dashboard',document.getElementById('tab-dash'));
+  renderDash();
+  renderAlertas();
+
+  // Carrega nuvem em paralelo sem bloquear
+  loadStateFromCloud().then(()=>{
+    initConfig();
+    atualizarDados();
+  }).catch(()=>atualizarDados());
 }
 
 async function iniciarEstagiaria(clinica){
@@ -570,11 +584,10 @@ async function iniciarEstagiaria(clinica){
   document.getElementById('user-chip').textContent='🏥 '+clinica;
   ['tab-dash','tab-pag','tab-cfg'].forEach(id=>document.getElementById(id).style.display='none');
   document.getElementById('tab-lanc').style.display='';
-
-  // Carrega configurações da nuvem (sheets, apiKey etc)
-  await loadStateFromCloud();
-
   showPage('lancamento',document.getElementById('tab-lanc'));
+
+  // Carrega nuvem em paralelo sem bloquear UI
+  loadStateFromCloud().catch(()=>{});
   initLancamento(clinica);
 }
 
@@ -713,6 +726,7 @@ function coletarExtras(){
   });
   return extras;
 }
+function cCtrl(i,t,label){
   return `<div class="campo-row"><span class="campo-label">${label}</span>
     <div class="campo-ctrl">
       <button class="cbtn minus" onclick="alt('n_${i}_${t}',-1)">−</button>
