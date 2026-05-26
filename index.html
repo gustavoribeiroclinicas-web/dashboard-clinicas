@@ -158,11 +158,69 @@ input:checked+.slider:before{transform:translateX(20px)}
 .sdot.ok{background:var(--green)}.sdot.err{background:var(--red)}.sdot.warn{background:var(--amber)}
 .status-bar{font-size:12px;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:5px}
 .fds-box{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);border-radius:var(--radius-sm);padding:1rem;text-align:center;font-size:14px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal{background:var(--surface);border-radius:var(--radius);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.modal-header{padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1}
+.modal-title{font-size:15px;font-weight:600}
+.modal-close{width:30px;height:30px;border-radius:50%;border:none;background:var(--surface2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.modal-close:hover{background:var(--border)}
+.modal-body{padding:1.25rem}
+.dia-row{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--surface2);flex-direction:column}
+.dia-row-top{display:flex;align-items:center;gap:8px;width:100%}
+.dia-num{font-size:13px;font-weight:600;min-width:54px;color:var(--muted)}
+.dia-status{flex:1;font-size:13px}
+.dia-ok{color:var(--green)}
+.dia-falta{color:var(--amber)}
+.dia-fds{color:var(--hint);font-style:italic}
+.dia-edit-btn{font-size:11px;padding:4px 10px;border-radius:99px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;color:var(--muted);font-family:'DM Sans',sans-serif;flex-shrink:0}
+.dia-edit-btn:hover{background:var(--purple-light);color:var(--purple);border-color:var(--purple)}
+.edit-form{background:var(--surface2);border-radius:var(--radius-sm);padding:.85rem;width:100%;margin-top:4px}
+.edit-prof{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.edit-prof:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.edit-prof-nome{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.edit-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
+.edit-label{font-size:13px;color:var(--text);flex:1}
+.edit-input{width:70px;padding:5px 8px;font-size:14px;font-family:'DM Mono',monospace;border:1.5px solid var(--border);border-radius:var(--radius-sm);text-align:center}
+.edit-input:focus{outline:none;border-color:var(--purple)}
+.edit-actions{display:flex;gap:8px;margin-top:10px}
+.edit-salvar{flex:1;padding:8px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;background:var(--purple);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer}
+.edit-salvar:hover{background:var(--purple-dark)}
+.edit-zerar{padding:8px 12px;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--red);border:1px solid var(--red-border);border-radius:var(--radius-sm);cursor:pointer}
+.edit-zerar:hover{background:var(--red-bg)}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- MODAL EDIÇÃO DE DIAS -->
+<div id="modal-edicao" class="modal-overlay" style="display:none" onclick="if(event.target===this)fecharModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-titulo">Editar lançamentos</span>
+      <button class="modal-close" onclick="fecharModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <select class="clinica-sel-edit" id="modal-clinica-sel" onchange="renderDiasEdicao()">
+        <option value="">Selecione a clínica...</option>
+        <option value="Boa Vista">Boa Vista</option>
+        <option value="Bacacheri">Bacacheri</option>
+        <option value="ColomboMed">ColomboMed</option>
+        <option value="Etika SJP">Etika SJP</option>
+        <option value="FRG">FRG</option>
+        <option value="GPTRAN">GPTRAN</option>
+        <option value="Galeb">Galeb</option>
+        <option value="Hauer">Hauer</option>
+        <option value="Lifetran">Lifetran</option>
+        <option value="MM">MM</option>
+        <option value="PrimeMed">PrimeMed</option>
+        <option value="PPTRAN">PPTRAN</option>
+        <option value="Rio Sul">Rio Sul</option>
+        <option value="São José">São José</option>
+        <option value="Tolmac">Tolmac</option>
+      </select>
+      <div id="modal-dias-lista"></div>
+    </div>
+  </div>
+</div>
 <div id="tela-login" class="login-screen">
   <div class="login-card">
     <div style="font-size:40px;margin-bottom:.75rem">🏥</div>
@@ -238,6 +296,7 @@ input:checked+.slider:before{transform:translateX(20px)}
           <option value="2025">2025</option><option value="2026" selected>2026</option>
         </select>
         <button class="btn" onclick="atualizarDados()">↻ Atualizar</button>
+        <button class="btn" onclick="abrirModal()" style="color:var(--purple);border-color:var(--purple)">✏️ Editar dias</button>
         <span id="upd-lbl" style="font-size:12px;color:var(--muted)"></span>
       </div>
     </div>
@@ -279,7 +338,7 @@ input:checked+.slider:before{transform:translateX(20px)}
         <div class="check">✅</div>
         <h2>Registrado!</h2>
         <p id="sucesso-msg"></p>
-        <button class="btn btn-purple" onclick="novoLanc()">Novo lançamento</button>
+        <p style="font-size:13px;color:var(--muted);margin-top:.5rem">Obrigada! Pode fechar esta janela.</p>
       </div>
     </div>
   </div>
@@ -1014,7 +1073,176 @@ function salvarSheets(){
   setTimeout(()=>st.textContent='',2000);
 }
 
-// ── UTILITÁRIOS ───────────────────────────────────────
+// ── EDIÇÃO DE DIAS ────────────────────────────────────
+function abrirModal(){
+  const mes=parseInt(document.getElementById('mes-sel').value);
+  const ano=parseInt(document.getElementById('ano-sel').value);
+  document.getElementById('modal-titulo').textContent=`Editar lançamentos — ${MESES[mes-1]} ${ano}`;
+  document.getElementById('modal-clinica-sel').value='';
+  document.getElementById('modal-dias-lista').innerHTML='';
+  document.getElementById('modal-edicao').style.display='flex';
+}
+
+function fecharModal(){
+  document.getElementById('modal-edicao').style.display='none';
+}
+
+function renderDiasEdicao(){
+  const clinica=document.getElementById('modal-clinica-sel').value;
+  const mes=parseInt(document.getElementById('mes-sel').value);
+  const ano=parseInt(document.getElementById('ano-sel').value);
+  const lista=document.getElementById('modal-dias-lista');
+  if(!clinica){lista.innerHTML='';return;}
+
+  const agora=hoje();
+  const lancados=dadosLanc[chave(mes,ano)]?.[clinica]?.dias||[];
+  const profsLocal=dadosLanc[chave(mes,ano)]?.[clinica]?.profs||{};
+
+  let html='';
+  const totalDias=new Date(ano,mes,0).getDate();
+
+  for(let d=1;d<=totalDias;d++){
+    const data=new Date(ano,mes-1,d);
+    const isFds=data.getDay()===0||data.getDay()===6;
+    const isFuturo=data>agora;
+    const lancado=lancados.includes(d);
+    const diaSemana=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'][data.getDay()];
+
+    if(isFds){
+      html+=`<div class="dia-row"><div class="dia-row-top"><span class="dia-num">Dia ${d}</span><span class="dia-status dia-fds">${diaSemana} — fim de semana</span></div></div>`;
+      continue;
+    }
+    if(isFuturo){
+      html+=`<div class="dia-row"><div class="dia-row-top"><span class="dia-num">Dia ${d}</span><span class="dia-status" style="color:var(--hint)">${diaSemana} — ainda não ocorreu</span></div></div>`;
+      continue;
+    }
+
+    const statusTxt=lancado?`<span class="dia-ok">✓ Lançado</span>`:`<span class="dia-falta">⚠ Sem lançamento</span>`;
+    const btnTxt=lancado?'Editar':'Marcar/Lançar';
+
+    html+=`<div class="dia-row" id="dia-row-${d}">
+      <div class="dia-row-top">
+        <span class="dia-num">Dia ${d} <span style="font-weight:400;color:var(--hint)">${diaSemana}</span></span>
+        <span class="dia-status">${statusTxt}</span>
+        <button class="dia-edit-btn" onclick="toggleEditForm(${d},'${clinica}',${mes},${ano})">${btnTxt}</button>
+      </div>
+      <div id="edit-form-${d}" style="display:none;width:100%"></div>
+    </div>`;
+  }
+  lista.innerHTML=html;
+}
+
+async function toggleEditForm(dia,clinica,mes,ano){
+  const formEl=document.getElementById(`edit-form-${dia}`);
+  if(formEl.style.display==='block'){formEl.style.display='none';return;}
+
+  formEl.innerHTML='<div style="font-size:12px;color:var(--muted);padding:.5rem">⏳ Carregando...</div>';
+  formEl.style.display='block';
+
+  // Busca profissionais
+  let profs=profsCache[clinica];
+  if(!profs||!profs.length)profs=await buscarProfs(clinica);
+  profsCache[clinica]=profs;
+
+  // Valores já lançados para este dia
+  const dadosDia=dadosLanc[chave(mes,ano)]?.[clinica]?.profs||{};
+
+  let html='<div class="edit-form">';
+  profs.forEach((p,i)=>{
+    const vAtual=dadosDia[p.nome]||{e:0,s:0,m:0};
+    html+=`<div class="edit-prof">
+      <div class="edit-prof-nome">${p.nome} — ${p.tipo==='psico'?'Psicóloga':'Médica'}</div>`;
+    if(p.tipo==='psico'){
+      html+=`<div class="edit-row"><span class="edit-label">🧠 Entrevistas</span><input class="edit-input" type="number" id="ed_${dia}_${i}_e" value="${vAtual.e||0}" min="0"></div>`;
+      html+=`<div class="edit-row"><span class="edit-label">🌍 Estrangeiros</span><input class="edit-input" type="number" id="ed_${dia}_${i}_s" value="${vAtual.s||0}" min="0"></div>`;
+    }else{
+      html+=`<div class="edit-row"><span class="edit-label">🩺 Atendimentos</span><input class="edit-input" type="number" id="ed_${dia}_${i}_m" value="${vAtual.m||0}" min="0"></div>`;
+    }
+    html+='</div>';
+  });
+
+  html+=`<div class="edit-actions">
+    <button class="edit-salvar" onclick="salvarEdicaoDia(${dia},'${clinica}',${mes},${ano})">✓ Salvar alterações</button>
+    <button class="edit-zerar" onclick="zerarDia(${dia},'${clinica}',${mes},${ano})">Zerar dia</button>
+  </div></div>`;
+
+  formEl.innerHTML=html;
+}
+
+async function salvarEdicaoDia(dia,clinica,mes,ano){
+  const profs=profsCache[clinica]||[];
+  const k=chave(mes,ano);
+  if(!dadosLanc[k])dadosLanc[k]={};
+  if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={profs:{},dias:[]};
+
+  profs.forEach((p,i)=>{
+    const e=parseInt(document.getElementById(`ed_${dia}_${i}_e`)?.value)||0;
+    const s=parseInt(document.getElementById(`ed_${dia}_${i}_s`)?.value)||0;
+    const m=parseInt(document.getElementById(`ed_${dia}_${i}_m`)?.value)||0;
+
+    if(!dadosLanc[k][clinica].profs[p.nome])dadosLanc[k][clinica].profs[p.nome]={tipo:p.tipo,e:0,s:0,m:0};
+
+    // Substitui (não soma) os valores do dia editado
+    // Para edição, recalculamos o total do mês
+    // Estratégia: remove contribuição anterior deste dia e adiciona nova
+    dadosLanc[k][clinica].profs[p.nome].tipo=p.tipo;
+  });
+
+  // Marca dia como lançado
+  if(!dadosLanc[k][clinica].dias.includes(dia))dadosLanc[k][clinica].dias.push(dia);
+
+  // Sincroniza com Google Sheets via Apps Script
+  if(cfg.scriptUrl){
+    const profissionais=profs.map((p,i)=>({
+      nome:p.nome,tipo:p.tipo,
+      e:parseInt(document.getElementById(`ed_${dia}_${i}_e`)?.value)||0,
+      s:parseInt(document.getElementById(`ed_${dia}_${i}_s`)?.value)||0,
+      m:parseInt(document.getElementById(`ed_${dia}_${i}_m`)?.value)||0
+    }));
+    try{
+      await fetch(cfg.scriptUrl,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({clinica,dia,mes,ano,profissionais})
+      });
+    }catch(e){console.warn('Sync edição:',e);}
+  }
+
+  saveState();
+  renderDiasEdicao(); // Atualiza lista
+  renderDash();       // Atualiza dashboard
+  renderAlertas();    // Atualiza alertas
+}
+
+async function zerarDia(dia,clinica,mes,ano){
+  if(!confirm(`Zerar dia ${dia} de ${clinica}? Isso remove o registro deste dia.`))return;
+  const k=chave(mes,ano);
+
+  // Remove dia da lista de lançados
+  if(dadosLanc[k]?.[clinica]?.dias){
+    dadosLanc[k][clinica].dias=dadosLanc[k][clinica].dias.filter(d=>d!==dia);
+  }
+
+  // Zera no Sheets via Apps Script
+  if(cfg.scriptUrl){
+    const profs=profsCache[clinica]||[];
+    const profissionais=profs.map(p=>({nome:p.nome,tipo:p.tipo,e:0,s:0,m:0}));
+    try{
+      await fetch(cfg.scriptUrl,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({clinica,dia,mes,ano,profissionais})
+      });
+    }catch(e){}
+  }
+
+  saveState();
+  renderDiasEdicao();
+  renderDash();
+  renderAlertas();
+}
+
+// ── EDIÇÃO DE DIAS ────────────────────────────────────
 function pN(v){if(!v&&v!==0)return 0;const n=parseFloat(String(v).replace(',','.').replace(/[^\d.-]/g,''));return isNaN(n)?0:Math.max(0,n);}
 function cL(col){let l='';let n=col+1;while(n>0){n--;l=String.fromCharCode(65+n%26)+l;n=Math.floor(n/26);}return l;}
 function fmt(v){return'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
