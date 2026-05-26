@@ -349,7 +349,7 @@ input:checked+.slider:before{transform:translateX(20px)}
         </div>
       </div>
       <div class="controls">
-        <select class="sel" id="mes-sel" onchange="renderDash()">
+        <select class="sel" id="mes-sel" onchange="trocarMesDash()">
           <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
           <option value="4">Abril</option><option value="5" selected>Maio</option><option value="6">Junho</option>
           <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
@@ -544,32 +544,66 @@ function saveStateLocal(){
 }
 
 async function saveState(){
-  // Salva localmente sempre
   saveStateLocal();
-  // Salva na nuvem se tiver URL configurada
-  if(cfg.scriptUrl){
-    try{
-      await fetch(cfg.scriptUrl,{
-        method:'POST',
-        headers:{'Content-Type':'text/plain'},
-        body:JSON.stringify({
-          acao:'salvarConfig',
-          cfg:{
-            senhas:cfg.senhas,
-            senhasDiretores:cfg.senhasDiretores||[],
-            sheets:cfg.sheets,
-            valP:cfg.valP,
-            valM:cfg.valM,
-            imp:cfg.imp,
-            meta:cfg.meta,
-            apiKey:cfg.apiKey,
-            scriptUrl:cfg.scriptUrl
-          }
-        })
-      });
-      console.log('✓ Configurações salvas na nuvem');
-    }catch(e){console.warn('Erro ao salvar na nuvem:',e);}
-  }
+  const url=cfg.scriptUrl||SCRIPT_URL_DEFAULT;
+  if(!url)return;
+  try{
+    // Salva configurações
+    await fetch(url,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({
+        acao:'salvarConfig',
+        cfg:{
+          senhas:cfg.senhas,
+          senhasDiretores:cfg.senhasDiretores||[],
+          sheets:cfg.sheets,
+          valP:cfg.valP,
+          valM:cfg.valM,
+          imp:cfg.imp,
+          meta:cfg.meta,
+          apiKey:cfg.apiKey,
+          scriptUrl:cfg.scriptUrl
+        }
+      })
+    });
+  }catch(e){console.warn('Erro config nuvem:',e);}
+}
+
+// Salva lançamentos de um mês específico na nuvem
+async function saveLancamentosNuvem(mes, ano){
+  const url=cfg.scriptUrl||SCRIPT_URL_DEFAULT;
+  if(!url)return;
+  const k=chave(mes,ano);
+  const lancamentos=dadosLanc[k]||{};
+  try{
+    await fetch(url,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({acao:'salvarLancamentos',lancamentos,mes,ano})
+    });
+  }catch(e){console.warn('Erro lançamentos nuvem:',e);}
+}
+
+// Carrega lançamentos de um mês da nuvem
+async function loadLancamentosNuvem(mes, ano){
+  const url=cfg.scriptUrl||SCRIPT_URL_DEFAULT;
+  if(!url)return;
+  try{
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),8000);
+    const r=await fetch(`${url}?acao=carregarLancamentos&mes=${mes}&ano=${ano}`,{signal:controller.signal});
+    clearTimeout(timeout);
+    if(!r.ok)return;
+    const d=await r.json();
+    if(d.sucesso&&d.dados&&Object.keys(d.dados).length){
+      const k=chave(mes,ano);
+      // Mescla nuvem com local (nuvem tem prioridade)
+      dadosLanc[k]=d.dados;
+      saveStateLocal();
+      console.log(`✓ Lançamentos ${mes}/${ano} carregados da nuvem`);
+    }
+  }catch(e){console.warn('Erro ao carregar lançamentos:',e);}
 }
 function chave(m,a){return `${m}_${a}`;}
 function hoje(){return new Date();}
@@ -860,7 +894,9 @@ async function salvarLanc(clinica){
   // Sincroniza todos (fixos + extras) com Sheets
   const todosProfs=[...profs,...extras.map(p=>({...p,colEntrev:null,colEstrang:null}))];
   await syncSheets(clinica,todosProfs,dia,mes,ano);
-  saveState();
+  saveStateLocal();
+  // Salva lançamentos na nuvem em background
+  saveLancamentosNuvem(mes,ano).catch(()=>{});
   document.getElementById('lanc-main').style.display='none';
   document.getElementById('lanc-sucesso').style.display='block';
   document.getElementById('sucesso-msg').textContent=`${clinica} — dia ${dia}/${mes}. ${resumo.join(' · ')}`;
@@ -1020,14 +1056,27 @@ function setStatus(msg,t){
 
 function salvarMeta(){cfg.meta=parseInt(document.getElementById('meta-in').value)||55;saveState();renderDash();}
 
+function trocarMesDash(){
+  const mes=parseInt(document.getElementById('mes-sel').value);
+  const ano=parseInt(document.getElementById('ano-sel').value);
+  renderDash();
+  renderAlertas();
+  // Carrega lançamentos da nuvem para o mês selecionado
+  loadLancamentosNuvem(mes,ano).then(()=>{renderDash();renderAlertas();}).catch(()=>{});
+}
+
 async function atualizarDados(){
-  if(!accessToken){renderDash();renderAlertas();return;}
   const mes=parseInt(document.getElementById('mes-sel').value);
   const ano=parseInt(document.getElementById('ano-sel').value);
   const k=chave(mes,ano);
-  const sid=cfg.sheets[k];
-  if(!sid){setStatus('Sem planilha para este mês','warn');renderDash();return;}
   setStatus(`Carregando ${MESES[mes-1]}/${ano}...`,'');
+
+  // Carrega lançamentos da nuvem primeiro
+  await loadLancamentosNuvem(mes, ano);
+
+  if(!accessToken){renderDash();renderAlertas();return;}
+  const sid=cfg.sheets[k];
+  if(!sid){setStatus('Sem planilha para este mês','warn');renderDash();renderAlertas();return;}
   cacheSheets[k]={};
   for(const cl of CLINICAS){
     try{
@@ -1529,7 +1578,8 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
     }catch(e){console.warn('Sync edição:',e);}
   }
 
-  saveState();
+  saveStateLocal();
+  saveLancamentosNuvem(mes,ano).catch(()=>{});
   renderDiasEdicao();
   renderDash();
   renderAlertas();
@@ -1561,7 +1611,8 @@ async function zerarDia(dia,clinica,mes,ano){
       });
     }catch(e){}
   }
-  saveState();
+  saveStateLocal();
+  saveLancamentosNuvem(mes,ano).catch(()=>{});
   renderDiasEdicao();
   renderDash();
   renderAlertas();
