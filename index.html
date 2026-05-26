@@ -1266,7 +1266,14 @@ async function toggleEditForm(dia,clinica,mes,ano){
   const k=chave(mes,ano);
   const dadosDia=dadosLanc[k]?.[clinica]?.dias?.[dia]||{};
 
+  // Inclui também extras já salvos neste dia
+  const extrasJaSalvos=Object.entries(dadosDia)
+    .filter(([nome])=>!profs.find(p=>p.nome===nome))
+    .map(([nome,v])=>({nome,tipo:v.tipo,e:v.e||0,s:v.s||0,m:v.m||0}));
+
   let html='<div class="edit-form">';
+
+  // Profissionais fixos da clínica
   profs.forEach((p,i)=>{
     const vAtual=dadosDia[p.nome]||{e:0,s:0,m:0};
     html+=`<div class="edit-prof">
@@ -1279,11 +1286,82 @@ async function toggleEditForm(dia,clinica,mes,ano){
     }
     html+='</div>';
   });
+
+  html+='</div>';
+
+  // Área de extras (substitutos já salvos + novos)
+  html+=`<div id="ed-extras-area-${dia}">`;
+  extrasJaSalvos.forEach((p,xi)=>{
+    html+=buildExtraEditForm(dia, xi, p.nome, p.tipo, p.e, p.s, p.m);
+  });
+  html+=`</div>`;
+
+  html+=`<button class="add-prof-btn" style="margin-top:6px" onclick="adicionarExtraEdicao(${dia})">+ Adicionar profissional substituto</button>`;
+
   html+=`<div class="edit-actions">
     <button class="edit-salvar" onclick="salvarEdicaoDia(${dia},'${clinica}',${mes},${ano})">✓ Salvar</button>
     <button class="edit-zerar" onclick="zerarDia(${dia},'${clinica}',${mes},${ano})">Zerar dia</button>
-  </div></div>`;
+  </div>`;
+
   formEl.innerHTML=html;
+  window[`_edExtraCount_${dia}`]=extrasJaSalvos.length;
+}
+
+function buildExtraEditForm(dia, xi, nome='', tipo='psico', e=0, s=0, m=0){
+  const uid=`${dia}_ex${xi}`;
+  return `<div class="extra-prof-form" id="ed-extra-${uid}">
+    <div class="extra-prof-header">
+      <span class="extra-prof-title">Substituto</span>
+      <button class="remove-prof-btn" onclick="document.getElementById('ed-extra-${uid}').remove()">✕</button>
+    </div>
+    <input type="text" class="extra-sel" id="ed-exnome-${uid}" placeholder="Nome do profissional" value="${nome}">
+    <select class="extra-sel" id="ed-extipo-${uid}" onchange="renderEdExtraCampos('${uid}')">
+      <option value="psico" ${tipo==='psico'?'selected':''}>Psicóloga</option>
+      <option value="med" ${tipo==='med'?'selected':''}>Médica</option>
+    </select>
+    <div id="ed-excampos-${uid}">
+      ${tipo==='psico'
+        ?`<div class="edit-row"><span class="edit-label">🧠 Entrevistas</span><input class="edit-input" type="number" id="ed-exe-${uid}" value="${e}" min="0"></div>
+           <div class="edit-row"><span class="edit-label">🌍 Estrangeiros</span><input class="edit-input" type="number" id="ed-exs-${uid}" value="${s}" min="0"></div>`
+        :`<div class="edit-row"><span class="edit-label">🩺 Atendimentos</span><input class="edit-input" type="number" id="ed-exm-${uid}" value="${m}" min="0"></div>`
+      }
+    </div>
+  </div>`;
+}
+
+function renderEdExtraCampos(uid){
+  const tipo=document.getElementById(`ed-extipo-${uid}`)?.value;
+  const el=document.getElementById(`ed-excampos-${uid}`);
+  if(!el)return;
+  if(tipo==='psico'){
+    el.innerHTML=`<div class="edit-row"><span class="edit-label">🧠 Entrevistas</span><input class="edit-input" type="number" id="ed-exe-${uid}" value="0" min="0"></div>
+                  <div class="edit-row"><span class="edit-label">🌍 Estrangeiros</span><input class="edit-input" type="number" id="ed-exs-${uid}" value="0" min="0"></div>`;
+  }else{
+    el.innerHTML=`<div class="edit-row"><span class="edit-label">🩺 Atendimentos</span><input class="edit-input" type="number" id="ed-exm-${uid}" value="0" min="0"></div>`;
+  }
+}
+
+function adicionarExtraEdicao(dia){
+  const count=window[`_edExtraCount_${dia}`]=(window[`_edExtraCount_${dia}`]||0)+1;
+  const xi=count-1;
+  const area=document.getElementById(`ed-extras-area-${dia}`);
+  if(!area)return;
+  area.insertAdjacentHTML('beforeend', buildExtraEditForm(dia, xi));
+}
+
+function coletarExtrasEdicao(dia){
+  const extras=[];
+  document.querySelectorAll(`[id^="ed-extra-${dia}_ex"]`).forEach(el=>{
+    const uid=el.id.replace('ed-extra-','');
+    const nome=document.getElementById(`ed-exnome-${uid}`)?.value.trim();
+    const tipo=document.getElementById(`ed-extipo-${uid}`)?.value||'psico';
+    if(!nome)return;
+    const e=parseInt(document.getElementById(`ed-exe-${uid}`)?.value)||0;
+    const s=parseInt(document.getElementById(`ed-exs-${uid}`)?.value)||0;
+    const m=parseInt(document.getElementById(`ed-exm-${uid}`)?.value)||0;
+    extras.push({nome,tipo,e,s,m});
+  });
+  return extras;
 }
 
 async function salvarEdicaoDia(dia,clinica,mes,ano){
@@ -1291,11 +1369,9 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
   const k=chave(mes,ano);
   if(!dadosLanc[k])dadosLanc[k]={};
   if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={dias:{},diasLancados:[]};
-
-  // Migra estrutura antiga se necessário
   migrarEstrutura(k,clinica);
 
-  // Salva valores deste dia específico
+  // Profissionais fixos
   const valoresDia={};
   profs.forEach((p,i)=>{
     const e=parseInt(document.getElementById(`ed_${dia}_${i}_e`)?.value)||0;
@@ -1303,21 +1379,27 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
     const m=parseInt(document.getElementById(`ed_${dia}_${i}_m`)?.value)||0;
     valoresDia[p.nome]={tipo:p.tipo,e,s,m};
   });
-  dadosLanc[k][clinica].dias[dia]=valoresDia;
 
-  // Marca como lançado
+  // Extras / substitutos
+  const extras=coletarExtrasEdicao(dia);
+  extras.forEach(p=>{ valoresDia[p.nome]={tipo:p.tipo,e:p.e,s:p.s,m:p.m,extra:true}; });
+
+  dadosLanc[k][clinica].dias[dia]=valoresDia;
   if(!dadosLanc[k][clinica].diasLancados.includes(dia)){
     dadosLanc[k][clinica].diasLancados.push(dia);
   }
 
-  // Sincroniza com Google Sheets via Apps Script
+  // Sincroniza com Google Sheets
   if(cfg.scriptUrl){
-    const profissionais=profs.map((p,i)=>({
-      nome:p.nome,tipo:p.tipo,
-      e:parseInt(document.getElementById(`ed_${dia}_${i}_e`)?.value)||0,
-      s:parseInt(document.getElementById(`ed_${dia}_${i}_s`)?.value)||0,
-      m:parseInt(document.getElementById(`ed_${dia}_${i}_m`)?.value)||0
-    }));
+    const profissionais=[
+      ...profs.map((p,i)=>({
+        nome:p.nome,tipo:p.tipo,
+        e:parseInt(document.getElementById(`ed_${dia}_${i}_e`)?.value)||0,
+        s:parseInt(document.getElementById(`ed_${dia}_${i}_s`)?.value)||0,
+        m:parseInt(document.getElementById(`ed_${dia}_${i}_m`)?.value)||0
+      })),
+      ...extras
+    ];
     try{
       await fetch(cfg.scriptUrl,{
         method:'POST',
@@ -1331,7 +1413,6 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
   renderDiasEdicao();
   renderDash();
   renderAlertas();
-  // Feedback visual
   const btn=document.querySelector(`#dia-row-${dia} .dia-edit-btn`);
   if(btn){btn.textContent='✓ Salvo!';setTimeout(()=>btn.textContent='Editar',1500);}
 }
