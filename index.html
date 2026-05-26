@@ -659,37 +659,32 @@ function togAus(i){
 
 async function salvarLanc(clinica){
   const btn=document.getElementById('btn-salvar-lanc');
-  btn.disabled=true; btn.textContent='⏳ Salvando...';
+  btn.disabled=true;btn.textContent='⏳ Salvando...';
   const agora=hoje();
-  const dia=agora.getDate(), mes=agora.getMonth()+1, ano=agora.getFullYear();
+  const dia=agora.getDate(),mes=agora.getMonth()+1,ano=agora.getFullYear();
   const k=chave(mes,ano);
   if(!dadosLanc[k])dadosLanc[k]={};
-  if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={profs:{},dias:[]};
-
+  if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={dias:{},diasLancados:[]};
+  migrarEstrutura(k,clinica);
   const profs=profsCache[clinica]||[];
-  const resumo=[];
+  const resumo=[],valoresDia={};
   profs.forEach((p,i)=>{
     const aus=document.getElementById(`aus_${i}`)?.checked;
     const e=aus?0:parseInt(document.getElementById(`n_${i}_e`)?.value)||0;
     const s=aus?0:parseInt(document.getElementById(`n_${i}_s`)?.value)||0;
     const m=aus?0:parseInt(document.getElementById(`n_${i}_m`)?.value)||0;
-    if(!dadosLanc[k][clinica].profs[p.nome])dadosLanc[k][clinica].profs[p.nome]={tipo:p.tipo,e:0,s:0,m:0};
-    dadosLanc[k][clinica].profs[p.nome].tipo=p.tipo;
-    dadosLanc[k][clinica].profs[p.nome].e+=e;
-    dadosLanc[k][clinica].profs[p.nome].s+=s;
-    dadosLanc[k][clinica].profs[p.nome].m+=m;
+    valoresDia[p.nome]={tipo:p.tipo,e,s,m};
     if(p.tipo==='psico')resumo.push(`${p.nome}: ${e} entrev, ${s} estrang`);
     else resumo.push(`${p.nome}: ${m} atend`);
   });
-  if(!dadosLanc[k][clinica].dias.includes(dia))dadosLanc[k][clinica].dias.push(dia);
-
-  // Salva no Sheets se gestor tiver token
-  if(accessToken)await syncSheets(clinica,profs,dia,mes,ano);
-
+  dadosLanc[k][clinica].dias[dia]=valoresDia;
+  if(!dadosLanc[k][clinica].diasLancados.includes(dia))dadosLanc[k][clinica].diasLancados.push(dia);
+  await syncSheets(clinica,profs,dia,mes,ano);
   saveState();
   document.getElementById('lanc-main').style.display='none';
   document.getElementById('lanc-sucesso').style.display='block';
   document.getElementById('sucesso-msg').textContent=`${clinica} — dia ${dia}/${mes}. ${resumo.join(' · ')}`;
+  btn.disabled=false;btn.textContent='✓ Registrar atendimentos';
 }
 
 function novoLanc(){
@@ -890,16 +885,51 @@ function parseTotais(rows){
   return{profs};
 }
 
+// Migra estrutura antiga {profs:{}, dias:[]} para nova {dias:{}, diasLancados:[]}
+function migrarEstrutura(k,clinica){
+  const d=dadosLanc[k]?.[clinica];
+  if(!d)return;
+  // Já está na nova estrutura
+  if(d.diasLancados!==undefined)return;
+  // Migra estrutura antiga
+  const diasLancados=d.dias||[];
+  dadosLanc[k][clinica]={dias:{},diasLancados};
+}
+
 function getTotais(cl,mes,ano){
   const k=chave(mes,ano);
-  // Prioriza lançamentos locais
-  if(dadosLanc[k]?.[cl]?.profs){
-    const profs=Object.entries(dadosLanc[k][cl].profs).map(([nome,v])=>({
-      nome,tipo:v.tipo,total:v.tipo==='psico'?(v.e+v.s):v.m
-    }));
-    return{profs};
+  const local=dadosLanc[k]?.[cl];
+
+  if(local&&(local.diasLancados?.length||Object.keys(local.dias||{}).length)){
+    // Nova estrutura: soma todos os dias
+    const totais={};
+    const diasObj=local.dias||{};
+    Object.values(diasObj).forEach(diaProfs=>{
+      Object.entries(diaProfs).forEach(([nome,v])=>{
+        if(!totais[nome])totais[nome]={tipo:v.tipo,total:0};
+        totais[nome].total+=(v.tipo==='psico'?(v.e+v.s):v.m);
+      });
+    });
+    // Estrutura antiga (compatibilidade)
+    if(local.profs&&!Object.keys(diasObj).length){
+      Object.entries(local.profs).forEach(([nome,v])=>{
+        if(!totais[nome])totais[nome]={tipo:v.tipo,total:0};
+        totais[nome].total+=(v.tipo==='psico'?(v.e+v.s):v.m);
+      });
+    }
+    const profs=Object.entries(totais).map(([nome,v])=>({nome,tipo:v.tipo,total:v.total}));
+    if(profs.length)return{profs};
   }
+
+  // Fallback: dados do Sheets
   return cacheSheets[k]?.[cl]||{profs:[]};
+}
+
+function getDiasLancados(cl,mes,ano){
+  const k=chave(mes,ano);
+  const local=dadosLanc[k]?.[cl];
+  if(!local)return[];
+  return local.diasLancados||local.dias||[];
 }
 
 function renderDash(){
@@ -949,7 +979,7 @@ function temDiaSemLancamento(cl,mes,ano){
   if(mes!==agora.getMonth()+1||ano!==agora.getFullYear())return false;
   const uteis=diasUteisMes(mes,ano).filter(d=>d<agora.getDate());
   if(!uteis.length)return false;
-  const lancados=dadosLanc[chave(mes,ano)]?.[cl]?.dias||[];
+  const lancados=getDiasLancados(cl,mes,ano);
   return uteis.some(d=>!lancados.includes(d));
 }
 
@@ -959,18 +989,16 @@ function renderAlertas(){
   const agora=hoje();
   const area=document.getElementById('alertas-area');
   if(mes!==agora.getMonth()+1||ano!==agora.getFullYear()){area.innerHTML='';return;}
-
   const uteis=diasUteisMes(mes,ano).filter(d=>d<agora.getDate());
   const problemas=[];
   CLINICAS.forEach(cl=>{
-    const lancados=dadosLanc[chave(mes,ano)]?.[cl]?.dias||[];
+    const lancados=getDiasLancados(cl,mes,ano);
     const faltando=uteis.filter(d=>!lancados.includes(d));
     if(faltando.length)problemas.push(`<strong>${cl}</strong>: ${faltando.map(d=>'dia '+d).join(', ')}`);
   });
-
   if(!problemas.length){
     area.innerHTML=`<div class="alerta-box ok"><span>✅</span><span>Todos os lançamentos em dia!</span></div>`;
-  } else {
+  }else{
     area.innerHTML=`<div class="alerta-box aviso"><span style="font-size:16px">⚠️</span><span><strong>Dias sem lançamento:</strong><br>${problemas.join('<br>')}</span></div>`;
   }
 }
@@ -1095,9 +1123,7 @@ function renderDiasEdicao(){
   if(!clinica){lista.innerHTML='';return;}
 
   const agora=hoje();
-  const lancados=dadosLanc[chave(mes,ano)]?.[clinica]?.dias||[];
-  const profsLocal=dadosLanc[chave(mes,ano)]?.[clinica]?.profs||{};
-
+  const lancados=getDiasLancados(clinica,mes,ano);
   let html='';
   const totalDias=new Date(ano,mes,0).getDate();
 
@@ -1116,15 +1142,12 @@ function renderDiasEdicao(){
       html+=`<div class="dia-row"><div class="dia-row-top"><span class="dia-num">Dia ${d}</span><span class="dia-status" style="color:var(--hint)">${diaSemana} — ainda não ocorreu</span></div></div>`;
       continue;
     }
-
     const statusTxt=lancado?`<span class="dia-ok">✓ Lançado</span>`:`<span class="dia-falta">⚠ Sem lançamento</span>`;
-    const btnTxt=lancado?'Editar':'Marcar/Lançar';
-
     html+=`<div class="dia-row" id="dia-row-${d}">
       <div class="dia-row-top">
         <span class="dia-num">Dia ${d} <span style="font-weight:400;color:var(--hint)">${diaSemana}</span></span>
         <span class="dia-status">${statusTxt}</span>
-        <button class="dia-edit-btn" onclick="toggleEditForm(${d},'${clinica}',${mes},${ano})">${btnTxt}</button>
+        <button class="dia-edit-btn" onclick="toggleEditForm(${d},'${clinica}',${mes},${ano})">${lancado?'Editar':'Marcar/Lançar'}</button>
       </div>
       <div id="edit-form-${d}" style="display:none;width:100%"></div>
     </div>`;
@@ -1135,17 +1158,16 @@ function renderDiasEdicao(){
 async function toggleEditForm(dia,clinica,mes,ano){
   const formEl=document.getElementById(`edit-form-${dia}`);
   if(formEl.style.display==='block'){formEl.style.display='none';return;}
-
   formEl.innerHTML='<div style="font-size:12px;color:var(--muted);padding:.5rem">⏳ Carregando...</div>';
   formEl.style.display='block';
 
-  // Busca profissionais
   let profs=profsCache[clinica];
   if(!profs||!profs.length)profs=await buscarProfs(clinica);
   profsCache[clinica]=profs;
 
-  // Valores já lançados para este dia
-  const dadosDia=dadosLanc[chave(mes,ano)]?.[clinica]?.profs||{};
+  // Valores já lançados para este dia específico
+  const k=chave(mes,ano);
+  const dadosDia=dadosLanc[k]?.[clinica]?.dias?.[dia]||{};
 
   let html='<div class="edit-form">';
   profs.forEach((p,i)=>{
@@ -1160,12 +1182,10 @@ async function toggleEditForm(dia,clinica,mes,ano){
     }
     html+='</div>';
   });
-
   html+=`<div class="edit-actions">
-    <button class="edit-salvar" onclick="salvarEdicaoDia(${dia},'${clinica}',${mes},${ano})">✓ Salvar alterações</button>
+    <button class="edit-salvar" onclick="salvarEdicaoDia(${dia},'${clinica}',${mes},${ano})">✓ Salvar</button>
     <button class="edit-zerar" onclick="zerarDia(${dia},'${clinica}',${mes},${ano})">Zerar dia</button>
   </div></div>`;
-
   formEl.innerHTML=html;
 }
 
@@ -1173,23 +1193,25 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
   const profs=profsCache[clinica]||[];
   const k=chave(mes,ano);
   if(!dadosLanc[k])dadosLanc[k]={};
-  if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={profs:{},dias:[]};
+  if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={dias:{},diasLancados:[]};
 
+  // Migra estrutura antiga se necessário
+  migrarEstrutura(k,clinica);
+
+  // Salva valores deste dia específico
+  const valoresDia={};
   profs.forEach((p,i)=>{
     const e=parseInt(document.getElementById(`ed_${dia}_${i}_e`)?.value)||0;
     const s=parseInt(document.getElementById(`ed_${dia}_${i}_s`)?.value)||0;
     const m=parseInt(document.getElementById(`ed_${dia}_${i}_m`)?.value)||0;
-
-    if(!dadosLanc[k][clinica].profs[p.nome])dadosLanc[k][clinica].profs[p.nome]={tipo:p.tipo,e:0,s:0,m:0};
-
-    // Substitui (não soma) os valores do dia editado
-    // Para edição, recalculamos o total do mês
-    // Estratégia: remove contribuição anterior deste dia e adiciona nova
-    dadosLanc[k][clinica].profs[p.nome].tipo=p.tipo;
+    valoresDia[p.nome]={tipo:p.tipo,e,s,m};
   });
+  dadosLanc[k][clinica].dias[dia]=valoresDia;
 
-  // Marca dia como lançado
-  if(!dadosLanc[k][clinica].dias.includes(dia))dadosLanc[k][clinica].dias.push(dia);
+  // Marca como lançado
+  if(!dadosLanc[k][clinica].diasLancados.includes(dia)){
+    dadosLanc[k][clinica].diasLancados.push(dia);
+  }
 
   // Sincroniza com Google Sheets via Apps Script
   if(cfg.scriptUrl){
@@ -1209,33 +1231,38 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
   }
 
   saveState();
-  renderDiasEdicao(); // Atualiza lista
-  renderDash();       // Atualiza dashboard
-  renderAlertas();    // Atualiza alertas
+  renderDiasEdicao();
+  renderDash();
+  renderAlertas();
+  // Feedback visual
+  const btn=document.querySelector(`#dia-row-${dia} .dia-edit-btn`);
+  if(btn){btn.textContent='✓ Salvo!';setTimeout(()=>btn.textContent='Editar',1500);}
 }
 
 async function zerarDia(dia,clinica,mes,ano){
   if(!confirm(`Zerar dia ${dia} de ${clinica}? Isso remove o registro deste dia.`))return;
   const k=chave(mes,ano);
-
-  // Remove dia da lista de lançados
-  if(dadosLanc[k]?.[clinica]?.dias){
-    dadosLanc[k][clinica].dias=dadosLanc[k][clinica].dias.filter(d=>d!==dia);
+  if(dadosLanc[k]?.[clinica]){
+    // Remove dia dos lançados
+    if(dadosLanc[k][clinica].diasLancados){
+      dadosLanc[k][clinica].diasLancados=dadosLanc[k][clinica].diasLancados.filter(d=>d!==dia);
+    }
+    // Remove dados do dia
+    if(dadosLanc[k][clinica].dias){
+      delete dadosLanc[k][clinica].dias[dia];
+    }
   }
-
   // Zera no Sheets via Apps Script
   if(cfg.scriptUrl){
     const profs=profsCache[clinica]||[];
-    const profissionais=profs.map(p=>({nome:p.nome,tipo:p.tipo,e:0,s:0,m:0}));
     try{
       await fetch(cfg.scriptUrl,{
         method:'POST',
         headers:{'Content-Type':'text/plain'},
-        body:JSON.stringify({clinica,dia,mes,ano,profissionais})
+        body:JSON.stringify({clinica,dia,mes,ano,profissionais:profs.map(p=>({nome:p.nome,tipo:p.tipo,e:0,s:0,m:0}))})
       });
     }catch(e){}
   }
-
   saveState();
   renderDiasEdicao();
   renderDash();
