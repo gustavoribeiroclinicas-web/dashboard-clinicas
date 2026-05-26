@@ -158,6 +158,14 @@ input:checked+.slider:before{transform:translateX(20px)}
 .sdot.ok{background:var(--green)}.sdot.err{background:var(--red)}.sdot.warn{background:var(--amber)}
 .status-bar{font-size:12px;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:5px}
 .fds-box{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);border-radius:var(--radius-sm);padding:1rem;text-align:center;font-size:14px}
+.add-prof-btn{width:100%;padding:10px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--purple);border:1.5px dashed var(--purple);border-radius:var(--radius-sm);cursor:pointer;margin-bottom:8px;transition:background .12s}
+.add-prof-btn:hover{background:var(--purple-light)}
+.extra-prof-form{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:8px}
+.extra-prof-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.extra-prof-title{font-size:13px;font-weight:600;color:var(--muted)}
+.remove-prof-btn{font-size:11px;padding:3px 8px;border-radius:99px;border:1px solid var(--red-border);background:var(--surface);color:var(--red);cursor:pointer;font-family:'DM Sans',sans-serif}
+.remove-prof-btn:hover{background:var(--red-bg)}
+.extra-sel{width:100%;padding:8px 10px;font-size:13px;font-family:'DM Sans',sans-serif;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);margin-bottom:8px;cursor:pointer}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
 .modal{background:var(--surface);border-radius:var(--radius);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.18)}
 .modal-header{padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1}
@@ -625,8 +633,10 @@ async function renderLancForm(clinica, container){
   const profs = await buscarProfs(clinica);
   if(!profs.length){container.innerHTML='<div class="alerta-box erro">⚠️ Nenhum profissional encontrado.</div>';return;}
   profsCache[clinica]=profs;
+
   const dia=hoje().getDate();
   let html=`<div class="lanc-card"><div class="lanc-card-title">Atendimentos — dia ${dia}</div>`;
+
   profs.forEach((p,i)=>{
     const isP=p.tipo==='psico';
     html+=`<div class="prof-block">
@@ -637,11 +647,72 @@ async function renderLancForm(clinica, container){
       <label class="toggle"><input type="checkbox" id="aus_${i}" onchange="togAus(${i})"><span class="slider"></span></label>
     </div></div>`;
   });
-  html+=`</div><button class="btn btn-purple btn-full" id="btn-salvar-lanc" onclick="salvarLanc('${clinica}')">✓ Registrar atendimentos</button>`;
+
+  html+=`</div>
+  <div id="extras-area-${clinica.replace(/\s/g,'_')}"></div>
+  <button class="add-prof-btn" onclick="adicionarProfExtra('${clinica}')">+ Adicionar profissional substituto</button>
+  <button class="btn btn-purple btn-full" id="btn-salvar-lanc" onclick="salvarLanc('${clinica}')">✓ Registrar atendimentos</button>`;
+
   container.innerHTML=html;
+  window._extrasCount=window._extrasCount||0;
 }
 
-function cCtrl(i,t,label){
+function adicionarProfExtra(clinica){
+  window._extrasCount=(window._extrasCount||0)+1;
+  const idx=window._extrasCount;
+  const areaId=`extras-area-${clinica.replace(/\s/g,'_')}`;
+  const area=document.getElementById(areaId);
+  if(!area)return;
+
+  const div=document.createElement('div');
+  div.className='extra-prof-form';
+  div.id=`extra-prof-${idx}`;
+  div.innerHTML=`
+    <div class="extra-prof-header">
+      <span class="extra-prof-title">Profissional substituto ${idx}</span>
+      <button class="remove-prof-btn" onclick="removerProfExtra(${idx})">✕ Remover</button>
+    </div>
+    <input type="text" class="extra-sel" id="extra-nome-${idx}" placeholder="Nome do profissional (ex: Paula)">
+    <select class="extra-sel" id="extra-tipo-${idx}" onchange="renderCamposExtra(${idx})">
+      <option value="psico">Psicóloga</option>
+      <option value="med">Médica</option>
+    </select>
+    <div id="extra-campos-${idx}">
+      ${cCtrl('x'+idx,'e','🧠 Entrevistas')}
+      ${cCtrl('x'+idx,'s','🌍 Estrangeiros')}
+    </div>`;
+  area.appendChild(div);
+}
+
+function renderCamposExtra(idx){
+  const tipo=document.getElementById(`extra-tipo-${idx}`)?.value;
+  const camposEl=document.getElementById(`extra-campos-${idx}`);
+  if(!camposEl)return;
+  if(tipo==='psico'){
+    camposEl.innerHTML=cCtrl('x'+idx,'e','🧠 Entrevistas')+cCtrl('x'+idx,'s','🌍 Estrangeiros');
+  }else{
+    camposEl.innerHTML=cCtrl('x'+idx,'m','🩺 Atendimentos');
+  }
+}
+
+function removerProfExtra(idx){
+  document.getElementById(`extra-prof-${idx}`)?.remove();
+}
+
+function coletarExtras(){
+  const extras=[];
+  document.querySelectorAll('[id^="extra-prof-"]').forEach(el=>{
+    const idx=el.id.replace('extra-prof-','');
+    const nome=document.getElementById(`extra-nome-${idx}`)?.value.trim();
+    const tipo=document.getElementById(`extra-tipo-${idx}`)?.value||'psico';
+    if(!nome)return;
+    const e=parseInt(document.getElementById(`n_x${idx}_e`)?.value)||0;
+    const s=parseInt(document.getElementById(`n_x${idx}_s`)?.value)||0;
+    const m=parseInt(document.getElementById(`n_x${idx}_m`)?.value)||0;
+    extras.push({nome,tipo,e,s,m,extra:true});
+  });
+  return extras;
+}
   return `<div class="campo-row"><span class="campo-label">${label}</span>
     <div class="campo-ctrl">
       <button class="cbtn minus" onclick="alt('n_${i}_${t}',-1)">−</button>
@@ -677,9 +748,21 @@ async function salvarLanc(clinica){
     if(p.tipo==='psico')resumo.push(`${p.nome}: ${e} entrev, ${s} estrang`);
     else resumo.push(`${p.nome}: ${m} atend`);
   });
+
+  // Inclui profissionais extras (substitutos)
+  const extras=coletarExtras();
+  extras.forEach(p=>{
+    valoresDia[p.nome]={tipo:p.tipo,e:p.e,s:p.s,m:p.m,extra:true};
+    if(p.tipo==='psico')resumo.push(`${p.nome} (substituta): ${p.e} entrev, ${p.s} estrang`);
+    else resumo.push(`${p.nome} (substituto): ${p.m} atend`);
+  });
+
   dadosLanc[k][clinica].dias[dia]=valoresDia;
   if(!dadosLanc[k][clinica].diasLancados.includes(dia))dadosLanc[k][clinica].diasLancados.push(dia);
-  await syncSheets(clinica,profs,dia,mes,ano);
+
+  // Sincroniza todos (fixos + extras) com Sheets
+  const todosProfs=[...profs,...extras.map(p=>({...p,colEntrev:null,colEstrang:null}))];
+  await syncSheets(clinica,todosProfs,dia,mes,ano);
   saveState();
   document.getElementById('lanc-main').style.display='none';
   document.getElementById('lanc-sucesso').style.display='block';
@@ -1015,11 +1098,11 @@ function renderPag(){
     if(!d.profs.length)return;
     let tc=0,rows='';
     d.profs.forEach(p=>{
-      if(p.tipo==='psico'){const br=p.total*vp,iv=br*imp;tc+=br;rows+=`<tr><td>${p.nome} <span class="bp">Psicóloga</span></td><td>${p.total}</td><td>${fmt(br)}</td><td class="imposto">− ${fmt(iv)} (${cfg.imp}%)</td><td style="font-weight:600">${fmt(br-iv)}</td></tr>`;}
-      else{const br=p.total*vm;tc+=br;rows+=`<tr><td>${p.nome} <span class="bm">Médica</span></td><td>${p.total}</td><td>${fmt(br)}</td><td style="color:var(--muted)">—</td><td style="font-weight:600">${fmt(br)}</td></tr>`;}
+      if(p.tipo==='psico'){const br=p.total*vp,iv=br*imp;tc+=br;rows+=`<tr><td>${p.nome} <span class="bp">Psicóloga</span></td><td>${p.total}</td><td style="font-weight:600">${fmt(br)}</td><td class="imposto">${fmt(iv)} (${cfg.imp}%)</td></tr>`;}
+      else{const br=p.total*vm;tc+=br;rows+=`<tr><td>${p.nome} <span class="bm">Médica</span></td><td>${p.total}</td><td style="font-weight:600">${fmt(br)}</td><td style="color:var(--muted)">—</td></tr>`;}
     });
     if(!rows)return;tg+=tc;
-    html+=`<div class="pag-section"><div class="pag-head"><span class="pag-head-name">${cl}</span><span class="pag-tot">Total: <strong>${fmt(tc)}</strong></span></div><table class="pt"><thead><tr><th>Profissional</th><th>Atendimentos</th><th>Valor bruto</th><th>Imposto</th><th>Valor líquido</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    html+=`<div class="pag-section"><div class="pag-head"><span class="pag-head-name">${cl}</span><span class="pag-tot">Total: <strong>${fmt(tc)}</strong></span></div><table class="pt"><thead><tr><th>Profissional</th><th>Atendimentos</th><th>Valor bruto</th><th>Imposto (info)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   });
 
   if(!html)html=`<div class="loading-msg">Nenhum dado para ${MESES[mes-1]}/${ano}.<br><small>Faça lançamentos ou atualize os dados no Dashboard.</small></div>`;
