@@ -195,6 +195,52 @@ input:checked+.slider:before{transform:translateX(20px)}
 .edit-salvar:hover{background:var(--purple-dark)}
 .edit-zerar{padding:8px 12px;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--red);border:1px solid var(--red-border);border-radius:var(--radius-sm);cursor:pointer}
 .edit-zerar:hover{background:var(--red-bg)}
+/* ── RESPONSIVO MOBILE ── */
+@media (max-width: 640px) {
+  .topbar{padding:0 .75rem;overflow-x:auto;gap:0}
+  .brand{font-size:13px;padding:.75rem 1rem .75rem 0;margin-right:.75rem;flex-shrink:0}
+  .nav-tab{padding:.75rem .75rem;font-size:12px;flex-shrink:0}
+  .page{padding:1rem .75rem}
+  .hero{flex-direction:column;align-items:flex-start;gap:1rem;padding:1rem}
+  .hero-div{display:none}
+  .hero-val{font-size:24px}
+  .controls{width:100%;justify-content:flex-start;flex-wrap:wrap}
+  .controls select,.sel{font-size:12px;padding:6px 8px}
+  .clinic-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .ccard{padding:.75rem}
+  .cname{font-size:12px}
+  .cval{font-size:14px}
+  .page-header{flex-wrap:wrap;gap:6px}
+  .page-header h2{font-size:16px;width:100%}
+  .pag-head{flex-direction:column;align-items:flex-start;gap:4px}
+  table.pt{font-size:11px}
+  .pt th,.pt td{padding:6px 8px}
+  .lanc-wrap{max-width:100%}
+  .lanc-header h2{font-size:18px}
+  .lanc-card{padding:.9rem}
+  .campo-row{flex-wrap:nowrap}
+  .cfg-card{max-width:100%}
+  .two-col{grid-template-columns:1fr}
+  .modal{max-height:95vh;border-radius:var(--radius) var(--radius) 0 0}
+  .modal-overlay{align-items:flex-end;padding:0}
+  .edit-actions{flex-direction:column}
+  .edit-salvar,.edit-zerar{width:100%}
+  .login-card{padding:1.5rem 1.25rem;border-radius:var(--radius)}
+  .login-screen{align-items:flex-start;padding-top:3rem}
+  .login-tabs button{font-size:12px;padding:8px 6px}
+  .pw-row{grid-template-columns:100px 1fr auto}
+  .total-card{flex-direction:column;gap:.5rem;text-align:center}
+  .total-card-val{font-size:22px}
+  .alerta-box{font-size:12px}
+  .btn-full{font-size:14px;padding:12px}
+  .hero-stat{width:100%}
+  .meta-wrap{flex-wrap:wrap}
+  .meta-input{width:70px}
+}
+@media (max-width: 380px) {
+  .clinic-grid{grid-template-columns:1fr}
+  .nav-tab{padding:.75rem .5rem;font-size:11px}
+}
 </style>
 </head>
 <body>
@@ -1161,7 +1207,7 @@ function renderPag(){
       else{const br=p.total*vm;tc+=br;rows+=`<tr><td>${p.nome} <span class="bm">Médica</span></td><td>${p.total}</td><td style="font-weight:600">${fmt(br)}</td><td style="color:var(--muted)">—</td></tr>`;}
     });
     if(!rows)return;tg+=tc;
-    html+=`<div class="pag-section"><div class="pag-head"><span class="pag-head-name">${cl}</span><span class="pag-tot">Total: <strong>${fmt(tc)}</strong></span></div><table class="pt"><thead><tr><th>Profissional</th><th>Atendimentos</th><th>Valor bruto</th><th>Imposto (info)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    html+=`<div class="pag-section"><div class="pag-head"><span class="pag-head-name">${cl}</span><span class="pag-tot">Total: <strong>${fmt(tc)}</strong></span></div><div style="overflow-x:auto"><table class="pt"><thead><tr><th>Profissional</th><th>Atendimentos</th><th>Valor bruto</th><th>Imposto (info)</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
   });
 
   if(!html)html=`<div class="loading-msg">Nenhum dado para ${MESES[mes-1]}/${ano}.<br><small>Faça lançamentos ou atualize os dados no Dashboard.</small></div>`;
