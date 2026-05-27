@@ -612,21 +612,51 @@ function loadState(){
   }catch(e){}
 }
 
+// Função de POST que contorna CORS do Apps Script usando no-cors + iframe trick
+async function scriptPost(dados){
+  const url = cfg.scriptUrl || SCRIPT_URL_DEFAULT;
+  // Apps Script aceita POST com application/x-www-form-urlencoded via no-cors
+  // Mas para receber resposta usamos GET com dados encoded
+  // Para operações de escrita sem necessidade de resposta: no-cors
+  try{
+    await fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'payload=' + encodeURIComponent(JSON.stringify(dados))
+    });
+    return {sucesso: true};
+  }catch(e){
+    console.warn('scriptPost erro:', e);
+    return {sucesso: false};
+  }
+}
+
+// Função de GET com resposta (leitura)
+async function scriptGet(params){
+  const url = cfg.scriptUrl || SCRIPT_URL_DEFAULT;
+  const qs = Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(), 8000);
+  try{
+    const r = await fetch(`${url}?${qs}`, {signal: controller.signal});
+    clearTimeout(timeout);
+    if(!r.ok) return null;
+    return await r.json();
+  }catch(e){
+    clearTimeout(timeout);
+    console.warn('scriptGet erro:', e);
+    return null;
+  }
+}
+
 // URL do Apps Script — fallback para funcionar em qualquer dispositivo sem configuração
 const SCRIPT_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbzYpGh-El81ezpz4giwQNOPkgv7YyjQwAYafm-vDfvROrfVZoiGU2BaiT9Mm-78L7qsGA/exec';
 
 async function loadStateFromCloud(){
-  // Usa URL configurada ou o padrão hardcoded
-  const url=cfg.scriptUrl||localStorage.getItem('cl_script_url')||SCRIPT_URL_DEFAULT;
-  if(!url)return;
   try{
-    const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),8000);
-    const r=await fetch(`${url}?acao=carregarConfig`,{signal:controller.signal});
-    clearTimeout(timeout);
-    if(!r.ok)return;
-    const d=await r.json();
-    if(d.sucesso&&d.dados&&Object.keys(d.dados).length){
+    const d=await scriptGet({acao:'carregarConfig'});
+    if(d&&d.sucesso&&d.dados&&Object.keys(d.dados).length){
       const nuvem=d.dados;
       if(nuvem.senhas)cfg.senhas=nuvem.senhas;
       if(nuvem.senhasDiretores)cfg.senhasDiretores=nuvem.senhasDiretores;
@@ -655,13 +685,9 @@ function saveStateLocal(){
 async function saveState(){
   saveStateLocal();
   const url=cfg.scriptUrl||SCRIPT_URL_DEFAULT;
-  if(!url)return;
   try{
     // Salva configurações
-    await fetch(url,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({
+    await scriptPost({
         acao:'salvarConfig',
         cfg:{
           senhas:cfg.senhas,
@@ -681,17 +707,9 @@ async function saveState(){
 
 // Salva lançamentos de um mês específico na nuvem
 async function saveLancamentosNuvem(mes, ano){
-  const url=cfg.scriptUrl||SCRIPT_URL_DEFAULT;
-  if(!url)return;
   const k=chave(mes,ano);
   const lancamentos=dadosLanc[k]||{};
-  try{
-    await fetch(url,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({acao:'salvarLancamentos',lancamentos,mes,ano})
-    });
-  }catch(e){console.warn('Erro lançamentos nuvem:',e);}
+  await scriptPost({acao:'salvarLancamentos',lancamentos,mes,ano});
 }
 
 // Carrega lançamentos de um mês da nuvem
@@ -1690,13 +1708,7 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
       })),
       ...extras
     ];
-    try{
-      await fetch(cfg.scriptUrl,{
-        method:'POST',
-        headers:{'Content-Type':'text/plain'},
-        body:JSON.stringify({clinica,dia,mes,ano,profissionais})
-      });
-    }catch(e){console.warn('Sync edição:',e);}
+    await scriptPost({clinica,dia,mes,ano,profissionais});
   }
 
   saveStateLocal();
@@ -1724,13 +1736,7 @@ async function zerarDia(dia,clinica,mes,ano){
   // Zera no Sheets via Apps Script
   if(cfg.scriptUrl){
     const profs=profsCache[clinica]||[];
-    try{
-      await fetch(cfg.scriptUrl,{
-        method:'POST',
-        headers:{'Content-Type':'text/plain'},
-        body:JSON.stringify({clinica,dia,mes,ano,profissionais:profs.map(p=>({nome:p.nome,tipo:p.tipo,e:0,s:0,m:0}))})
-      });
-    }catch(e){}
+    await scriptPost({clinica,dia,mes,ano,profissionais:profs.map(p=>({nome:p.nome,tipo:p.tipo,e:0,s:0,m:0}))});
   }
   saveStateLocal();
   saveLancamentosNuvem(mes,ano).catch(()=>{});
@@ -1763,24 +1769,12 @@ async function initContas(){
 }
 
 async function carregarTodasContas(){
-  const url = cfg.scriptUrl || SCRIPT_URL_DEFAULT;
-  try{
-    const r = await fetch(`${url}?acao=carregarContas`);
-    if(!r.ok) return;
-    const d = await r.json();
-    if(d.sucesso && d.dados) contasData = d.dados;
-  }catch(e){ console.warn('Erro contas:', e); }
+  const d = await scriptGet({acao:'carregarContas'});
+  if(d && d.sucesso && d.dados) contasData = d.dados;
 }
 
 async function salvarContasClinica(clinica){
-  const url = cfg.scriptUrl || SCRIPT_URL_DEFAULT;
-  try{
-    await fetch(url, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain'},
-      body: JSON.stringify({acao: 'salvarContas', clinica, contas: contasData[clinica] || []})
-    });
-  }catch(e){ console.warn('Erro salvar contas:', e); }
+  await scriptPost({acao: 'salvarContas', clinica, contas: contasData[clinica] || []});
 }
 
 function renderContasTabs(){
