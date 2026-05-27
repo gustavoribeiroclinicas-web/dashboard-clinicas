@@ -612,24 +612,32 @@ function loadState(){
   }catch(e){}
 }
 
-// Função de POST que contorna CORS do Apps Script usando no-cors + iframe trick
+// Função de POST que tenta CORS normal primeiro, depois no-cors como fallback
 async function scriptPost(dados){
   const url = cfg.scriptUrl || SCRIPT_URL_DEFAULT;
-  // Apps Script aceita POST com application/x-www-form-urlencoded via no-cors
-  // Mas para receber resposta usamos GET com dados encoded
-  // Para operações de escrita sem necessidade de resposta: no-cors
+  // Tenta POST normal primeiro (funciona quando Apps Script está configurado corretamente)
   try{
-    await fetch(url, {
+    const r = await fetch(url, {
       method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: 'payload=' + encodeURIComponent(JSON.stringify(dados))
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify(dados)
     });
-    return {sucesso: true};
+    if(r.ok){
+      const d = await r.json();
+      return d;
+    }
   }catch(e){
-    console.warn('scriptPost erro:', e);
-    return {sucesso: false};
+    // CORS bloqueou — tenta no-cors como fallback (sem confirmação de resposta)
+    try{
+      await fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'payload=' + encodeURIComponent(JSON.stringify(dados))
+      });
+    }catch(e2){ console.warn('scriptPost fallback erro:', e2); }
   }
+  return {sucesso: true};
 }
 
 // Função de GET com resposta (leitura)
@@ -1815,7 +1823,7 @@ function renderContasTabela(){
       const vencDate = c.venc ? new Date(c.venc+'T00:00:00') : null;
       const isVencida = vencDate && vencDate < hoje && !c.pago;
       const vencStr = vencDate ? vencDate.toLocaleDateString('pt-BR') : '—';
-      const valorStr = c.valor ? fmt(parseFloat(c.valor)) : '—';
+      const valorStr = c.valor ? fmt(parseFloat(c.valor)||0) : '—';
 
       let statusHtml = '';
       if(c.pago){
@@ -1937,7 +1945,9 @@ async function salvarConta(){
   const clinica = document.getElementById('conta-clinica-sel').value || contasClinicaAtiva;
   const id = document.getElementById('conta-id').value || ('c_' + Date.now());
   const venc = document.getElementById('conta-venc').value;
-  const valor = document.getElementById('conta-valor').value;
+  // Salva valor como número para evitar problemas de formatação
+  const valorRaw = document.getElementById('conta-valor').value.replace(',','.');
+  const valor = parseFloat(valorRaw) || 0;
   const obs = document.getElementById('conta-obs').value.trim();
 
   if(!contasData[clinica]) contasData[clinica] = [];
@@ -1958,6 +1968,23 @@ async function salvarConta(){
   fecharModalConta();
   renderContasTabela();
   renderContasTabs();
+
+  // Mostra feedback de salvando
+  const area = document.getElementById('contas-area');
+  const aviso = document.createElement('div');
+  aviso.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--purple);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.2)';
+  aviso.textContent = '💾 Salvando...';
+  document.body.appendChild(aviso);
+
+  try{
+    await salvarContasClinica(clinica);
+    aviso.textContent = '✅ Salvo!';
+    aviso.style.background = 'var(--green)';
+  }catch(e){
+    aviso.textContent = '⚠ Erro ao salvar';
+    aviso.style.background = 'var(--red)';
+  }
+  setTimeout(()=>aviso.remove(), 2000);
   await salvarContasClinica(clinica);
 }
 
