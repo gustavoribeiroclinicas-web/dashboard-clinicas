@@ -496,6 +496,17 @@ table.ctable{width:100%;border-collapse:collapse;font-size:13px}
   <!-- CONFIG -->
   <div id="page-config" class="page">
     <div class="cfg-card">
+      <div class="cfg-title">💾 Backup de dados</div>
+      <p class="hint" style="margin-bottom:.75rem">Exporta todos os lançamentos, configurações e contas a pagar em um arquivo JSON. Guarde em local seguro (OneDrive, Drive, etc).</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-purple" onclick="exportarBackup()">⬇ Exportar backup completo</button>
+        <button class="btn" onclick="document.getElementById('inp-importar').click()">⬆ Importar backup</button>
+        <input type="file" id="inp-importar" accept=".json" style="display:none" onchange="importarBackup(this)">
+      </div>
+      <p class="hint" style="margin-top:.75rem">Último backup: <span id="ultimo-backup">nunca</span></p>
+    </div>
+
+    <div class="cfg-card">
       <div class="cfg-title">💰 Valores por atendimento</div>
       <div class="two-col">
         <div class="fg"><label>Psicóloga (R$)</label><input type="number" id="vp" value="50" min="0"></div>
@@ -561,6 +572,17 @@ table.ctable{width:100%;border-collapse:collapse;font-size:13px}
       </div>
     </div>
   </div>
+
+  <!-- CONTAS A PAGAR -->
+  <div id="page-contas" class="page">
+    <div class="contas-header">
+      <h2>Contas a pagar</h2>
+      <button class="btn btn-purple" id="btn-nova-conta" onclick="abrirModalConta()" style="display:none">+ Nova conta</button>
+    </div>
+    <div class="clinica-tabs" id="contas-clinica-tabs"></div>
+    <div id="contas-area"></div>
+  </div>
+
 </div>
 
 <script src="https://accounts.google.com/gsi/client" async></script>
@@ -761,7 +783,7 @@ async function iniciarGestor(){
   document.getElementById('tela-login').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('user-chip').textContent='👤 Gestor';
-  ['tab-dash','tab-pag','tab-lanc','tab-cfg'].forEach(id=>document.getElementById(id).style.display='');
+  ['tab-dash','tab-pag','tab-lanc','tab-cfg','tab-contas'].forEach(id=>document.getElementById(id).style.display='');
 
   // Inicializa já com dados locais (não bloqueia o login)
   initConfig();
@@ -807,9 +829,11 @@ function sair(){
 function showPage(p,el){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
+  const pageEl=document.getElementById('page-'+p);
+  if(pageEl)pageEl.classList.add('active');
   if(el)el.classList.add('active');
   if(p==='pagamentos')renderPag();
+  if(p==='contas')initContas();
   if(p==='lancamento'&&perfilAtual==='gestor')initLancamento(null);
 }
 
@@ -1973,8 +1997,103 @@ function alertasContas(){
   });
   return { vencidas, aVencer };
 }
+
+// ════════════════════════════════════════════
+// BACKUP
+// ════════════════════════════════════════════
+function exportarBackup(){
+  const agora = new Date();
+  const dataStr = agora.toLocaleDateString('pt-BR').replace(/\//g,'_');
+  const horaStr = agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}).replace(':','h');
+
+  const backup = {
+    versao: '1.0',
+    exportadoEm: agora.toLocaleString('pt-BR'),
+    cfg: {
+      valP: cfg.valP,
+      valM: cfg.valM,
+      imp: cfg.imp,
+      meta: cfg.meta,
+      sheets: cfg.sheets,
+      senhas: cfg.senhas,
+      senhasDiretores: cfg.senhasDiretores||[]
+    },
+    lancamentos: dadosLanc,
+    contas: contasData
+  };
+
+  const blob = new Blob([JSON.stringify(backup, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `backup_clinicas_${dataStr}_${horaStr}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+
+  // Registra data do último backup
+  localStorage.setItem('cl_ultimo_backup', agora.toLocaleString('pt-BR'));
+  atualizarUltimoBackup();
+}
+
+function importarBackup(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(!confirm('Importar backup? Isso vai substituir todos os dados atuais.')) return;
+
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try{
+      const backup = JSON.parse(e.target.result);
+      if(!backup.versao) throw new Error('Arquivo inválido');
+
+      // Restaura configurações
+      if(backup.cfg){
+        Object.assign(cfg, backup.cfg);
+        initConfig();
+      }
+
+      // Restaura lançamentos
+      if(backup.lancamentos) dadosLanc = backup.lancamentos;
+
+      // Restaura contas
+      if(backup.contas) contasData = backup.contas;
+
+      // Salva tudo na nuvem
+      saveStateLocal();
+      await saveState();
+
+      // Salva lançamentos na nuvem
+      for(const k of Object.keys(dadosLanc)){
+        const [mes,ano] = k.split('_');
+        await saveLancamentosNuvem(parseInt(mes), parseInt(ano));
+      }
+
+      // Salva contas na nuvem
+      for(const cl of Object.keys(contasData)){
+        await salvarContasClinica(cl);
+      }
+
+      alert(`✅ Backup restaurado com sucesso!\nExportado em: ${backup.exportadoEm}`);
+      renderDash();
+      renderAlertas();
+    }catch(err){
+      alert('Erro ao importar backup: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function atualizarUltimoBackup(){
+  const el = document.getElementById('ultimo-backup');
+  if(!el) return;
+  const ub = localStorage.getItem('cl_ultimo_backup');
+  if(el) el.textContent = ub || 'nunca';
+}
+
 // ── INIT ──────────────────────────────────────────────
 loadState();
+atualizarUltimoBackup();
 // Recupera URL do script salva localmente (para funcionar mesmo sem configurar de novo)
 if(!cfg.scriptUrl){
   const urlLocal=localStorage.getItem('cl_script_url');
