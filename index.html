@@ -195,6 +195,48 @@ input:checked+.slider:before{transform:translateX(20px)}
 .edit-salvar:hover{background:var(--purple-dark)}
 .edit-zerar{padding:8px 12px;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--red);border:1px solid var(--red-border);border-radius:var(--radius-sm);cursor:pointer}
 .edit-zerar:hover{background:var(--red-bg)}
+
+/* ── CONTAS A PAGAR ── */
+.contas-header{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap}
+.contas-header h2{font-size:18px;font-weight:700;flex:1}
+.clinica-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
+.ctab{padding:6px 14px;border-radius:99px;font-size:12px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.ctab.active{background:var(--purple);border-color:var(--purple);color:#fff}
+.ctab.tem-vencida{border-color:var(--red);color:var(--red)}
+.ctab.tem-vencida.active{background:var(--red);border-color:var(--red);color:#fff}
+.contas-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.contas-toolbar{padding:.85rem 1.25rem;border-bottom:1px solid var(--surface2);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.contas-toolbar-title{font-size:14px;font-weight:600;flex:1}
+table.ctable{width:100%;border-collapse:collapse;font-size:13px}
+.ctable th{padding:8px 1rem;text-align:left;font-size:11px;font-weight:600;color:var(--muted);background:var(--surface2);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.ctable td{padding:10px 1rem;border-bottom:1px solid var(--surface2);vertical-align:middle}
+.ctable tr:last-child td{border-bottom:none}
+.ctable tr:hover td{background:var(--surface2)}
+.ctable tr.pago td{opacity:.5}
+.ctable tr.vencida td:nth-child(2){color:var(--red);font-weight:600}
+.status-pago{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid;transition:all .15s;white-space:nowrap}
+.status-pago.pago{background:var(--green-bg);color:var(--green);border-color:var(--green-border)}
+.status-pago.pendente{background:var(--surface2);color:var(--muted);border-color:var(--border)}
+.status-pago.vencida{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
+.btn-pdf{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:var(--radius-sm);font-size:11px;font-weight:500;background:var(--blue-bg);color:var(--blue);border:1px solid #b8d4f0;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;white-space:nowrap}
+.btn-pdf:hover{background:#d0e8ff}
+.conta-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem}
+.conta-modal{background:var(--surface);border-radius:var(--radius);max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+.conta-modal-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface)}
+.conta-modal-title{font-size:15px;font-weight:600}
+.conta-modal-body{padding:1.25rem}
+.cfg{margin-bottom:12px}
+.cfg label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.cfg input,.cfg textarea,.cfg select{width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text)}
+.cfg input:focus,.cfg textarea:focus{outline:none;border-color:var(--purple)}
+.cfg textarea{min-height:70px;resize:vertical}
+.upload-area{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .15s;position:relative}
+.upload-area:hover{border-color:var(--purple)}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-area-txt{font-size:13px;color:var(--muted)}
+.upload-preview{font-size:12px;color:var(--green);margin-top:6px;font-weight:500}
+.soma-contas{padding:.85rem 1.25rem;background:var(--surface2);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.soma-val{font-weight:700;font-size:15px;font-family:'DM Mono',monospace}
 /* ── RESPONSIVO MOBILE ── */
 @media (max-width: 640px) {
   .topbar{padding:0 .75rem;overflow-x:auto;gap:0}
@@ -245,6 +287,50 @@ input:checked+.slider:before{transform:translateX(20px)}
 </head>
 <body>
 
+
+<!-- MODAL NOVA/EDITAR CONTA -->
+<div id="modal-conta" class="conta-modal-overlay" style="display:none" onclick="if(event.target===this)fecharModalConta()">
+  <div class="conta-modal">
+    <div class="conta-modal-header">
+      <span class="conta-modal-title" id="modal-conta-titulo">Nova conta</span>
+      <button class="modal-close" onclick="fecharModalConta()">×</button>
+    </div>
+    <div class="conta-modal-body">
+      <input type="hidden" id="conta-id">
+      <input type="hidden" id="conta-clinica-sel">
+      <div class="cfg">
+        <label>Descrição</label>
+        <input type="text" id="conta-desc" placeholder="Ex: Aluguel, Copel, Sanepar...">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="cfg">
+          <label>Vencimento</label>
+          <input type="date" id="conta-venc">
+        </div>
+        <div class="cfg">
+          <label>Valor (R$)</label>
+          <input type="number" id="conta-valor" placeholder="0,00" min="0" step="0.01">
+        </div>
+      </div>
+      <div class="cfg">
+        <label>Arquivo (PDF)</label>
+        <div class="upload-area" id="upload-area" onclick="document.getElementById('conta-arquivo-input').click()">
+          <input type="file" id="conta-arquivo-input" accept=".pdf,image/*" style="display:none" onchange="handleArquivo(this)">
+          <div class="upload-area-txt">📎 Clique para anexar PDF ou imagem</div>
+          <div class="upload-preview" id="upload-preview" style="display:none"></div>
+        </div>
+      </div>
+      <div class="cfg">
+        <label>Observação</label>
+        <textarea id="conta-obs" placeholder="Informações adicionais..."></textarea>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn btn-purple" style="flex:1;justify-content:center" onclick="salvarConta()">Salvar</button>
+        <button class="btn" id="btn-excluir-conta" onclick="excluirConta()" style="color:var(--red);border-color:var(--red-border);display:none">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- MODAL EDIÇÃO DE DIAS -->
 <div id="modal-edicao" class="modal-overlay" style="display:none" onclick="if(event.target===this)fecharModal()">
   <div class="modal">
@@ -322,6 +408,7 @@ input:checked+.slider:before{transform:translateX(20px)}
     <div class="nav-tab" id="tab-pag" onclick="showPage('pagamentos',this)">Pagamentos</div>
     <div class="nav-tab" id="tab-lanc" onclick="showPage('lancamento',this)">Lançamento</div>
     <div class="nav-tab" id="tab-cfg" onclick="showPage('config',this)">Configurações</div>
+    <div class="nav-tab" id="tab-contas" onclick="showPage('contas',this)">Contas</div>
     <div class="topbar-right">
       <div class="user-chip" id="user-chip"></div>
       <button class="btn btn-sm" onclick="sair()">Sair</button>
@@ -698,7 +785,7 @@ async function iniciarEstagiaria(clinica){
   document.getElementById('tela-login').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('user-chip').textContent='🏥 '+clinica;
-  ['tab-dash','tab-pag','tab-cfg'].forEach(id=>document.getElementById(id).style.display='none');
+  ['tab-dash','tab-pag','tab-cfg','tab-contas'].forEach(id=>document.getElementById(id).style.display='none');
   document.getElementById('tab-lanc').style.display='';
   showPage('lancamento',document.getElementById('tab-lanc'));
 
@@ -1225,11 +1312,21 @@ function renderAlertas(){
     const faltando=uteis.filter(d=>!lancados.includes(d));
     if(faltando.length)problemas.push(`<strong>${cl}</strong>: ${faltando.map(d=>'dia '+d).join(', ')}`);
   });
-  if(!problemas.length){
-    area.innerHTML=`<div class="alerta-box ok"><span>✅</span><span>Todos os lançamentos em dia!</span></div>`;
-  }else{
-    area.innerHTML=`<div class="alerta-box aviso"><span style="font-size:16px">⚠️</span><span><strong>Dias sem lançamento:</strong><br>${problemas.join('<br>')}</span></div>`;
+  const {vencidas, aVencer} = alertasContas();
+  let html = '';
+  if(problemas.length){
+    html += `<div class="alerta-box aviso"><span style="font-size:16px">⚠️</span><span><strong>Dias sem lançamento:</strong><br>${problemas.join('<br>')}</span></div>`;
   }
+  if(vencidas.length){
+    html += `<div class="alerta-box erro"><span style="font-size:16px">🔴</span><span><strong>Contas vencidas:</strong><br>${vencidas.join('<br>')}</span></div>`;
+  }
+  if(aVencer.length){
+    html += `<div class="alerta-box aviso"><span style="font-size:16px">🟡</span><span><strong>Contas vencem amanhã:</strong><br>${aVencer.join('<br>')}</span></div>`;
+  }
+  if(!html){
+    html = `<div class="alerta-box ok"><span>✅</span><span>Tudo em dia! Nenhum lançamento ou conta pendente.</span></div>`;
+  }
+  area.innerHTML = html;
 }
 
 // ── PAGAMENTOS ────────────────────────────────────────
@@ -1623,6 +1720,259 @@ function pN(v){if(!v&&v!==0)return 0;const n=parseFloat(String(v).replace(',','.
 function cL(col){let l='';let n=col+1;while(n>0){n--;l=String.fromCharCode(65+n%26)+l;n=Math.floor(n/26);}return l;}
 function fmt(v){return'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 
+
+// ════════════════════════════════════════════
+// CONTAS A PAGAR
+// ════════════════════════════════════════════
+let contasData = {};        // { 'Boa Vista': [{id,desc,venc,valor,arquivo,obs,pago}] }
+let contasClinicaAtiva = CLINICAS[0];
+let contaArquivoBase64 = '';
+let contaArquivoNome = '';
+
+async function initContas(){
+  await carregarTodasContas();
+  renderContasTabs();
+  renderContasTabela();
+  // Mostra botão nova conta só para gestor
+  const btn = document.getElementById('btn-nova-conta');
+  if(btn) btn.style.display = perfilAtual === 'gestor' ? 'flex' : 'none';
+}
+
+async function carregarTodasContas(){
+  const url = cfg.scriptUrl || SCRIPT_URL_DEFAULT;
+  try{
+    const r = await fetch(`${url}?acao=carregarContas`);
+    if(!r.ok) return;
+    const d = await r.json();
+    if(d.sucesso && d.dados) contasData = d.dados;
+  }catch(e){ console.warn('Erro contas:', e); }
+}
+
+async function salvarContasClinica(clinica){
+  const url = cfg.scriptUrl || SCRIPT_URL_DEFAULT;
+  try{
+    await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({acao: 'salvarContas', clinica, contas: contasData[clinica] || []})
+    });
+  }catch(e){ console.warn('Erro salvar contas:', e); }
+}
+
+function renderContasTabs(){
+  const el = document.getElementById('contas-clinica-tabs');
+  if(!el) return;
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  el.innerHTML = CLINICAS.map(cl => {
+    const contas = contasData[cl] || [];
+    const temVencida = contas.some(c => !c.pago && c.venc && new Date(c.venc) < hoje);
+    return `<button class="ctab${cl===contasClinicaAtiva?' active':''}${temVencida?' tem-vencida':''}"
+      onclick="selecionarClinicaContas('${cl}')">${cl}${temVencida?' ⚠':''}</button>`;
+  }).join('');
+}
+
+function selecionarClinicaContas(clinica){
+  contasClinicaAtiva = clinica;
+  renderContasTabs();
+  renderContasTabela();
+}
+
+function renderContasTabela(){
+  const area = document.getElementById('contas-area');
+  if(!area) return;
+  const contas = contasData[contasClinicaAtiva] || [];
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+
+  // Ordena: não pagas primeiro, depois por vencimento
+  const ordenadas = [...contas].sort((a,b) => {
+    if(a.pago !== b.pago) return a.pago ? 1 : -1;
+    return new Date(a.venc||'9999') - new Date(b.venc||'9999');
+  });
+
+  const totalPendente = contas.filter(c=>!c.pago).reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
+  const totalGeral = contas.reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
+
+  let rows = '';
+  if(!ordenadas.length){
+    rows = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">Nenhuma conta cadastrada</td></tr>`;
+  } else {
+    rows = ordenadas.map(c => {
+      const vencDate = c.venc ? new Date(c.venc+'T00:00:00') : null;
+      const isVencida = vencDate && vencDate < hoje && !c.pago;
+      const vencStr = vencDate ? vencDate.toLocaleDateString('pt-BR') : '—';
+      const valorStr = c.valor ? fmt(parseFloat(c.valor)) : '—';
+
+      let statusHtml = '';
+      if(c.pago){
+        statusHtml = `<span class="status-pago pago" onclick="togglePago('${c.id}')">✓ Pago</span>`;
+      } else if(isVencida){
+        statusHtml = `<span class="status-pago vencida" onclick="togglePago('${c.id}')">⚠ Vencida</span>`;
+      } else {
+        statusHtml = `<span class="status-pago pendente" onclick="togglePago('${c.id}')">○ Pendente</span>`;
+      }
+
+      const arquivoHtml = c.arquivo
+        ? `<a class="btn-pdf" href="${c.arquivo}" download="${c.arquivoNome||'arquivo'}" target="_blank">📄 ${c.arquivoNome||'Ver PDF'}</a>`
+        : '<span style="color:var(--hint);font-size:12px">—</span>';
+
+      const editBtn = perfilAtual === 'gestor'
+        ? `<button class="btn btn-sm" onclick="editarConta('${c.id}')" style="padding:4px 8px;font-size:11px">✏️</button>` : '';
+
+      return `<tr class="${c.pago?'pago':''}${isVencida?' vencida':''}">
+        <td style="font-weight:500;max-width:160px">${c.desc||'—'}</td>
+        <td>${vencStr}</td>
+        <td style="font-family:'DM Mono',monospace">${valorStr}</td>
+        <td>${arquivoHtml}</td>
+        <td style="max-width:140px;color:var(--muted);font-size:12px">${c.obs||'—'}</td>
+        <td>${statusHtml}</td>
+        <td>${editBtn}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  area.innerHTML = `<div class="contas-table-wrap">
+    <div class="contas-toolbar">
+      <span class="contas-toolbar-title">${contasClinicaAtiva}</span>
+      <span style="font-size:12px;color:var(--muted)">${contas.length} conta(s)</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="ctable">
+        <thead><tr>
+          <th>Descrição</th><th>Vencimento</th><th>Valor</th><th>Arquivo</th><th>Observação</th><th>Status</th><th></th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="soma-contas">
+      <span>Total pendente: <span class="soma-val" style="color:var(--red)">${fmt(totalPendente)}</span></span>
+      <span>Total geral: <span class="soma-val">${fmt(totalGeral)}</span></span>
+    </div>
+  </div>`;
+}
+
+async function togglePago(id){
+  const contas = contasData[contasClinicaAtiva] || [];
+  const c = contas.find(x => x.id === id);
+  if(!c) return;
+  c.pago = !c.pago;
+  c.dataPago = c.pago ? new Date().toLocaleDateString('pt-BR') : null;
+  renderContasTabela();
+  renderContasTabs();
+  await salvarContasClinica(contasClinicaAtiva);
+}
+
+function abrirModalConta(clinica){
+  contaArquivoBase64 = '';
+  contaArquivoNome = '';
+  document.getElementById('conta-id').value = '';
+  document.getElementById('conta-clinica-sel').value = clinica || contasClinicaAtiva;
+  document.getElementById('conta-desc').value = '';
+  document.getElementById('conta-venc').value = '';
+  document.getElementById('conta-valor').value = '';
+  document.getElementById('conta-obs').value = '';
+  document.getElementById('upload-preview').style.display = 'none';
+  document.getElementById('upload-preview').textContent = '';
+  document.getElementById('modal-conta-titulo').textContent = 'Nova conta — ' + (clinica||contasClinicaAtiva);
+  document.getElementById('btn-excluir-conta').style.display = 'none';
+  document.getElementById('modal-conta').style.display = 'flex';
+}
+
+function editarConta(id){
+  const contas = contasData[contasClinicaAtiva] || [];
+  const c = contas.find(x => x.id === id);
+  if(!c) return;
+  contaArquivoBase64 = c.arquivo || '';
+  contaArquivoNome = c.arquivoNome || '';
+  document.getElementById('conta-id').value = c.id;
+  document.getElementById('conta-clinica-sel').value = contasClinicaAtiva;
+  document.getElementById('conta-desc').value = c.desc || '';
+  document.getElementById('conta-venc').value = c.venc || '';
+  document.getElementById('conta-valor').value = c.valor || '';
+  document.getElementById('conta-obs').value = c.obs || '';
+  if(c.arquivoNome){
+    document.getElementById('upload-preview').style.display = 'block';
+    document.getElementById('upload-preview').textContent = '📎 ' + c.arquivoNome;
+  }
+  document.getElementById('modal-conta-titulo').textContent = 'Editar conta — ' + contasClinicaAtiva;
+  document.getElementById('btn-excluir-conta').style.display = 'inline-flex';
+  document.getElementById('modal-conta').style.display = 'flex';
+}
+
+function fecharModalConta(){
+  document.getElementById('modal-conta').style.display = 'none';
+}
+
+function handleArquivo(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 5 * 1024 * 1024){ alert('Arquivo muito grande. Máximo 5MB.'); return; }
+  contaArquivoNome = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    contaArquivoBase64 = e.target.result;
+    document.getElementById('upload-preview').style.display = 'block';
+    document.getElementById('upload-preview').textContent = '📎 ' + file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function salvarConta(){
+  const desc = document.getElementById('conta-desc').value.trim();
+  if(!desc){ alert('Digite a descrição.'); return; }
+  const clinica = document.getElementById('conta-clinica-sel').value || contasClinicaAtiva;
+  const id = document.getElementById('conta-id').value || ('c_' + Date.now());
+  const venc = document.getElementById('conta-venc').value;
+  const valor = document.getElementById('conta-valor').value;
+  const obs = document.getElementById('conta-obs').value.trim();
+
+  if(!contasData[clinica]) contasData[clinica] = [];
+  const contas = contasData[clinica];
+  const idx = contas.findIndex(x => x.id === id);
+
+  const conta = {
+    id, desc, venc, valor, obs,
+    arquivo: contaArquivoBase64,
+    arquivoNome: contaArquivoNome,
+    pago: idx >= 0 ? contas[idx].pago : false,
+    dataPago: idx >= 0 ? contas[idx].dataPago : null
+  };
+
+  if(idx >= 0) contas[idx] = conta;
+  else contas.push(conta);
+
+  fecharModalConta();
+  renderContasTabela();
+  renderContasTabs();
+  await salvarContasClinica(clinica);
+}
+
+async function excluirConta(){
+  if(!confirm('Excluir esta conta?')) return;
+  const id = document.getElementById('conta-id').value;
+  const clinica = document.getElementById('conta-clinica-sel').value || contasClinicaAtiva;
+  if(!contasData[clinica]) return;
+  contasData[clinica] = contasData[clinica].filter(x => x.id !== id);
+  fecharModalConta();
+  renderContasTabela();
+  renderContasTabs();
+  await salvarContasClinica(clinica);
+}
+
+// Alerta de contas vencidas e a vencer amanhã no dashboard
+function alertasContas(){
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const amanha = new Date(hoje); amanha.setDate(amanha.getDate()+1);
+  const vencidas = [];
+  const aVencer = [];
+  CLINICAS.forEach(cl => {
+    const contas = contasData[cl] || [];
+    const v = contas.filter(c => !c.pago && c.venc && new Date(c.venc+'T00:00:00') < hoje);
+    const a = contas.filter(c => !c.pago && c.venc && new Date(c.venc+'T00:00:00').getTime() === amanha.getTime());
+    if(v.length) vencidas.push(`<strong>${cl}</strong>: ${v.map(c=>c.desc).join(', ')}`);
+    if(a.length) aVencer.push(`<strong>${cl}</strong>: ${a.map(c=>c.desc).join(', ')}`);
+  });
+  return { vencidas, aVencer };
+}
 // ── INIT ──────────────────────────────────────────────
 loadState();
 // Recupera URL do script salva localmente (para funcionar mesmo sem configurar de novo)
