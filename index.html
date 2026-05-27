@@ -684,23 +684,20 @@ function saveStateLocal(){
 
 async function saveState(){
   saveStateLocal();
-  const url=cfg.scriptUrl||SCRIPT_URL_DEFAULT;
   try{
-    // Salva configurações
     await scriptPost({
-        acao:'salvarConfig',
-        cfg:{
-          senhas:cfg.senhas,
-          senhasDiretores:cfg.senhasDiretores||[],
-          sheets:cfg.sheets,
-          valP:cfg.valP,
-          valM:cfg.valM,
-          imp:cfg.imp,
-          meta:cfg.meta,
-          apiKey:cfg.apiKey,
-          scriptUrl:cfg.scriptUrl
-        }
-      })
+      acao:'salvarConfig',
+      cfg:{
+        senhas:cfg.senhas,
+        senhasDiretores:cfg.senhasDiretores||[],
+        sheets:cfg.sheets,
+        valP:cfg.valP,
+        valM:cfg.valM,
+        imp:cfg.imp,
+        meta:cfg.meta,
+        apiKey:cfg.apiKey,
+        scriptUrl:cfg.scriptUrl
+      }
     });
   }catch(e){console.warn('Erro config nuvem:',e);}
 }
