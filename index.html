@@ -612,32 +612,21 @@ function loadState(){
   }catch(e){}
 }
 
-// Função de POST que tenta CORS normal primeiro, depois no-cors como fallback
+// POST para Apps Script — formato confirmado funcionando
 async function scriptPost(dados){
   const url = cfg.scriptUrl || SCRIPT_URL_DEFAULT;
-  // Tenta POST normal primeiro (funciona quando Apps Script está configurado corretamente)
   try{
     const r = await fetch(url, {
       method: 'POST',
       headers: {'Content-Type': 'text/plain'},
       body: JSON.stringify(dados)
     });
-    if(r.ok){
-      const d = await r.json();
-      return d;
-    }
+    const d = await r.json();
+    return d;
   }catch(e){
-    // CORS bloqueou — tenta no-cors como fallback (sem confirmação de resposta)
-    try{
-      await fetch(url, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'payload=' + encodeURIComponent(JSON.stringify(dados))
-      });
-    }catch(e2){ console.warn('scriptPost fallback erro:', e2); }
+    console.warn('scriptPost erro:', e);
+    return {sucesso: false};
   }
-  return {sucesso: true};
 }
 
 // Função de GET com resposta (leitura)
@@ -1212,17 +1201,66 @@ async function atualizarDados(){
   const sid=cfg.sheets[k];
   if(!sid){setStatus('Sem planilha para este mês','warn');renderDash();renderAlertas();return;}
   cacheSheets[k]={};
+
   for(const cl of CLINICAS){
     try{
       const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(cl)}?majorDimension=ROWS`,{headers:{Authorization:'Bearer '+accessToken}});
       if(!r.ok)continue;
       const d=await r.json();
-      cacheSheets[k][cl]=parseTotais(d.values||[]);
+      const rows=d.values||[];
+      cacheSheets[k][cl]=parseTotais(rows);
+
+      // Detecta dias com dados na planilha e marca como lançados
+      const diasComDados=parseDiasLancados(rows);
+      if(diasComDados.length){
+        if(!dadosLanc[k])dadosLanc[k]={};
+        if(!dadosLanc[k][cl])dadosLanc[k][cl]={dias:{},diasLancados:[]};
+        migrarEstrutura(k,cl);
+        // Mescla dias detectados com os já existentes
+        diasComDados.forEach(dia=>{
+          if(!dadosLanc[k][cl].diasLancados.includes(dia)){
+            dadosLanc[k][cl].diasLancados.push(dia);
+          }
+        });
+      }
     }catch(e){}
   }
+
+  // Salva dias detectados na nuvem
+  saveLancamentosNuvem(mes,ano).catch(()=>{});
+
   document.getElementById('upd-lbl').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   setStatus(`${MESES[mes-1]}/${ano} carregado`,'ok');
   renderDash(); renderAlertas();
+}
+
+// Detecta quais dias têm pelo menos um valor lançado na planilha
+function parseDiasLancados(rows){
+  if(!rows||rows.length<3)return[];
+  const hdr=rows[1]||[];
+
+  // Encontra colunas de valores (Entrevistas e Estrangeiros)
+  const colsValor=[];
+  for(let col=0;col<hdr.length;col++){
+    const h=String(hdr[col]||'').trim().toLowerCase();
+    if(h==='entrevistas'||h==='estrangeiros')colsValor.push(col);
+  }
+  if(!colsValor.length)return[];
+
+  const diasComDados=[];
+  for(let i=2;i<rows.length;i++){
+    const row=rows[i]||[];
+    const diaCell=String(row[0]||'').trim();
+    const dia=parseInt(diaCell);
+    if(!dia||isNaN(dia))continue; // pula linhas sem número de dia (ex: "Total")
+    // Verifica se alguma coluna de valor tem dado
+    const temDado=colsValor.some(col=>{
+      const val=String(row[col]||'').trim();
+      return val!==''&&val!=='0'&&parseFloat(val)>0;
+    });
+    if(temDado)diasComDados.push(dia);
+  }
+  return diasComDados;
 }
 
 function parseTotais(rows){
@@ -1977,12 +2015,15 @@ async function salvarConta(){
   document.body.appendChild(aviso);
 
   try{
-    await salvarContasClinica(clinica);
-    aviso.textContent = '✅ Salvo!';
+    const resultado = await salvarContasClinica(clinica);
+    aviso.textContent = '✅ Salvo com sucesso!';
     aviso.style.background = 'var(--green)';
   }catch(e){
-    aviso.textContent = '⚠ Erro ao salvar';
+    console.error('Erro ao salvar conta:', e);
+    aviso.textContent = '⚠ Erro ao salvar: ' + e.message;
     aviso.style.background = 'var(--red)';
+    setTimeout(()=>aviso.remove(), 5000);
+    return;
   }
   setTimeout(()=>aviso.remove(), 2000);
   await salvarContasClinica(clinica);
