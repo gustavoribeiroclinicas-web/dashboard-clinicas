@@ -1376,7 +1376,7 @@ function renderPag(){
           <td style="font-family:monospace;text-align:center">${contado}</td>
           <td style="text-align:center">
             <input class="${inputClass}" type="number" id="${uid}" value="${pago}" min="0"
-              data-mes="${mes}" data-ano="${ano}" data-cl="${clId}" data-nome="${p.nome}"
+              data-mes="${mes}" data-ano="${ano}" data-cl="${cl}" data-nome="${p.nome}"
               onchange="onPagEditEl(this)" oninput="onPagEditEl(this)">${diffHtml}
           </td>
           <td style="font-weight:600;font-family:monospace">${fmt(br)}</td>
@@ -1390,7 +1390,7 @@ function renderPag(){
           <td style="font-family:monospace;text-align:center">${contado}</td>
           <td style="text-align:center">
             <input class="${inputClass}" type="number" id="${uid}" value="${pago}" min="0"
-              data-mes="${mes}" data-ano="${ano}" data-cl="${clId}" data-nome="${p.nome}"
+              data-mes="${mes}" data-ano="${ano}" data-cl="${cl}" data-nome="${p.nome}"
               onchange="onPagEditEl(this)" oninput="onPagEditEl(this)">${diffHtml}
           </td>
           <td style="font-weight:600;font-family:monospace">${fmt(br)}</td>
@@ -1448,11 +1448,37 @@ function onPagEditEl(input){
 
 function onPagEdit(mes,ano,cl,nome,input){
   const val=parseInt(input.value)||0;
-  const contado=getTotais(cl,mes,ano).profs.find(p=>p.nome===nome)?.total||0;
+  const profs=getTotais(cl,mes,ano).profs;
+  const prof=profs.find(p=>p.nome===nome);
+  const contado=prof?.total||0;
+  const tipo=prof?.tipo||'psico';
+  const vp=cfg.valP,vm=cfg.valM,imp=cfg.imp/100;
+
   setPagEdit(mes,ano,cl,nome,val);
   input.className=val<contado?'pag-input menor':val!==contado?'pag-input editado':'pag-input';
-  // Recalcula totais sem re-renderizar (mantém foco no input)
-  const vp=cfg.valP,vm=cfg.valM,imp=cfg.imp/100;
+
+  // Atualiza badge de diferença ao lado do input
+  const diff=val-contado;
+  const badge=input.nextElementSibling;
+  if(badge&&badge.classList.contains('diff-badge')){
+    if(diff===0){badge.className='diff-badge diff-zero';badge.textContent='✓';}
+    else{badge.className='diff-badge diff-neg';badge.textContent=diff;}
+  }
+
+  // Atualiza valor bruto e imposto na mesma linha
+  const tr=input.closest('tr');
+  if(tr){
+    const br=val*(tipo==='psico'?vp:vm);
+    const iv=br*imp;
+    const cells=tr.querySelectorAll('td');
+    if(cells[3])cells[3].innerHTML=`<strong>${fmt(br)}</strong>`;
+    if(cells[4]){
+      if(tipo==='psico')cells[4].innerHTML=`<span class="imposto">${fmt(iv)} (${cfg.imp}%)</span>`;
+      else cells[4].innerHTML=`<span style="color:var(--muted)">—</span>`;
+    }
+  }
+
+  // Recalcula totais gerais
   let tgPago=0,tgContado=0;
   CLINICAS.forEach(c=>{
     const d=getTotais(c,mes,ano);
@@ -1461,15 +1487,16 @@ function onPagEdit(mes,ano,cl,nome,input){
       const ed=getPagEdit(mes,ano,c,p.nome);
       const pg=ed!==undefined?ed:p.total;
       const rate=p.tipo==='psico'?vp:vm;
-      tcP+=pg*rate;tcC+=p.total*rate;
+      tcP+=pg*rate; tcC+=p.total*rate;
     });
-    tgPago+=tcP;tgContado+=tcC;
+    tgPago+=tcP; tgContado+=tcC;
     // Atualiza total da clínica
-    const el=document.getElementById('tot-'+c.replace(/[^a-zA-Z0-9]/g,'_'));
+    const cId=c.replace(/[^a-zA-Z0-9]/g,'_');
+    const el=document.getElementById('tot-'+cId);
     if(el){
       const temDiff=Math.abs(tcP-tcC)>0.01;
-      el.innerHTML='Total a pagar: <strong>'+fmt(tcP)+'</strong>'
-        +(temDiff?' <span style="font-size:11px;color:var(--muted)">(contado: '+fmt(tcC)+')</span>':'');
+      el.innerHTML=`Total a pagar: <strong>${fmt(tcP)}</strong>`
+        +(temDiff?` <span style="font-size:11px;color:var(--muted)">(contado: ${fmt(tcC)})</span>`:'');
     }
   });
   const tv=document.getElementById('total-val-pag');
