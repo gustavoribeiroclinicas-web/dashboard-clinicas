@@ -588,8 +588,15 @@ async function scriptGet(params){
 }
 
 async function loadStateFromCloud(){
+  // Usa sempre a URL padrão hardcoded como garantia — funciona em qualquer dispositivo
+  const url = SCRIPT_URL_DEFAULT;
   try{
-    const d=await scriptGet({acao:'carregarConfig'});
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),10000);
+    const r=await fetch(`${url}?acao=carregarConfig`,{signal:controller.signal});
+    clearTimeout(timeout);
+    if(!r.ok)return;
+    const d=await r.json();
     if(d&&d.sucesso&&d.dados&&Object.keys(d.dados).length){
       const nuvem=d.dados;
       if(nuvem.senhas)cfg.senhas=nuvem.senhas;
@@ -603,9 +610,10 @@ async function loadStateFromCloud(){
       if(nuvem.apiKey)cfg.apiKey=nuvem.apiKey;
       if(nuvem.scriptUrl)cfg.scriptUrl=nuvem.scriptUrl;
       saveStateLocal();
+      console.log('✓ Config carregada da nuvem. senhasContabilidade:', cfg.senhasContabilidade);
     }
   }catch(e){
-    console.warn('Config nuvem indisponível, usando local.');
+    console.warn('Config nuvem indisponível:', e.message);
   }
 }
 
