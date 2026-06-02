@@ -403,6 +403,7 @@ input:checked+.slider:before{transform:translateX(20px)}
         <option value="2025">2025</option><option value="2026" selected>2026</option>
       </select>
     </div>
+    <div id="pag-load" class="loading-msg" style="display:none">⏳ Carregando dados...</div>
     <div id="pag-body"><div class="loading-msg">Carregando...</div></div>
   </div>
 
@@ -740,19 +741,26 @@ async function iniciarContabilidade(){
   ['tab-dash','tab-lanc','tab-cfg'].forEach(id=>document.getElementById(id).style.display='none');
   document.getElementById('tab-pag').style.display='';
   showPage('pagamentos', document.getElementById('tab-pag'));
-  document.getElementById('pag-body').style.display='none';
-  document.getElementById('pag-load').style.display='block';
-  document.getElementById('pag-load').textContent='⏳ Carregando dados...';
 
-  // Aguarda configs da nuvem (sheets, valores, etc)
+  // Mostra loading
+  const pl=document.getElementById('pag-load');
+  const pb=document.getElementById('pag-body');
+  if(pl){pl.style.display='block';pl.textContent='⏳ Carregando dados...';}
+  if(pb)pb.style.display='none';
+
+  // 1. Carrega configs da nuvem
   await loadStateFromCloud();
 
-  // Carrega lançamentos do mês atual
+  // 2. Define mês atual
   const agora=new Date();
   const mes=agora.getMonth()+1, ano=agora.getFullYear();
   document.getElementById('mes-pag').value=mes;
   document.getElementById('ano-pag').value=ano;
-  await loadLancamentosNuvem(mes,ano);
+
+  // 3. Carrega lançamentos da nuvem
+  await loadLancamentosNuvem(mes, ano);
+
+  // 4. Renderiza
   renderPag();
 }
 
@@ -1427,6 +1435,9 @@ function renderPag(){
   const mes=parseInt(document.getElementById('mes-pag').value);
   const ano=parseInt(document.getElementById('ano-pag').value);
   const pb=document.getElementById('pag-body');
+  const pl=document.getElementById('pag-load');
+  if(pl)pl.style.display='none';
+  if(pb)pb.style.display='block';
   const vp=cfg.valP,vm=cfg.valM,imp=cfg.imp/100;
   let tgContado=0,tgPago=0,html='';
 
