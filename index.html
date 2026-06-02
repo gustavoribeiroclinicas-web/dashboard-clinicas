@@ -527,6 +527,7 @@ input:checked+.slider:before{transform:translateX(20px)}
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
 const CLIENT_ID = '874687957081-3pk9k0khdbhqj70mok912jvf32s6jr1h.apps.googleusercontent.com';
+const SCRIPT_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbzYpGh-El81ezpz4giwQNOPkgv7YyjQwAYafm-vDfvROrfVZoiGU2BaiT9Mm-78L7qsGA/exec';
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.email';
 const CLINICAS = ['Boa Vista','Bacacheri','ColomboMed','Etika SJP','FRG','GPTRAN','Galeb','Hauer','Lifetran','MM','PrimeMed','PPTRAN','Rio Sul','São José','Tolmac'];
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
@@ -586,9 +587,6 @@ async function scriptGet(params){
   }
 }
 
-// URL do Apps Script — fallback para funcionar em qualquer dispositivo sem configuração
-const SCRIPT_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbzYpGh-El81ezpz4giwQNOPkgv7YyjQwAYafm-vDfvROrfVZoiGU2BaiT9Mm-78L7qsGA/exec';
-
 async function loadStateFromCloud(){
   try{
     const d=await scriptGet({acao:'carregarConfig'});
@@ -627,6 +625,7 @@ async function saveState(){
       cfg:{
         senhas:cfg.senhas,
         senhasDiretores:cfg.senhasDiretores||[],
+        senhasContabilidade:cfg.senhasContabilidade||[],
         sheets:cfg.sheets,
         valP:cfg.valP,
         valM:cfg.valM,
@@ -717,10 +716,11 @@ async function entrarContabilidade(){
   if(!senha){showErro('Digite a senha.');return;}
   const btnEl=document.querySelector('#login-contabilidade button');
   if(btnEl){btnEl.textContent='⏳ Verificando...';btnEl.disabled=true;}
+  // Sempre busca da nuvem para funcionar em qualquer dispositivo
   await loadStateFromCloud();
   if(btnEl){btnEl.textContent='Entrar';btnEl.disabled=false;}
   const ok=(cfg.senhasContabilidade||[]).includes(senha);
-  if(!ok){showErro('Senha incorreta.');return;}
+  if(!ok){showErro('Senha incorreta. Verifique com o gestor.');return;}
   perfilAtual='contabilidade';
   iniciarContabilidade();
 }
@@ -1969,7 +1969,8 @@ function exportarBackup(){
       meta: cfg.meta,
       sheets: cfg.sheets,
       senhas: cfg.senhas,
-      senhasDiretores: cfg.senhasDiretores||[]
+      senhasDiretores: cfg.senhasDiretores||[],
+      senhasContabilidade: cfg.senhasContabilidade||[]
     },
     lancamentos: dadosLanc,
     contas: contasData
