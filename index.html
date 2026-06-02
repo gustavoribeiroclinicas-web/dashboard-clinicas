@@ -297,6 +297,7 @@ input:checked+.slider:before{transform:translateX(20px)}
       <button class="login-tab active" onclick="setLoginTipo('gestor',this)">Gestor</button>
       <button class="login-tab" onclick="setLoginTipo('diretor',this)">Diretor</button>
       <button class="login-tab" onclick="setLoginTipo('estagiaria',this)">Estagiária</button>
+      <button class="login-tab" onclick="setLoginTipo('contabilidade',this)">Contabilidade</button>
     </div>
 
     <!-- GESTOR (Google) -->
@@ -313,6 +314,14 @@ input:checked+.slider:before{transform:translateX(20px)}
       <input class="inp" type="password" id="inp-senha-diretor" placeholder="Digite a senha de diretor"
         onkeydown="if(event.key==='Enter')entrarDiretor()">
       <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px;font-size:14px" onclick="entrarDiretor()">Entrar</button>
+    </div>
+
+    <!-- CONTABILIDADE -->
+    <div id="login-contabilidade" style="display:none">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Acesso restrito à área de pagamentos.</p>
+      <input class="inp" type="password" id="inp-senha-contab" placeholder="Digite a senha da contabilidade"
+        onkeydown="if(event.key==='Enter')entrarContabilidade()">
+      <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px;font-size:14px" onclick="entrarContabilidade()">Entrar</button>
     </div>
 
     <!-- ESTAGIÁRIA -->
@@ -474,6 +483,20 @@ input:checked+.slider:before{transform:translateX(20px)}
     </div>
 
     <div class="cfg-card">
+      <div class="cfg-title">📊 Senha da contabilidade</div>
+      <p class="hint" style="margin-bottom:.75rem">A contabilidade entra pela aba "Contabilidade" na tela de login e vê apenas os pagamentos.</p>
+      <div id="contab-grid"></div>
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+        <input type="text" id="inp-nova-senha-contab" placeholder="Nova senha..." style="flex:1;padding:8px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace">
+        <button class="btn" onclick="adicionarSenhaContab()">+ Adicionar</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+        <button class="btn btn-purple" onclick="salvarSenhasContab()">Salvar</button>
+        <span id="contab-st"></span>
+      </div>
+    </div>
+
+    <div class="cfg-card">
       <div class="cfg-title">🔑 Senhas das clínicas</div>
       <p class="hint" style="margin-bottom:1rem">Cada clínica tem uma senha própria. A estagiária entra com a senha e já vai direto para o lançamento da clínica dela.</p>
       <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--surface2)">
@@ -573,6 +596,7 @@ async function loadStateFromCloud(){
       const nuvem=d.dados;
       if(nuvem.senhas)cfg.senhas=nuvem.senhas;
       if(nuvem.senhasDiretores)cfg.senhasDiretores=nuvem.senhasDiretores;
+      if(nuvem.senhasContabilidade)cfg.senhasContabilidade=nuvem.senhasContabilidade;
       if(nuvem.sheets)cfg.sheets=nuvem.sheets;
       if(nuvem.valP)cfg.valP=parseFloat(nuvem.valP)||50;
       if(nuvem.valM)cfg.valM=parseFloat(nuvem.valM)||48;
@@ -655,6 +679,7 @@ function setLoginTipo(tipo, el){
   document.getElementById('login-gestor').style.display = tipo==='gestor'?'block':'none';
   document.getElementById('login-diretor').style.display = tipo==='diretor'?'block':'none';
   document.getElementById('login-estagiaria').style.display = tipo==='estagiaria'?'block':'none';
+  document.getElementById('login-contabilidade').style.display = tipo==='contabilidade'?'block':'none';
   document.getElementById('login-erro').style.display = 'none';
 }
 
@@ -685,6 +710,36 @@ async function entrarDiretor(){
   if(!ok){showErro('Senha incorreta.');return;}
   perfilAtual='gestor';
   iniciarGestor();
+}
+
+async function entrarContabilidade(){
+  const senha=document.getElementById('inp-senha-contab').value.trim();
+  if(!senha){showErro('Digite a senha.');return;}
+  const btnEl=document.querySelector('#login-contabilidade button');
+  if(btnEl){btnEl.textContent='⏳ Verificando...';btnEl.disabled=true;}
+  await loadStateFromCloud();
+  if(btnEl){btnEl.textContent='Entrar';btnEl.disabled=false;}
+  const ok=(cfg.senhasContabilidade||[]).includes(senha);
+  if(!ok){showErro('Senha incorreta.');return;}
+  perfilAtual='contabilidade';
+  iniciarContabilidade();
+}
+
+async function iniciarContabilidade(){
+  document.getElementById('tela-login').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('user-chip').textContent='📊 Contabilidade';
+  // Mostra apenas aba de pagamentos
+  ['tab-dash','tab-lanc','tab-cfg'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('tab-pag').style.display='';
+  // Carrega dados da nuvem
+  loadStateFromCloud().catch(()=>{});
+  showPage('pagamentos', document.getElementById('tab-pag'));
+  // Carrega lançamentos do mês atual
+  const agora=new Date();
+  const mes=agora.getMonth()+1, ano=agora.getFullYear();
+  await loadLancamentosNuvem(mes,ano);
+  renderPag();
 }
 
 async function entrarEstagiaria(){
@@ -750,6 +805,7 @@ function sair(){
   document.getElementById('tela-login').style.display='flex';
   document.getElementById('inp-senha').value='';
   if(document.getElementById('inp-senha-diretor'))document.getElementById('inp-senha-diretor').value='';
+  if(document.getElementById('inp-senha-contab'))document.getElementById('inp-senha-contab').value='';
   document.getElementById('login-erro').style.display='none';
 }
 
@@ -1512,6 +1568,7 @@ function initConfig(){
   document.getElementById('inp-apikey').value=cfg.apiKey||'';
   document.getElementById('inp-script-url').value=cfg.scriptUrl||'';
   renderSenhasDiretores();
+  renderSenhasContab();
   renderSenhasGrid();
   renderSheetsGrid();
 }
@@ -1557,6 +1614,40 @@ function removerSenhaDiretor(idx){
 function salvarSenhasDiretores(){
   saveState();
   const st=document.getElementById('dir-st');
+  st.textContent='✓ Salvo';st.className='status-ok';
+  setTimeout(()=>st.textContent='',2000);
+}
+
+function renderSenhasContab(){
+  const el=document.getElementById('contab-grid');
+  if(!el)return;
+  const lista=cfg.senhasContabilidade||[];
+  if(!lista.length){el.innerHTML='<p class="hint" style="margin-bottom:6px">Nenhuma senha cadastrada.</p>';return;}
+  el.innerHTML=lista.map((s,i)=>`
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+      <input type="text" value="${s}" readonly style="flex:1;padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace;background:var(--surface2)">
+      <button class="btn btn-sm" style="color:var(--red);border-color:var(--red-border)" onclick="removerSenhaContab(${i})">Remover</button>
+    </div>`).join('');
+}
+
+function adicionarSenhaContab(){
+  const val=document.getElementById('inp-nova-senha-contab').value.trim();
+  if(!val)return;
+  if(!cfg.senhasContabilidade)cfg.senhasContabilidade=[];
+  if(cfg.senhasContabilidade.includes(val)){alert('Essa senha já está cadastrada.');return;}
+  cfg.senhasContabilidade.push(val);
+  document.getElementById('inp-nova-senha-contab').value='';
+  renderSenhasContab();
+}
+
+function removerSenhaContab(idx){
+  cfg.senhasContabilidade.splice(idx,1);
+  renderSenhasContab();
+}
+
+function salvarSenhasContab(){
+  saveState();
+  const st=document.getElementById('contab-st');
   st.textContent='✓ Salvo';st.className='status-ok';
   setTimeout(()=>st.textContent='',2000);
 }
