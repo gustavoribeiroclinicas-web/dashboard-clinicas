@@ -393,13 +393,13 @@ input:checked+.slider:before{transform:translateX(20px)}
   <div id="page-pagamentos" class="page">
     <div class="page-header">
       <h2>Pagamentos</h2>
-      <select class="sel" id="mes-pag" onchange="renderPag()">
+      <select class="sel" id="mes-pag" onchange="trocarMesPag()">
         <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
         <option value="4">Abril</option><option value="5" selected>Maio</option><option value="6">Junho</option>
         <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
         <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
       </select>
-      <select class="sel" id="ano-pag" onchange="renderPag()">
+      <select class="sel" id="ano-pag" onchange="trocarMesPag()">
         <option value="2025">2025</option><option value="2026" selected>2026</option>
       </select>
     </div>
@@ -737,15 +737,21 @@ async function iniciarContabilidade(){
   document.getElementById('tela-login').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('user-chip').textContent='📊 Contabilidade';
-  // Mostra apenas aba de pagamentos
   ['tab-dash','tab-lanc','tab-cfg'].forEach(id=>document.getElementById(id).style.display='none');
   document.getElementById('tab-pag').style.display='';
-  // Carrega dados da nuvem
-  loadStateFromCloud().catch(()=>{});
   showPage('pagamentos', document.getElementById('tab-pag'));
+  document.getElementById('pag-body').style.display='none';
+  document.getElementById('pag-load').style.display='block';
+  document.getElementById('pag-load').textContent='⏳ Carregando dados...';
+
+  // Aguarda configs da nuvem (sheets, valores, etc)
+  await loadStateFromCloud();
+
   // Carrega lançamentos do mês atual
   const agora=new Date();
   const mes=agora.getMonth()+1, ano=agora.getFullYear();
+  document.getElementById('mes-pag').value=mes;
+  document.getElementById('ano-pag').value=ano;
   await loadLancamentosNuvem(mes,ano);
   renderPag();
 }
@@ -1406,6 +1412,15 @@ function setPagEdit(mes,ano,cl,nome,val){
 
 function loadPagEdit(){
   try{ const s=localStorage.getItem('cl_pag_edit');if(s)pagamentosEditados=JSON.parse(s); }catch(e){}
+}
+
+async function trocarMesPag(){
+  const mes=parseInt(document.getElementById('mes-pag').value);
+  const ano=parseInt(document.getElementById('ano-pag').value);
+  // Garante que configs e lançamentos da nuvem estão carregados
+  await loadStateFromCloud();
+  await loadLancamentosNuvem(mes,ano);
+  renderPag();
 }
 
 function renderPag(){
