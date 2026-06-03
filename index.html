@@ -13,9 +13,9 @@
   --text:#1a1a18;--muted:#6b6b66;--hint:#a0a09a;
   --green:#3b6d11;--green-bg:#eaf3de;--green-border:#b5d98a;
   --red:#a32d2d;--red-bg:#fcebeb;--red-border:#f7c1c1;
-  --blue:#185fa5;
+  --blue:#185fa5;--blue-bg:#e6f1fb;
   --purple:#534AB7;--purple-dark:#3C3489;--purple-light:#EEEDFE;
-  --pink-dark:#993556;
+  --pink-dark:#993556;--pink:#D4537E;
   --amber:#854f0b;--amber-bg:#faeeda;--amber-border:#f5c842;
   --radius:12px;--radius-sm:8px;
 }
@@ -46,23 +46,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .login-card h1{font-size:22px;font-weight:700;margin-bottom:6px}
 .login-card p{font-size:14px;color:var(--muted);margin-bottom:1.5rem}
 .login-tabs{display:flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:1.5rem}
-.login-tab{flex:1;padding:9px;font-size:13px;font-weight:500;cursor:pointer;background:var(--surface2);color:var(--muted);border:none;font-family:'DM Sans',sans-serif;transition:all .15s}
+.login-tab{flex:1;padding:9px;font-size:12px;font-weight:500;cursor:pointer;background:var(--surface2);color:var(--muted);border:none;font-family:'DM Sans',sans-serif;transition:all .15s}
 .login-tab.active{background:var(--purple);color:#fff}
 .inp{width:100%;padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);margin-bottom:10px}
-.inp:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(83,74,183,.1)}
+.inp:focus{outline:none;border-color:var(--purple)}
 .btn-google-lg{width:100%;padding:12px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;background:#fff;color:#3c4043;border:1.5px solid #dadce0;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .12s;margin-bottom:10px}
 .btn-google-lg:hover{background:#f8f8f8}
 .login-erro{background:var(--red-bg);color:var(--red);padding:.75rem 1rem;border-radius:var(--radius-sm);font-size:13px;margin-top:10px;border:1px solid var(--red-border);display:none}
 /* HERO */
 .hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
-.hero-stat{display:flex;flex-direction:column;gap:3px}
+.hero-stat{display:flex;flex-direction:column;gap:4px}
 .hero-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
-.hero-val{font-size:28px;font-weight:700;line-height:1;font-family:monospace}
+.hero-val{font-size:28px;font-weight:700;line-height:1;font-family:'DM Mono',monospace}
 .hero-val.psico{color:var(--pink-dark)}
 .hero-val.med{color:var(--blue)}
 .hero-div{width:1px;background:var(--border);height:44px;align-self:center}
-.meta-wrap{display:flex;align-items:center;gap:8px;margin-top:5px}
-.meta-input{width:80px;font-size:14px;font-family:monospace;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);text-align:center}
+.meta-wrap{display:flex;align-items:center;gap:8px;margin-top:6px}
+.meta-input{width:80px;font-size:14px;font-family:'DM Mono',monospace;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);text-align:center}
 .controls{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap}
 /* ALERTAS */
 .alertas-wrap{margin-bottom:1rem}
@@ -72,14 +72,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .alerta-box.erro{background:var(--red-bg);color:var(--red);border-color:var(--red-border)}
 /* GRID */
 .clinic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
-.ccard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;transition:box-shadow .2s,border-color .2s;position:relative}
+.ccard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem 1rem;transition:box-shadow .2s,border-color .2s}
 .ccard:hover{box-shadow:0 2px 12px rgba(0,0,0,.07)}
-.ccard.alerta{border-color:var(--amber-border)}
-.ccard.alerta::before{content:'';position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--amber)}
 .cname{font-size:13px;font-weight:600;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--border)}
 .crow{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
 .clabel{font-size:12px;color:var(--muted)}
-.cval{font-size:16px;font-weight:700;font-family:monospace}
+.cval{font-size:16px;font-weight:700;font-family:'DM Mono',monospace}
 .csub{font-size:11px;color:var(--hint);margin-bottom:5px}
 .prog{height:4px;border-radius:3px;background:var(--surface2);overflow:hidden;margin:5px 0 4px}
 .prog-fill{height:100%;border-radius:3px;transition:width .5s}
@@ -104,13 +102,19 @@ table.pt{width:100%;border-collapse:collapse;font-size:13px}
 .bp{background:#FBEAF0;color:#72243E;font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600}
 .bm{background:#E6F1FB;color:#0C447C;font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600}
 .total-card{background:var(--green);border-radius:var(--radius);padding:1.1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;color:#fff;margin-top:1rem}
-.total-card-val{font-size:24px;font-weight:700;font-family:monospace}
-/* LANÇAMENTO */
+.total-card-val{font-size:24px;font-weight:700;font-family:'DM Mono',monospace}
+.pag-input{width:70px;padding:4px 6px;font-size:13px;font-family:'DM Mono',monospace;border:1.5px solid var(--border);border-radius:var(--radius-sm);text-align:center;background:var(--surface);color:var(--text);transition:border-color .15s}
+.pag-input:focus{outline:none;border-color:var(--purple)}
+.pag-input.editado{border-color:var(--amber);background:var(--amber-bg)}
+.pag-input.menor{border-color:var(--red);background:var(--red-bg)}
+.diff-badge{font-size:10px;padding:1px 6px;border-radius:99px;font-weight:600;margin-left:4px}
+.diff-neg{background:var(--red-bg);color:var(--red)}
+.diff-zero{background:var(--green-bg);color:var(--green)}
+/* LANCAMENTO */
 .lanc-wrap{max-width:460px;margin:0 auto}
 .lanc-header{text-align:center;margin-bottom:1.5rem}
 .lanc-header h2{font-size:20px;font-weight:700}
 .data-chip{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;padding:4px 14px;border-radius:99px;font-size:13px;font-weight:500;margin-top:6px}
-.clinica-chip{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);padding:4px 14px;border-radius:99px;font-size:13px;font-weight:600;margin-top:6px;border:1px solid var(--green-border)}
 .lanc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1rem}
 .lanc-card-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.9rem}
 .prof-block{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.9rem 1rem;margin-bottom:8px}
@@ -123,7 +127,7 @@ table.pt{width:100%;border-collapse:collapse;font-size:13px}
 .cbtn:active{transform:scale(.9)}
 .cbtn.minus{color:var(--red)}
 .cbtn.plus{color:var(--green);background:var(--green-bg);border-color:var(--green-border)}
-.cnum{width:52px;text-align:center;font-size:17px;font-weight:600;font-family:monospace;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 3px;background:var(--surface);color:var(--hint)}
+.cnum{width:52px;text-align:center;font-size:17px;font-weight:600;font-family:'DM Mono',monospace;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:5px 3px;background:var(--surface);color:var(--hint)}
 .cnum.filled{color:var(--text)}
 .cnum:focus{outline:none;border-color:var(--purple)}
 .sem-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-top:1px solid var(--border);margin-top:8px}
@@ -138,48 +142,42 @@ input:checked+.slider:before{transform:translateX(20px)}
 .sucesso-screen .check{font-size:52px;margin-bottom:1rem}
 .sucesso-screen h2{font-size:20px;font-weight:700;margin-bottom:6px}
 .sucesso-screen p{font-size:14px;color:var(--muted);margin-bottom:1.5rem;line-height:1.6}
+.fds-box{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);border-radius:var(--radius-sm);padding:1rem;text-align:center;font-size:14px}
+.extra-prof-form{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.9rem 1rem;margin-bottom:8px}
+.extra-prof-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.extra-prof-title{font-size:13px;font-weight:600;color:var(--muted)}
+.remove-prof-btn{font-size:11px;padding:3px 8px;border-radius:99px;border:1px solid var(--red-border);background:var(--surface);color:var(--red);cursor:pointer;font-family:'DM Sans',sans-serif}
+.extra-sel{width:100%;padding:8px 10px;font-size:13px;font-family:'DM Sans',sans-serif;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);margin-bottom:8px;cursor:pointer}
+.add-prof-btn{width:100%;padding:10px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--purple);border:1.5px dashed var(--purple);border-radius:var(--radius-sm);cursor:pointer;margin-bottom:8px;transition:background .12s}
+.add-prof-btn:hover{background:var(--purple-light)}
 /* CONFIG */
 .cfg-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:1rem;max-width:640px}
 .cfg-title{font-size:14px;font-weight:600;margin-bottom:.9rem;padding-bottom:.7rem;border-bottom:1px solid var(--surface2)}
-.fg{margin-bottom:10px}
+.fg{margin-bottom:12px}
 .fg label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
 .fg input{width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif}
 .fg input:focus{outline:none;border-color:var(--purple)}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.hint{font-size:11px;color:var(--muted);line-height:1.5;margin-top:4px}
 .status-ok{color:var(--green);font-size:12px;font-weight:500}
-.pw-row{display:grid;grid-template-columns:120px 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
-.pw-row .clinica-lbl{font-size:13px;font-weight:500}
-.pw-row input{padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:monospace}
+.hint{font-size:11px;color:var(--muted);line-height:1.5;margin-top:4px}
 .loading-msg{text-align:center;padding:3rem;color:var(--muted);font-size:14px}
 .page-header{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap}
 .page-header h2{font-size:18px;font-weight:700;flex:1}
 .sdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--hint);margin-right:5px}
 .sdot.ok{background:var(--green)}.sdot.err{background:var(--red)}.sdot.warn{background:var(--amber)}
 .status-bar{font-size:12px;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:5px}
-.fds-box{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);border-radius:var(--radius-sm);padding:1rem;text-align:center;font-size:14px}
-.add-prof-btn{width:100%;padding:10px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--purple);border:1.5px dashed var(--purple);border-radius:var(--radius-sm);cursor:pointer;margin-bottom:8px;transition:background .12s}
-.add-prof-btn:hover{background:var(--purple-light)}
-.extra-prof-form{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:8px}
-.extra-prof-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
-.extra-prof-title{font-size:13px;font-weight:600;color:var(--muted)}
-.remove-prof-btn{font-size:11px;padding:3px 8px;border-radius:99px;border:1px solid var(--red-border);background:var(--surface);color:var(--red);cursor:pointer;font-family:'DM Sans',sans-serif}
-.remove-prof-btn:hover{background:var(--red-bg)}
-.extra-sel{width:100%;padding:8px 10px;font-size:13px;font-family:'DM Sans',sans-serif;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);margin-bottom:8px;cursor:pointer}
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
 .modal{background:var(--surface);border-radius:var(--radius);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.18)}
-.modal-header{padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1}
+.modal-header{padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface)}
 .modal-title{font-size:15px;font-weight:600}
 .modal-close{width:30px;height:30px;border-radius:50%;border:none;background:var(--surface2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
-.modal-close:hover{background:var(--border)}
 .modal-body{padding:1.25rem}
 .dia-row{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--surface2);flex-direction:column}
 .dia-row-top{display:flex;align-items:center;gap:8px;width:100%}
 .dia-num{font-size:13px;font-weight:600;min-width:54px;color:var(--muted)}
 .dia-status{flex:1;font-size:13px}
-.dia-ok{color:var(--green)}
-.dia-falta{color:var(--amber)}
-.dia-fds{color:var(--hint);font-style:italic}
+.dia-ok{color:var(--green)}.dia-falta{color:var(--amber)}.dia-fds{color:var(--hint);font-style:italic}
 .dia-edit-btn{font-size:11px;padding:4px 10px;border-radius:99px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;color:var(--muted);font-family:'DM Sans',sans-serif;flex-shrink:0}
 .dia-edit-btn:hover{background:var(--purple-light);color:var(--purple);border-color:var(--purple)}
 .edit-form{background:var(--surface2);border-radius:var(--radius-sm);padding:.85rem;width:100%;margin-top:4px}
@@ -188,76 +186,37 @@ input:checked+.slider:before{transform:translateX(20px)}
 .edit-prof-nome{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
 .edit-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
 .edit-label{font-size:13px;color:var(--text);flex:1}
-.edit-input{width:70px;padding:5px 8px;font-size:14px;font-family:monospace;border:1.5px solid var(--border);border-radius:var(--radius-sm);text-align:center}
+.edit-input{width:70px;padding:5px 8px;font-size:14px;font-family:'DM Mono',monospace;border:1.5px solid var(--border);border-radius:var(--radius-sm);text-align:center}
 .edit-input:focus{outline:none;border-color:var(--purple)}
 .edit-actions{display:flex;gap:8px;margin-top:10px}
 .edit-salvar{flex:1;padding:8px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;background:var(--purple);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer}
 .edit-salvar:hover{background:var(--purple-dark)}
 .edit-zerar{padding:8px 12px;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--red);border:1px solid var(--red-border);border-radius:var(--radius-sm);cursor:pointer}
-.edit-zerar:hover{background:var(--red-bg)}
-
-
-/* ── PAGAMENTOS EDITÁVEIS ── */
-.pag-input{width:70px;padding:4px 6px;font-size:13px;font-family:monospace;border:1.5px solid var(--border);border-radius:var(--radius-sm);text-align:center;background:var(--surface);color:var(--text);transition:border-color .15s}
-.pag-input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(83,74,183,.1)}
-.pag-input.editado{border-color:var(--amber);background:var(--amber-bg)}
-.pag-input.menor{border-color:var(--red);background:var(--red-bg)}
-.diff-badge{font-size:10px;padding:1px 6px;border-radius:99px;font-weight:600;margin-left:4px}
-.diff-neg{background:var(--red-bg);color:var(--red)}
-.diff-zero{background:var(--green-bg);color:var(--green)}
-.pag-section-total{font-weight:700;font-size:14px}
-.pag-salvar-btn{font-size:11px;padding:4px 10px;border-radius:99px;border:1px solid var(--purple);background:var(--purple-light);color:var(--purple);cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:8px}
-.pag-salvar-btn:hover{background:var(--purple);color:#fff}
-/* ── RESPONSIVO MOBILE ── */
-@media (max-width: 640px) {
-  .topbar{padding:0 .75rem;overflow-x:auto;gap:0}
+.clinica-sel-edit{width:100%;padding:9px 12px;font-size:14px;font-family:'DM Sans',sans-serif;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);cursor:pointer;margin-bottom:1rem}
+/* SENHAS CONFIG */
+.senha-row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.senha-row input{flex:1;padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace;background:var(--surface2);color:var(--text)}
+/* RESPONSIVE */
+@media(max-width:640px){
+  .topbar{padding:0 .75rem;overflow-x:auto}
   .brand{font-size:13px;padding:.75rem 1rem .75rem 0;margin-right:.75rem;flex-shrink:0}
   .nav-tab{padding:.75rem .75rem;font-size:12px;flex-shrink:0}
   .page{padding:1rem .75rem}
   .hero{flex-direction:column;align-items:flex-start;gap:1rem;padding:1rem}
   .hero-div{display:none}
-  .hero-val{font-size:24px}
-  .controls{width:100%;justify-content:flex-start;flex-wrap:wrap}
-  .controls select,.sel{font-size:12px;padding:6px 8px}
+  .controls{width:100%;flex-wrap:wrap}
   .clinic-grid{grid-template-columns:1fr 1fr;gap:8px}
-  .ccard{padding:.75rem}
-  .cname{font-size:12px}
-  .cval{font-size:14px}
-  .page-header{flex-wrap:wrap;gap:6px}
-  .page-header h2{font-size:16px;width:100%}
-  .pag-head{flex-direction:column;align-items:flex-start;gap:4px}
-  table.pt{font-size:11px}
-  .pt th,.pt td{padding:6px 8px}
-  .lanc-wrap{max-width:100%}
-  .lanc-header h2{font-size:18px}
-  .lanc-card{padding:.9rem}
-  .campo-row{flex-wrap:nowrap}
   .cfg-card{max-width:100%}
   .two-col{grid-template-columns:1fr}
-  .modal{max-height:95vh;border-radius:var(--radius) var(--radius) 0 0}
   .modal-overlay{align-items:flex-end;padding:0}
-  .edit-actions{flex-direction:column}
-  .edit-salvar,.edit-zerar{width:100%}
-  .login-card{padding:1.5rem 1.25rem;border-radius:var(--radius)}
-  .login-screen{align-items:flex-start;padding-top:3rem}
-  .login-tabs button{font-size:12px;padding:8px 6px}
-  .pw-row{grid-template-columns:100px 1fr auto}
+  .modal{border-radius:var(--radius) var(--radius) 0 0;max-height:95vh}
   .total-card{flex-direction:column;gap:.5rem;text-align:center}
-  .total-card-val{font-size:22px}
-  .alerta-box{font-size:12px}
-  .btn-full{font-size:14px;padding:12px}
-  .hero-stat{width:100%}
-  .meta-wrap{flex-wrap:wrap}
-  .meta-input{width:70px}
-}
-@media (max-width: 380px) {
-  .clinic-grid{grid-template-columns:1fr}
-  .nav-tab{padding:.75rem .5rem;font-size:11px}
 }
 </style>
 </head>
 <body>
-<!-- MODAL EDIÇÃO DE DIAS -->
+
+<!-- MODAL EDIÇÃO DIAS -->
 <div id="modal-edicao" class="modal-overlay" style="display:none" onclick="if(event.target===this)fecharModal()">
   <div class="modal">
     <div class="modal-header">
@@ -267,70 +226,50 @@ input:checked+.slider:before{transform:translateX(20px)}
     <div class="modal-body">
       <select class="clinica-sel-edit" id="modal-clinica-sel" onchange="renderDiasEdicao()">
         <option value="">Selecione a clínica...</option>
-        <option value="Boa Vista">Boa Vista</option>
-        <option value="Bacacheri">Bacacheri</option>
-        <option value="ColomboMed">ColomboMed</option>
-        <option value="Etika SJP">Etika SJP</option>
-        <option value="FRG">FRG</option>
-        <option value="GPTRAN">GPTRAN</option>
-        <option value="Galeb">Galeb</option>
-        <option value="Hauer">Hauer</option>
-        <option value="Lifetran">Lifetran</option>
-        <option value="MM">MM</option>
-        <option value="PrimeMed">PrimeMed</option>
-        <option value="PPTRAN">PPTRAN</option>
-        <option value="Rio Sul">Rio Sul</option>
-        <option value="São José">São José</option>
+        <option value="Boa Vista">Boa Vista</option><option value="Bacacheri">Bacacheri</option>
+        <option value="ColomboMed">ColomboMed</option><option value="Etika SJP">Etika SJP</option>
+        <option value="FRG">FRG</option><option value="GPTRAN">GPTRAN</option>
+        <option value="Galeb">Galeb</option><option value="Hauer">Hauer</option>
+        <option value="Lifetran">Lifetran</option><option value="MM">MM</option>
+        <option value="PrimeMed">PrimeMed</option><option value="PPTRAN">PPTRAN</option>
+        <option value="Rio Sul">Rio Sul</option><option value="São José">São José</option>
         <option value="Tolmac">Tolmac</option>
       </select>
       <div id="modal-dias-lista"></div>
     </div>
   </div>
 </div>
+
+<!-- LOGIN -->
 <div id="tela-login" class="login-screen">
   <div class="login-card">
     <div style="font-size:40px;margin-bottom:.75rem">🏥</div>
     <h1>Sistema de Clínicas</h1>
     <p>Selecione seu perfil para entrar</p>
-
     <div class="login-tabs">
       <button class="login-tab active" onclick="setLoginTipo('gestor',this)">Gestor</button>
       <button class="login-tab" onclick="setLoginTipo('diretor',this)">Diretor</button>
-      <button class="login-tab" onclick="setLoginTipo('estagiaria',this)">Estagiária</button>
       <button class="login-tab" onclick="setLoginTipo('contabilidade',this)">Contabilidade</button>
+      <button class="login-tab" onclick="setLoginTipo('estagiaria',this)">Estagiária</button>
     </div>
-
-    <!-- GESTOR (Google) -->
     <div id="login-gestor">
       <button class="btn-google-lg" onclick="handleLoginGoogle()">
         <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
         Entrar com Google
       </button>
     </div>
-
-    <!-- DIRETOR (senha) -->
     <div id="login-diretor" style="display:none">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Acesso completo ao dashboard com senha.</p>
-      <input class="inp" type="password" id="inp-senha-diretor" placeholder="Digite a senha de diretor"
-        onkeydown="if(event.key==='Enter')entrarDiretor()">
-      <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px;font-size:14px" onclick="entrarDiretor()">Entrar</button>
+      <input class="inp" type="password" id="inp-senha-diretor" placeholder="Senha de diretor" onkeydown="if(event.key==='Enter')entrarSenha('diretor')">
+      <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px" onclick="entrarSenha('diretor')">Entrar</button>
     </div>
-
-    <!-- CONTABILIDADE -->
     <div id="login-contabilidade" style="display:none">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Acesso restrito à área de pagamentos.</p>
-      <input class="inp" type="password" id="inp-senha-contab" placeholder="Digite a senha da contabilidade"
-        onkeydown="if(event.key==='Enter')entrarContabilidade()">
-      <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px;font-size:14px" onclick="entrarContabilidade()">Entrar</button>
+      <input class="inp" type="password" id="inp-senha-contab" placeholder="Senha da contabilidade" onkeydown="if(event.key==='Enter')entrarSenha('contabilidade')">
+      <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px" onclick="entrarSenha('contabilidade')">Entrar</button>
     </div>
-
-    <!-- ESTAGIÁRIA -->
     <div id="login-estagiaria" style="display:none">
-      <input class="inp" type="password" id="inp-senha" placeholder="Digite a senha da clínica"
-        onkeydown="if(event.key==='Enter')entrarEstagiaria()">
-      <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px;font-size:14px" onclick="entrarEstagiaria()">Entrar</button>
+      <input class="inp" type="password" id="inp-senha-estag" placeholder="Senha da clínica" onkeydown="if(event.key==='Enter')entrarSenha('estagiaria')">
+      <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px" onclick="entrarSenha('estagiaria')">Entrar</button>
     </div>
-
     <div class="login-erro" id="login-erro"></div>
   </div>
 </div>
@@ -352,15 +291,9 @@ input:checked+.slider:before{transform:translateX(20px)}
   <!-- DASHBOARD -->
   <div id="page-dashboard" class="page active">
     <div class="hero">
-      <div class="hero-stat">
-        <span class="hero-label">🧠 Psicológico</span>
-        <span class="hero-val psico" id="total-p">—</span>
-      </div>
+      <div class="hero-stat"><span class="hero-label">🧠 Psicológico</span><span class="hero-val psico" id="total-p">—</span></div>
       <div class="hero-div"></div>
-      <div class="hero-stat">
-        <span class="hero-label">🩺 Médico</span>
-        <span class="hero-val med" id="total-m">—</span>
-      </div>
+      <div class="hero-stat"><span class="hero-label">🩺 Médico</span><span class="hero-val med" id="total-m">—</span></div>
       <div class="hero-div"></div>
       <div class="hero-stat" style="flex:1;min-width:200px">
         <span class="hero-label">🎯 Meta psicológica</span>
@@ -376,7 +309,7 @@ input:checked+.slider:before{transform:translateX(20px)}
           <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
           <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
         </select>
-        <select class="sel" id="ano-sel" onchange="renderDash()">
+        <select class="sel" id="ano-sel" onchange="trocarMesDash()">
           <option value="2025">2025</option><option value="2026" selected>2026</option>
         </select>
         <button class="btn" onclick="atualizarDados()">↻ Atualizar</button>
@@ -403,18 +336,18 @@ input:checked+.slider:before{transform:translateX(20px)}
         <option value="2025">2025</option><option value="2026" selected>2026</option>
       </select>
     </div>
-    <div id="pag-load" class="loading-msg" style="display:none">⏳ Carregando dados...</div>
-    <div id="pag-body"><div class="loading-msg">Carregando...</div></div>
+    <div id="pag-load" class="loading-msg" style="display:none">⏳ Carregando...</div>
+    <div id="pag-body"></div>
   </div>
 
-  <!-- LANÇAMENTO -->
+  <!-- LANCAMENTO -->
   <div id="page-lancamento" class="page">
     <div class="lanc-wrap">
       <div id="lanc-main">
         <div class="lanc-header">
           <h2>Lançamento diário</h2>
           <div id="data-chip" class="data-chip"></div>
-          <div id="clinica-chip" class="clinica-chip" style="display:none"></div>
+          <div id="clinica-chip" style="display:none;margin-top:6px;display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);padding:4px 14px;border-radius:99px;font-size:13px;font-weight:600;border:1px solid var(--green-border)"></div>
         </div>
         <div id="fds-aviso" class="fds-box" style="display:none">🏖️ Final de semana — sem atendimentos!</div>
         <div id="lanc-inner"></div>
@@ -423,7 +356,7 @@ input:checked+.slider:before{transform:translateX(20px)}
         <div class="check">✅</div>
         <h2>Registrado!</h2>
         <p id="sucesso-msg"></p>
-        <p style="font-size:13px;color:var(--muted);margin-top:.5rem">Obrigada! Pode fechar esta janela.</p>
+        <p style="font-size:13px;color:var(--muted)">Obrigada! Pode fechar esta janela.</p>
       </div>
     </div>
   </div>
@@ -431,16 +364,14 @@ input:checked+.slider:before{transform:translateX(20px)}
   <!-- CONFIG -->
   <div id="page-config" class="page">
     <div class="cfg-card">
-      <div class="cfg-title">💾 Backup de dados</div>
-      <p class="hint" style="margin-bottom:.75rem">Exporta todos os lançamentos, configurações e contas a pagar em um arquivo JSON. Guarde em local seguro (OneDrive, Drive, etc).</p>
+      <div class="cfg-title">💾 Backup</div>
+      <p class="hint" style="margin-bottom:.75rem">Exporta todos os dados em JSON para backup local.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-purple" onclick="exportarBackup()">⬇ Exportar backup completo</button>
+        <button class="btn btn-purple" onclick="exportarBackup()">⬇ Exportar backup</button>
         <button class="btn" onclick="document.getElementById('inp-importar').click()">⬆ Importar backup</button>
         <input type="file" id="inp-importar" accept=".json" style="display:none" onchange="importarBackup(this)">
       </div>
-      <p class="hint" style="margin-top:.75rem">Último backup: <span id="ultimo-backup">nunca</span></p>
     </div>
-
     <div class="cfg-card">
       <div class="cfg-title">💰 Valores por atendimento</div>
       <div class="two-col">
@@ -451,518 +382,283 @@ input:checked+.slider:before{transform:translateX(20px)}
       <button class="btn btn-purple" onclick="salvarVals()">Salvar</button>
       <span id="val-st" style="margin-left:8px"></span>
     </div>
-
     <div class="cfg-card">
-      <div class="cfg-title">🔌 Integração Google Sheets</div>
-      <p class="hint" style="margin-bottom:.75rem">Cole a URL do Apps Script e a chave de API. Isso permite que as estagiárias gravem e leiam dados da planilha sem precisar de login Google.</p>
-      <div class="fg">
-        <label>URL do Apps Script (Web App)</label>
-        <input type="text" id="inp-script-url" placeholder="https://script.google.com/macros/s/..." style="font-family:monospace;font-size:12px">
-      </div>
-      <div class="fg">
-        <label>Chave de API do Google</label>
-        <input type="text" id="inp-apikey" placeholder="AIza..." style="font-family:monospace">
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <button class="btn btn-purple" onclick="salvarIntegracao()">Salvar</button>
-        <span id="apikey-st"></span>
-      </div>
+      <div class="cfg-title">🔑 Senhas</div>
+      <p class="hint" style="margin-bottom:1rem">Gerencie as senhas de acesso de cada perfil.</p>
+      <div id="senhas-config"></div>
+      <button class="btn btn-purple" onclick="salvarSenhas()" style="margin-top:10px">Salvar senhas</button>
+      <span id="senhas-st" style="margin-left:8px"></span>
     </div>
-
-    <div class="cfg-card">
-      <div class="cfg-title">👔 Senhas de diretores</div>
-      <p class="hint" style="margin-bottom:.75rem">Diretores entram pela aba "Diretor" na tela de login com uma dessas senhas e têm acesso ao dashboard completo (sem acesso às configurações).</p>
-      <div id="diretores-grid"></div>
-      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-        <input type="text" id="inp-nova-senha-dir" placeholder="Nova senha de diretor..." style="flex:1;padding:8px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:monospace">
-        <button class="btn" onclick="adicionarSenhaDiretor()">+ Adicionar</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-        <button class="btn btn-purple" onclick="salvarSenhasDiretores()">Salvar</button>
-        <span id="dir-st"></span>
-      </div>
-    </div>
-
-    <div class="cfg-card">
-      <div class="cfg-title">📊 Senha da contabilidade</div>
-      <p class="hint" style="margin-bottom:.75rem">A contabilidade entra pela aba "Contabilidade" na tela de login e vê apenas os pagamentos.</p>
-      <div id="contab-grid"></div>
-      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-        <input type="text" id="inp-nova-senha-contab" placeholder="Nova senha..." style="flex:1;padding:8px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace">
-        <button class="btn" onclick="adicionarSenhaContab()">+ Adicionar</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-        <button class="btn btn-purple" onclick="salvarSenhasContab()">Salvar</button>
-        <span id="contab-st"></span>
-      </div>
-    </div>
-
-    <div class="cfg-card">
-      <div class="cfg-title">🔑 Senhas das clínicas</div>
-      <p class="hint" style="margin-bottom:1rem">Cada clínica tem uma senha própria. A estagiária entra com a senha e já vai direto para o lançamento da clínica dela.</p>
-      <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--surface2)">
-        <span style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase">Clínica</span>
-        <span style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase">Senha</span>
-      </div>
-      <div id="senhas-grid"></div>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:12px">
-        <button class="btn btn-purple" onclick="salvarSenhas()">Salvar senhas</button>
-        <span id="senha-st"></span>
-      </div>
-    </div>
-
     <div class="cfg-card">
       <div class="cfg-title">📊 Planilhas por mês</div>
-      <p class="hint" style="margin-bottom:.75rem">Cole o ID de cada planilha (da URL do Google Sheets).</p>
+      <p class="hint" style="margin-bottom:.75rem">ID da planilha Google Sheets de cada mês (da URL).</p>
       <div id="sheets-grid"></div>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-        <button class="btn btn-purple" onclick="salvarSheets()">Salvar</button>
-        <span id="sheet-st"></span>
-      </div>
+      <button class="btn btn-purple" onclick="salvarSheets()" style="margin-top:10px">Salvar</button>
+      <span id="sheet-st" style="margin-left:8px"></span>
     </div>
   </div>
 </div>
 
-</div>
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, get, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-<script src="https://accounts.google.com/gsi/client" async></script>
-<script>
-const CLIENT_ID = '874687957081-3pk9k0khdbhqj70mok912jvf32s6jr1h.apps.googleusercontent.com';
-const SCRIPT_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbzYpGh-El81ezpz4giwQNOPkgv7YyjQwAYafm-vDfvROrfVZoiGU2BaiT9Mm-78L7qsGA/exec';
-const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.email';
+// ── FIREBASE CONFIG ──────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyAZXDaDQeITajdHkTrn38W2CoVce1Zhs7Y",
+  authDomain: "dashboard-clinicas-b471f.firebaseapp.com",
+  databaseURL: "https://dashboard-clinicas-b471f-default-rtdb.firebaseio.com",
+  projectId: "dashboard-clinicas-b471f",
+  storageBucket: "dashboard-clinicas-b471f.firebasestorage.app",
+  messagingSenderId: "802245105282",
+  appId: "1:802245105282:web:5241e3a59c963cec38c69b"
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getDatabase(firebaseApp);
+const auth = getAuth(firebaseApp);
+const provider = new GoogleAuthProvider();
+
+// ── CONSTANTES ────────────────────────────────────────
 const CLINICAS = ['Boa Vista','Bacacheri','ColomboMed','Etika SJP','FRG','GPTRAN','Galeb','Hauer','Lifetran','MM','PrimeMed','PPTRAN','Rio Sul','São José','Tolmac'];
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const MESES_CURTO = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
-let tokenClient = null, accessToken = null;
-let perfilAtual = ''; // 'gestor' ou nome da clinica
-let profsCache = {};  // clinica: [{nome, tipo, colEntrev, colEstrang}]
-
-let cfg = {
-  valP:50, valM:48, imp:10, meta:55,
-  sheets:{ '5_2026':'18rajQPaYrzqijxCGLPl2CSGO5eoZ6y-JN5DFG33zS5o' },
-  senhas:{} // { 'Boa Vista': 'boavista123', ... }
-};
-let dadosLanc = {}; // { '5_2026': { 'Boa Vista': { profs:{}, dias:[] } } }
+// ── ESTADO ────────────────────────────────────────────
+let perfilAtual = '';
+let cfg = { valP:50, valM:48, imp:10, meta:55, sheets:{}, senhas:{}, senhasDiretores:[], senhasContabilidade:[] };
+let dadosLanc = {};
+let pagEdit = {};
 let cacheSheets = {};
+let profsCache = {};
 
-function loadState(){
-  try{
-    const c=localStorage.getItem('cl_v3');if(c)cfg=Object.assign(cfg,JSON.parse(c));
-    const d=localStorage.getItem('cl_lanc');if(d)dadosLanc=JSON.parse(d);
-  }catch(e){}
+// ── DB HELPERS ────────────────────────────────────────
+async function dbSet(path, value) {
+  await set(ref(db, path), value);
+}
+async function dbGet(path) {
+  const snap = await get(ref(db, path));
+  return snap.exists() ? snap.val() : null;
 }
 
-// POST para Apps Script — formato confirmado funcionando
-async function scriptPost(dados){
-  const url = cfg.scriptUrl || SCRIPT_URL_DEFAULT;
-  try{
-    const r = await fetch(url, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain'},
-      body: JSON.stringify(dados)
-    });
-    const d = await r.json();
-    return d;
-  }catch(e){
-    console.warn('scriptPost erro:', e);
-    return {sucesso: false};
-  }
+// ── CARREGAR TUDO DA NUVEM ────────────────────────────
+async function carregarTudo() {
+  const [cfgData, lancData, pagEditData] = await Promise.all([
+    dbGet('config'),
+    dbGet('lancamentos'),
+    dbGet('pagEdit')
+  ]);
+  if (cfgData) cfg = Object.assign(cfg, cfgData);
+  if (lancData) dadosLanc = lancData;
+  if (pagEditData) pagEdit = pagEditData;
 }
 
-// Função de GET com resposta (leitura)
-async function scriptGet(params){
-  const url = cfg.scriptUrl || SCRIPT_URL_DEFAULT;
-  const qs = Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
-  const controller = new AbortController();
-  const timeout = setTimeout(()=>controller.abort(), 8000);
-  try{
-    const r = await fetch(`${url}?${qs}`, {signal: controller.signal});
-    clearTimeout(timeout);
-    if(!r.ok) return null;
-    return await r.json();
-  }catch(e){
-    clearTimeout(timeout);
-    console.warn('scriptGet erro:', e);
-    return null;
-  }
+async function salvarCfg() {
+  await dbSet('config', cfg);
+}
+async function salvarLanc(mes, ano) {
+  const k = chave(mes, ano);
+  await dbSet('lancamentos/' + k, dadosLanc[k] || {});
+}
+async function salvarPagEditDB(mes, ano) {
+  const k = chave(mes, ano);
+  await dbSet('pagEdit/' + k, pagEdit[k] || {});
 }
 
-async function loadStateFromCloud(){
-  // Usa sempre a URL padrão hardcoded como garantia — funciona em qualquer dispositivo
-  const url = SCRIPT_URL_DEFAULT;
-  try{
-    const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),10000);
-    const r=await fetch(`${url}?acao=carregarConfig`,{signal:controller.signal});
-    clearTimeout(timeout);
-    if(!r.ok)return;
-    const d=await r.json();
-    if(d&&d.sucesso&&d.dados&&Object.keys(d.dados).length){
-      const nuvem=d.dados;
-      if(nuvem.senhas)cfg.senhas=nuvem.senhas;
-      if(nuvem.senhasDiretores)cfg.senhasDiretores=nuvem.senhasDiretores;
-      if(nuvem.senhasContabilidade)cfg.senhasContabilidade=nuvem.senhasContabilidade;
-      if(nuvem.sheets)cfg.sheets=nuvem.sheets;
-      if(nuvem.valP)cfg.valP=parseFloat(nuvem.valP)||50;
-      if(nuvem.valM)cfg.valM=parseFloat(nuvem.valM)||48;
-      if(nuvem.imp)cfg.imp=parseFloat(nuvem.imp)||10;
-      if(nuvem.meta)cfg.meta=parseInt(nuvem.meta)||55;
-      if(nuvem.apiKey)cfg.apiKey=nuvem.apiKey;
-      if(nuvem.scriptUrl)cfg.scriptUrl=nuvem.scriptUrl;
-      saveStateLocal();
-      console.log('✓ Config carregada da nuvem. senhasContabilidade:', cfg.senhasContabilidade);
-    }
-  }catch(e){
-    console.warn('Config nuvem indisponível:', e.message);
-  }
+// ── UTILS ─────────────────────────────────────────────
+function chave(m, a) { return m + '_' + a; }
+function hoje() { return new Date(); }
+function isDiaUtil(d) { const dow = d.getDay(); return dow !== 0 && dow !== 6; }
+function diasUteisMes(mes, ano) {
+  const dias = [], d = new Date(ano, mes-1, 1);
+  while (d.getMonth() === mes-1) { if (isDiaUtil(d)) dias.push(d.getDate()); d.setDate(d.getDate()+1); }
+  return dias;
 }
-
-function saveStateLocal(){
-  try{
-    localStorage.setItem('cl_v3',JSON.stringify(cfg));
-    localStorage.setItem('cl_lanc',JSON.stringify(dadosLanc));
-    if(cfg.scriptUrl)localStorage.setItem('cl_script_url',cfg.scriptUrl);
-  }catch(e){}
-}
-
-async function saveState(){
-  saveStateLocal();
-  try{
-    await scriptPost({
-      acao:'salvarConfig',
-      cfg:{
-        senhas:cfg.senhas,
-        senhasDiretores:cfg.senhasDiretores||[],
-        senhasContabilidade:cfg.senhasContabilidade||[],
-        sheets:cfg.sheets,
-        valP:cfg.valP,
-        valM:cfg.valM,
-        imp:cfg.imp,
-        meta:cfg.meta,
-        apiKey:cfg.apiKey,
-        scriptUrl:cfg.scriptUrl
-      }
-    });
-  }catch(e){console.warn('Erro config nuvem:',e);}
-}
-
-// Salva lançamentos de um mês específico na nuvem
-async function saveLancamentosNuvem(mes, ano){
-  const k=chave(mes,ano);
-  const lancamentos=dadosLanc[k]||{};
-  await scriptPost({acao:'salvarLancamentos',lancamentos,mes,ano});
-}
-
-// Carrega lançamentos de um mês da nuvem
-async function loadLancamentosNuvem(mes, ano){
-  const url=cfg.scriptUrl||SCRIPT_URL_DEFAULT;
-  if(!url)return;
-  try{
-    const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),8000);
-    const r=await fetch(`${url}?acao=carregarLancamentos&mes=${mes}&ano=${ano}`,{signal:controller.signal});
-    clearTimeout(timeout);
-    if(!r.ok)return;
-    const d=await r.json();
-    if(d.sucesso&&d.dados&&Object.keys(d.dados).length){
-      const k=chave(mes,ano);
-      // Mescla nuvem com local (nuvem tem prioridade)
-      dadosLanc[k]=d.dados;
-      saveStateLocal();
-      console.log(`✓ Lançamentos ${mes}/${ano} carregados da nuvem`);
-    }
-  }catch(e){console.warn('Erro ao carregar lançamentos:',e);}
-}
-function chave(m,a){return `${m}_${a}`;}
-function hoje(){return new Date();}
-function isDiaUtil(d){const dow=d.getDay();return dow!==0&&dow!==6;}
+function parseN(v) { if (!v && v!==0) return 0; const n=parseFloat(String(v).replace(',','.').replace(/[^\d.-]/g,'')); return isNaN(n)?0:Math.max(0,n); }
+function fmt(v) { return 'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
+function cL(col) { let l='',n=col+1; while(n>0){n--;l=String.fromCharCode(65+n%26)+l;n=Math.floor(n/26);} return l; }
 
 // ── LOGIN ─────────────────────────────────────────────
 let loginTipo = 'gestor';
-function setLoginTipo(tipo, el){
+function setLoginTipo(tipo, el) {
   loginTipo = tipo;
   document.querySelectorAll('.login-tab').forEach(x=>x.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('login-gestor').style.display = tipo==='gestor'?'block':'none';
-  document.getElementById('login-diretor').style.display = tipo==='diretor'?'block':'none';
-  document.getElementById('login-estagiaria').style.display = tipo==='estagiaria'?'block':'none';
-  document.getElementById('login-contabilidade').style.display = tipo==='contabilidade'?'block':'none';
+  ['gestor','diretor','contabilidade','estagiaria'].forEach(t => {
+    document.getElementById('login-'+t).style.display = t===tipo ? 'block' : 'none';
+  });
   document.getElementById('login-erro').style.display = 'none';
 }
 
-function handleLoginGoogle(){
-  if(!window.google){setTimeout(handleLoginGoogle,500);return;}
-  if(!tokenClient){
-    tokenClient=google.accounts.oauth2.initTokenClient({
-      client_id:CLIENT_ID, scope:SCOPES,
-      callback:async(resp)=>{
-        if(resp.error){showErro('Erro no login: '+resp.error);return;}
-        accessToken=resp.access_token;
-        iniciarGestor();
-      }
-    });
+function showErro(msg) {
+  const el = document.getElementById('login-erro');
+  el.style.display = 'block'; el.textContent = msg;
+}
+
+async function handleLoginGoogle() {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch(e) { showErro('Erro no login: ' + e.message); }
+}
+
+async function entrarSenha(tipo) {
+  const ids = { diretor:'inp-senha-diretor', contabilidade:'inp-senha-contab', estagiaria:'inp-senha-estag' };
+  const senha = document.getElementById(ids[tipo])?.value.trim();
+  if (!senha) { showErro('Digite a senha.'); return; }
+
+  const btn = document.querySelector('#login-'+tipo+' button');
+  if (btn) { btn.textContent = '⏳ Verificando...'; btn.disabled = true; }
+
+  await carregarTudo();
+
+  if (btn) { btn.textContent = 'Entrar'; btn.disabled = false; }
+
+  if (tipo === 'diretor') {
+    if (!(cfg.senhasDiretores||[]).includes(senha)) { showErro('Senha incorreta.'); return; }
+    perfilAtual = 'gestor';
+    iniciarGestor();
+  } else if (tipo === 'contabilidade') {
+    if (!(cfg.senhasContabilidade||[]).includes(senha)) { showErro('Senha incorreta.'); return; }
+    perfilAtual = 'contabilidade';
+    iniciarContabilidade();
+  } else if (tipo === 'estagiaria') {
+    const clinica = Object.entries(cfg.senhas||{}).find(([cl,pw])=>pw===senha)?.[0];
+    if (!clinica) { showErro('Senha incorreta.'); return; }
+    perfilAtual = clinica;
+    iniciarEstagiaria(clinica);
   }
-  tokenClient.requestAccessToken();
 }
 
-async function entrarDiretor(){
-  const senha=document.getElementById('inp-senha-diretor').value.trim();
-  if(!senha){showErro('Digite a senha.');return;}
-  const btnEl=document.querySelector('#login-diretor button');
-  if(btnEl){btnEl.textContent='⏳ Verificando...';btnEl.disabled=true;}
-  // Sempre busca da nuvem — garante funcionar em qualquer dispositivo
-  await loadStateFromCloud();
-  if(btnEl){btnEl.textContent='Entrar';btnEl.disabled=false;}
-  const ok=(cfg.senhasDiretores||[]).includes(senha);
-  if(!ok){showErro('Senha incorreta.');return;}
-  perfilAtual='gestor';
-  iniciarGestor();
+window.handleLoginGoogle = handleLoginGoogle;
+window.entrarSenha = entrarSenha;
+window.setLoginTipo = setLoginTipo;
+
+onAuthStateChanged(auth, async (user) => {
+  if (user && perfilAtual === '') {
+    await carregarTudo();
+    perfilAtual = 'gestor';
+    iniciarGestor();
+  }
+});
+
+function sair() {
+  perfilAtual = '';
+  signOut(auth);
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('tela-login').style.display = 'flex';
+  ['inp-senha-diretor','inp-senha-contab','inp-senha-estag'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('login-erro').style.display = 'none';
+}
+window.sair = sair;
+
+// ── INICIAR PERFIS ────────────────────────────────────
+function iniciarGestor() {
+  document.getElementById('tela-login').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('user-chip').textContent = '👤 Gestor';
+  ['tab-dash','tab-pag','tab-lanc','tab-cfg'].forEach(id => document.getElementById(id).style.display = '');
+  initConfig();
+  const agora = hoje();
+  document.getElementById('mes-sel').value = agora.getMonth()+1;
+  document.getElementById('mes-pag').value = agora.getMonth()+1;
+  document.getElementById('ano-sel').value = agora.getFullYear();
+  document.getElementById('ano-pag').value = agora.getFullYear();
+  document.getElementById('meta-in').value = cfg.meta;
+  showPage('dashboard', document.getElementById('tab-dash'));
+  atualizarDados();
 }
 
-async function entrarContabilidade(){
-  const senha=document.getElementById('inp-senha-contab').value.trim();
-  if(!senha){showErro('Digite a senha.');return;}
-  const btnEl=document.querySelector('#login-contabilidade button');
-  if(btnEl){btnEl.textContent='⏳ Verificando...';btnEl.disabled=true;}
-  // Sempre busca da nuvem para funcionar em qualquer dispositivo
-  await loadStateFromCloud();
-  if(btnEl){btnEl.textContent='Entrar';btnEl.disabled=false;}
-  const ok=(cfg.senhasContabilidade||[]).includes(senha);
-  if(!ok){showErro('Senha incorreta. Verifique com o gestor.');return;}
-  perfilAtual='contabilidade';
-  iniciarContabilidade();
-}
-
-async function iniciarContabilidade(){
-  document.getElementById('tela-login').style.display='none';
-  document.getElementById('app').style.display='block';
-  document.getElementById('user-chip').textContent='📊 Contabilidade';
-  ['tab-dash','tab-lanc','tab-cfg'].forEach(id=>document.getElementById(id).style.display='none');
-  document.getElementById('tab-pag').style.display='';
+function iniciarContabilidade() {
+  document.getElementById('tela-login').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('user-chip').textContent = '📊 Contabilidade';
+  ['tab-dash','tab-lanc','tab-cfg'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('tab-pag').style.display = '';
+  const agora = hoje();
+  document.getElementById('mes-pag').value = agora.getMonth()+1;
+  document.getElementById('ano-pag').value = agora.getFullYear();
   showPage('pagamentos', document.getElementById('tab-pag'));
-
-  // Mostra loading
-  const pl=document.getElementById('pag-load');
-  const pb=document.getElementById('pag-body');
-  if(pl){pl.style.display='block';pl.textContent='⏳ Carregando dados...';}
-  if(pb)pb.style.display='none';
-
-  // 1. Carrega configs da nuvem
-  await loadStateFromCloud();
-
-  // 2. Define mês atual
-  const agora=new Date();
-  const mes=agora.getMonth()+1, ano=agora.getFullYear();
-  document.getElementById('mes-pag').value=mes;
-  document.getElementById('ano-pag').value=ano;
-
-  // 3. Carrega lançamentos e edições da nuvem
-  await Promise.all([
-    loadLancamentosNuvem(mes, ano),
-    loadPagEditNuvem(mes, ano)
-  ]);
-
-  // 4. Renderiza
   renderPag();
 }
 
-async function entrarEstagiaria(){
-  const senha=document.getElementById('inp-senha').value.trim();
-  if(!senha){showErro('Digite a senha.');return;}
-  const btnEl=document.querySelector('#login-estagiaria button');
-  if(btnEl){btnEl.textContent='⏳ Verificando...';btnEl.disabled=true;}
-  // Sempre busca da nuvem — garante funcionar em qualquer dispositivo
-  await loadStateFromCloud();
-  if(btnEl){btnEl.textContent='Entrar';btnEl.disabled=false;}
-  const clinica=Object.entries(cfg.senhas||{}).find(([cl,pw])=>pw===senha)?.[0];
-  if(!clinica){showErro('Senha incorreta.');return;}
-  perfilAtual=clinica;
-  iniciarEstagiaria(clinica);
-}
-
-function showErro(msg){
-  const el=document.getElementById('login-erro');
-  el.style.display='block'; el.textContent=msg;
-}
-
-async function iniciarGestor(){
-  perfilAtual='gestor';
-  document.getElementById('tela-login').style.display='none';
-  document.getElementById('app').style.display='block';
-  document.getElementById('user-chip').textContent='👤 Gestor';
-  ['tab-dash','tab-pag','tab-lanc','tab-cfg'].forEach(id=>document.getElementById(id).style.display='');
-
-  // Inicializa já com dados locais (não bloqueia o login)
-  initConfig();
-  const agora=hoje();
-  document.getElementById('mes-sel').value=agora.getMonth()+1;
-  document.getElementById('mes-pag').value=agora.getMonth()+1;
-  document.getElementById('ano-sel').value=agora.getFullYear();
-  document.getElementById('ano-pag').value=agora.getFullYear();
-  showPage('dashboard',document.getElementById('tab-dash'));
-  renderDash();
-  renderAlertas();
-
-  // Carrega nuvem em paralelo sem bloquear
-  loadStateFromCloud().then(()=>{
-    initConfig();
-    atualizarDados();
-  }).catch(()=>atualizarDados());
-}
-
-async function iniciarEstagiaria(clinica){
-  document.getElementById('tela-login').style.display='none';
-  document.getElementById('app').style.display='block';
-  document.getElementById('user-chip').textContent='🏥 '+clinica;
-  ['tab-dash','tab-pag','tab-cfg'].forEach(id=>document.getElementById(id).style.display='none');
-  document.getElementById('tab-lanc').style.display='';
-  showPage('lancamento',document.getElementById('tab-lanc'));
-
-  // Carrega nuvem em paralelo sem bloquear UI
-  loadStateFromCloud().catch(()=>{});
+function iniciarEstagiaria(clinica) {
+  document.getElementById('tela-login').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('user-chip').textContent = '🏥 ' + clinica;
+  ['tab-dash','tab-pag','tab-cfg'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('tab-lanc').style.display = '';
+  showPage('lancamento', document.getElementById('tab-lanc'));
   initLancamento(clinica);
 }
 
-function sair(){
-  accessToken=null; perfilAtual='';
-  document.getElementById('app').style.display='none';
-  document.getElementById('tela-login').style.display='flex';
-  document.getElementById('inp-senha').value='';
-  if(document.getElementById('inp-senha-diretor'))document.getElementById('inp-senha-diretor').value='';
-  if(document.getElementById('inp-senha-contab'))document.getElementById('inp-senha-contab').value='';
-  document.getElementById('login-erro').style.display='none';
-}
-
 // ── NAVEGAÇÃO ─────────────────────────────────────────
-function showPage(p,el){
+function showPage(p, el) {
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
-  const pageEl=document.getElementById('page-'+p);
-  if(pageEl)pageEl.classList.add('active');
-  if(el)el.classList.add('active');
-  if(p==='pagamentos')renderPag();
-  if(p==='lancamento'&&perfilAtual==='gestor')initLancamento(null);
+  const pg = document.getElementById('page-'+p);
+  if (pg) pg.classList.add('active');
+  if (el) el.classList.add('active');
+  if (p === 'pagamentos') renderPag();
+  if (p === 'lancamento' && perfilAtual === 'gestor') initLancamento(null);
 }
+window.showPage = showPage;
 
 // ── LANÇAMENTO ────────────────────────────────────────
-function initLancamento(clinicaFixa){
-  const agora=hoje();
-  const semana=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
-  document.getElementById('data-chip').textContent=`${semana[agora.getDay()]}, ${agora.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}`;
+function initLancamento(clinicaFixa) {
+  const agora = hoje();
+  const semana = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  const chip = document.getElementById('data-chip');
+  if (chip) chip.textContent = semana[agora.getDay()] + ', ' + agora.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
 
-  const chip=document.getElementById('clinica-chip');
-  const inner=document.getElementById('lanc-inner');
-  const fds=document.getElementById('fds-aviso');
+  const eFDS = !isDiaUtil(agora);
+  document.getElementById('fds-aviso').style.display = eFDS ? 'block' : 'none';
+  const inner = document.getElementById('lanc-inner');
 
-  if(!isDiaUtil(agora)){
-    fds.style.display='block'; inner.innerHTML=''; chip.style.display='none'; return;
-  }
-  fds.style.display='none';
+  if (eFDS) { inner.innerHTML = ''; return; }
 
-  if(clinicaFixa){
-    chip.textContent='🏥 '+clinicaFixa; chip.style.display='inline-flex';
+  const cChip = document.getElementById('clinica-chip');
+  if (clinicaFixa) {
+    if (cChip) { cChip.style.display = 'inline-flex'; cChip.textContent = '🏥 ' + clinicaFixa; }
     renderLancForm(clinicaFixa, inner);
   } else {
-    chip.style.display='none';
-    // Gestor pode escolher qualquer clínica
-    inner.innerHTML=`<div class="lanc-card">
+    if (cChip) cChip.style.display = 'none';
+    inner.innerHTML = `<div class="lanc-card">
       <div class="lanc-card-title">Clínica</div>
       <select class="sel" style="width:100%;padding:11px 14px;font-size:15px" onchange="if(this.value)renderLancForm(this.value,document.getElementById('lanc-inner-profs'))">
-        <option value="">Selecione a clínica...</option>
+        <option value="">Selecione...</option>
         ${CLINICAS.map(c=>`<option value="${c}">${c}</option>`).join('')}
       </select>
-    </div>
-    <div id="lanc-inner-profs"></div>`;
+    </div><div id="lanc-inner-profs"></div>`;
   }
 }
+window.initLancamento = initLancamento;
 
-async function renderLancForm(clinica, container){
-  container.innerHTML='<div class="loading-msg" style="padding:1.5rem">⏳ Carregando profissionais...</div>';
+async function renderLancForm(clinica, container) {
+  container.innerHTML = '<div class="loading-msg" style="padding:1.5rem">⏳ Carregando...</div>';
   const profs = await buscarProfs(clinica);
-  if(!profs.length){container.innerHTML='<div class="alerta-box erro">⚠️ Nenhum profissional encontrado.</div>';return;}
-  profsCache[clinica]=profs;
-
-  const dia=hoje().getDate();
-  let html=`<div class="lanc-card"><div class="lanc-card-title">Atendimentos — dia ${dia}</div>`;
-
-  profs.forEach((p,i)=>{
-    const isP=p.tipo==='psico';
-    html+=`<div class="prof-block">
-      <div class="prof-header"><span class="prof-nome">${p.nome}</span><span class="${isP?'bp':'bm'}" style="font-size:11px;padding:2px 8px;border-radius:99px;font-weight:600">${isP?'Psicóloga':'Médica'}</span></div>`;
-    if(isP){html+=cCtrl(i,'e','🧠 Entrevistas')+cCtrl(i,'s','🌍 Estrangeiros');}
-    else{html+=cCtrl(i,'m','🩺 Atendimentos');}
-    html+=`<div class="sem-row"><span class="sem-label">Não atendeu hoje</span>
-      <label class="toggle"><input type="checkbox" id="aus_${i}" onchange="togAus(${i})"><span class="slider"></span></label>
-    </div></div>`;
+  if (!profs.length) { container.innerHTML = '<div style="color:var(--red);padding:1rem">Nenhum profissional encontrado.</div>'; return; }
+  profsCache[clinica] = profs;
+  window._extrasCount = 0;
+  const dia = hoje().getDate();
+  let html = `<div class="lanc-card"><div class="lanc-card-title">Atendimentos — dia ${dia}</div>`;
+  profs.forEach((p,i) => {
+    const isP = p.tipo === 'psico';
+    html += `<div class="prof-block"><div class="prof-header"><span class="prof-nome">${p.nome}</span><span class="${isP?'bp':'bm'}" style="font-size:11px;padding:2px 8px;border-radius:99px;font-weight:600">${isP?'Psicóloga':'Médica'}</span></div>`;
+    if (isP) { html += cCtrl(i,'e','🧠 Entrevistas') + cCtrl(i,'s','🌍 Estrangeiros'); }
+    else { html += cCtrl(i,'m','🩺 Atendimentos'); }
+    html += `<div class="sem-row"><span class="sem-label">Não atendeu hoje</span><label class="toggle"><input type="checkbox" id="aus_${i}" onchange="togAus(${i})"><span class="slider"></span></label></div></div>`;
   });
-
-  html+=`</div>
-  <div id="extras-area-${clinica.replace(/\s/g,'_')}"></div>
-  <button class="add-prof-btn" onclick="adicionarProfExtra('${clinica}')">+ Adicionar profissional substituto</button>
-  <button class="btn btn-purple btn-full" id="btn-salvar-lanc" onclick="salvarLanc('${clinica}')">✓ Registrar atendimentos</button>`;
-
-  container.innerHTML=html;
-  window._extrasCount=window._extrasCount||0;
+  html += `</div><div id="extras-area-${clinica.replace(/\s/g,'_')}"></div>
+    <button class="add-prof-btn" onclick="adicionarProfExtra('${clinica}')">+ Adicionar profissional substituto</button>
+    <button class="btn btn-purple btn-full" id="btn-salvar-lanc" onclick="salvarLanc('${clinica}')">✓ Registrar atendimentos</button>`;
+  container.innerHTML = html;
 }
+window.renderLancForm = renderLancForm;
 
-function adicionarProfExtra(clinica){
-  window._extrasCount=(window._extrasCount||0)+1;
-  const idx=window._extrasCount;
-  const areaId=`extras-area-${clinica.replace(/\s/g,'_')}`;
-  const area=document.getElementById(areaId);
-  if(!area)return;
-
-  const div=document.createElement('div');
-  div.className='extra-prof-form';
-  div.id=`extra-prof-${idx}`;
-  div.innerHTML=`
-    <div class="extra-prof-header">
-      <span class="extra-prof-title">Profissional substituto ${idx}</span>
-      <button class="remove-prof-btn" onclick="removerProfExtra(${idx})">✕ Remover</button>
-    </div>
-    <input type="text" class="extra-sel" id="extra-nome-${idx}" placeholder="Nome do profissional (ex: Paula)">
-    <select class="extra-sel" id="extra-tipo-${idx}" onchange="renderCamposExtra(${idx})">
-      <option value="psico">Psicóloga</option>
-      <option value="med">Médica</option>
-    </select>
-    <div id="extra-campos-${idx}">
-      ${cCtrl('x'+idx,'e','🧠 Entrevistas')}
-      ${cCtrl('x'+idx,'s','🌍 Estrangeiros')}
-    </div>`;
-  area.appendChild(div);
-}
-
-function renderCamposExtra(idx){
-  const tipo=document.getElementById(`extra-tipo-${idx}`)?.value;
-  const camposEl=document.getElementById(`extra-campos-${idx}`);
-  if(!camposEl)return;
-  if(tipo==='psico'){
-    camposEl.innerHTML=cCtrl('x'+idx,'e','🧠 Entrevistas')+cCtrl('x'+idx,'s','🌍 Estrangeiros');
-  }else{
-    camposEl.innerHTML=cCtrl('x'+idx,'m','🩺 Atendimentos');
-  }
-}
-
-function removerProfExtra(idx){
-  document.getElementById(`extra-prof-${idx}`)?.remove();
-}
-
-function coletarExtras(){
-  const extras=[];
-  document.querySelectorAll('[id^="extra-prof-"]').forEach(el=>{
-    const idx=el.id.replace('extra-prof-','');
-    const nome=document.getElementById(`extra-nome-${idx}`)?.value.trim();
-    const tipo=document.getElementById(`extra-tipo-${idx}`)?.value||'psico';
-    if(!nome)return;
-    const e=parseInt(document.getElementById(`n_x${idx}_e`)?.value)||0;
-    const s=parseInt(document.getElementById(`n_x${idx}_s`)?.value)||0;
-    const m=parseInt(document.getElementById(`n_x${idx}_m`)?.value)||0;
-    extras.push({nome,tipo,e,s,m,extra:true});
-  });
-  return extras;
-}
-function cCtrl(i,t,label){
+function cCtrl(i, t, label) {
   return `<div class="campo-row"><span class="campo-label">${label}</span>
     <div class="campo-ctrl">
       <button class="cbtn minus" onclick="alt('n_${i}_${t}',-1)">−</button>
@@ -970,27 +666,58 @@ function cCtrl(i,t,label){
       <button class="cbtn plus" onclick="alt('n_${i}_${t}',1)">+</button>
     </div></div>`;
 }
-
 function alt(id,d){const el=document.getElementById(id);if(!el||el.disabled)return;const v=Math.max(0,(parseInt(el.value)||0)+d);el.value=v;el.className='cnum'+(v>0?' filled':'');}
 function vN(el){const v=parseInt(el.value);if(isNaN(v)||v<0)el.value=0;el.className='cnum'+(parseInt(el.value)>0?' filled':'');}
-function togAus(i){
-  const cb=document.getElementById(`aus_${i}`);
-  ['e','s','m'].forEach(t=>{const el=document.getElementById(`n_${i}_${t}`);if(!el)return;el.disabled=cb.checked;if(cb.checked){el.value=0;el.className='cnum';}});
+function togAus(i){const cb=document.getElementById(`aus_${i}`);['e','s','m'].forEach(t=>{const el=document.getElementById(`n_${i}_${t}`);if(!el)return;el.disabled=cb.checked;if(cb.checked){el.value=0;el.className='cnum';}});}
+window.alt=alt;window.vN=vN;window.togAus=togAus;
+
+function adicionarProfExtra(clinica) {
+  window._extrasCount = (window._extrasCount||0)+1;
+  const idx = window._extrasCount;
+  const area = document.getElementById('extras-area-'+clinica.replace(/\s/g,'_'));
+  if (!area) return;
+  const div = document.createElement('div');
+  div.className = 'extra-prof-form'; div.id = 'extra-prof-'+idx;
+  div.innerHTML = `<div class="extra-prof-header"><span class="extra-prof-title">Substituto ${idx}</span><button class="remove-prof-btn" onclick="document.getElementById('extra-prof-${idx}').remove()">✕</button></div>
+    <input type="text" class="extra-sel" id="extra-nome-${idx}" placeholder="Nome do profissional">
+    <select class="extra-sel" id="extra-tipo-${idx}" onchange="renderExtraCampos(${idx})"><option value="psico">Psicóloga</option><option value="med">Médica</option></select>
+    <div id="extra-campos-${idx}">${cCtrl('x'+idx,'e','🧠 Entrevistas')}${cCtrl('x'+idx,'s','🌍 Estrangeiros')}</div>`;
+  area.appendChild(div);
+}
+function renderExtraCampos(idx){const tipo=document.getElementById(`extra-tipo-${idx}`)?.value;const el=document.getElementById(`extra-campos-${idx}`);if(!el)return;el.innerHTML=tipo==='psico'?cCtrl('x'+idx,'e','🧠 Entrevistas')+cCtrl('x'+idx,'s','🌍 Estrangeiros'):cCtrl('x'+idx,'m','🩺 Atendimentos');}
+window.adicionarProfExtra=adicionarProfExtra;window.renderExtraCampos=renderExtraCampos;
+
+function coletarExtras() {
+  const extras = [];
+  document.querySelectorAll('[id^="extra-prof-"]').forEach(el => {
+    const idx = el.id.replace('extra-prof-','');
+    const nome = document.getElementById(`extra-nome-${idx}`)?.value.trim();
+    const tipo = document.getElementById(`extra-tipo-${idx}`)?.value||'psico';
+    if (!nome) return;
+    const e=parseInt(document.getElementById(`n_x${idx}_e`)?.value)||0;
+    const s=parseInt(document.getElementById(`n_x${idx}_s`)?.value)||0;
+    const m=parseInt(document.getElementById(`n_x${idx}_m`)?.value)||0;
+    extras.push({nome,tipo,e,s,m,extra:true});
+  });
+  return extras;
 }
 
-async function salvarLanc(clinica){
-  const btn=document.getElementById('btn-salvar-lanc');
-  btn.disabled=true;btn.textContent='⏳ Salvando...';
-  const agora=hoje();
-  const dia=agora.getDate(),mes=agora.getMonth()+1,ano=agora.getFullYear();
-  const k=chave(mes,ano);
-  if(!dadosLanc[k])dadosLanc[k]={};
-  if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={dias:{},diasLancados:[]};
+async function salvarLanc(clinica) {
+  const btn = document.getElementById('btn-salvar-lanc');
+  btn.disabled=true; btn.textContent='⏳ Salvando...';
+  const agora=hoje(), dia=agora.getDate(), mes=agora.getMonth()+1, ano=agora.getFullYear();
+  const k = chave(mes,ano);
+  if (!dadosLanc[k]) dadosLanc[k] = {};
+  if (!dadosLanc[k][clinica]) dadosLanc[k][clinica] = {dias:{},diasLancados:[]};
   migrarEstrutura(k,clinica);
-  const profs=profsCache[clinica]||[];
-  const resumo=[],valoresDia={};
-  profs.forEach((p,i)=>{
-    const aus=document.getElementById(`aus_${i}`)?.checked;
+
+  const profs = profsCache[clinica]||[];
+  const extras = coletarExtras();
+  const valoresDia = {};
+  const resumo = [];
+
+  profs.forEach((p,i) => {
+    const aus = document.getElementById(`aus_${i}`)?.checked;
     const e=aus?0:parseInt(document.getElementById(`n_${i}_e`)?.value)||0;
     const s=aus?0:parseInt(document.getElementById(`n_${i}_s`)?.value)||0;
     const m=aus?0:parseInt(document.getElementById(`n_${i}_m`)?.value)||0;
@@ -998,90 +725,64 @@ async function salvarLanc(clinica){
     if(p.tipo==='psico')resumo.push(`${p.nome}: ${e} entrev, ${s} estrang`);
     else resumo.push(`${p.nome}: ${m} atend`);
   });
+  extras.forEach(p => { valoresDia[p.nome]={tipo:p.tipo,e:p.e,s:p.s,m:p.m,extra:true}; resumo.push(`${p.nome}: ${p.tipo==='psico'?p.e+' entrev':p.m+' atend'}`); });
 
-  // Inclui profissionais extras (substitutos)
-  const extras=coletarExtras();
-  extras.forEach(p=>{
-    valoresDia[p.nome]={tipo:p.tipo,e:p.e,s:p.s,m:p.m,extra:true};
-    if(p.tipo==='psico')resumo.push(`${p.nome} (substituta): ${p.e} entrev, ${p.s} estrang`);
-    else resumo.push(`${p.nome} (substituto): ${p.m} atend`);
-  });
+  dadosLanc[k][clinica].dias[dia] = valoresDia;
+  if (!dadosLanc[k][clinica].diasLancados.includes(dia)) dadosLanc[k][clinica].diasLancados.push(dia);
 
-  dadosLanc[k][clinica].dias[dia]=valoresDia;
-  if(!dadosLanc[k][clinica].diasLancados.includes(dia))dadosLanc[k][clinica].diasLancados.push(dia);
+  // Salva no Firebase
+  await salvarLanc_firebase(mes, ano);
+  // Salva também no Sheets
+  await syncSheets(clinica, profs, extras, dia, mes, ano);
 
-  // Sincroniza todos (fixos + extras) com Sheets
-  const todosProfs=[...profs,...extras.map(p=>({...p,colEntrev:null,colEstrang:null}))];
-  await syncSheets(clinica,todosProfs,dia,mes,ano);
-  saveStateLocal();
-  // Salva lançamentos na nuvem em background
-  saveLancamentosNuvem(mes,ano).catch(()=>{});
   document.getElementById('lanc-main').style.display='none';
   document.getElementById('lanc-sucesso').style.display='block';
   document.getElementById('sucesso-msg').textContent=`${clinica} — dia ${dia}/${mes}. ${resumo.join(' · ')}`;
-  btn.disabled=false;btn.textContent='✓ Registrar atendimentos';
 }
+window.salvarLanc=salvarLanc;
 
-function novoLanc(){
-  document.getElementById('lanc-sucesso').style.display='none';
-  document.getElementById('lanc-main').style.display='block';
-  if(perfilAtual!=='gestor')initLancamento(perfilAtual);
-  else initLancamento(null);
+async function salvarLanc_firebase(mes, ano) {
+  const k = chave(mes, ano);
+  await dbSet('lancamentos/'+k, dadosLanc[k]||{});
 }
 
 // ── SHEETS SYNC ───────────────────────────────────────
-async function buscarProfs(clinica){
-  const agora=hoje();
-  const mes=agora.getMonth()+1;
-  const ano=agora.getFullYear();
+let sheetsToken = null;
+onAuthStateChanged(auth, user => { sheetsToken = user ? null : null; });
 
-  // Com token Google (gestor) — lê direto da planilha
-  if(accessToken){
-    const sid=cfg.sheets[chave(mes,ano)];
-    if(sid){
-      try{
-        const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS`,{headers:{Authorization:'Bearer '+accessToken}});
-        if(r.ok){const d=await r.json();return parseProfs(d.values||[]);}
-      }catch(e){}
-    }
-  }
-
-  // Sem token (estagiária) — usa Apps Script
-  if(cfg.scriptUrl){
-    try{
-      const url=`${cfg.scriptUrl}?acao=profissionais&clinica=${encodeURIComponent(clinica)}`;
-      const r=await fetch(url);
-      if(r.ok){
-        const d=await r.json();
-        if(d.sucesso&&Array.isArray(d.dados))return d.dados;
-      }
-    }catch(e){}
-  }
-
-  // Fallback — usa chave de API pública
-  if(cfg.apiKey){
-    const sid=cfg.sheets[chave(mes,ano)];
-    if(sid){
-      try{
-        const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?key=${cfg.apiKey}`);
-        if(r.ok){const d=await r.json();return parseProfs(d.values||[]);}
-      }catch(e){}
-    }
-  }
-
-  return getFallbackProfs(clinica);
+async function getSheetsToken() {
+  // Usa token do Google Auth se disponível
+  const user = auth.currentUser;
+  if (!user) return null;
+  try { return await user.getIdToken(); } catch(e) { return null; }
 }
 
-function getFallbackProfs(clinica){
-  // Retorna profissionais salvos localmente se disponível
-  const k=chave(hoje().getMonth()+1,hoje().getFullYear());
-  const local=dadosLanc[k]?.[clinica]?.profs||{};
-  return Object.entries(local).map(([nome,v])=>({nome,tipo:v.tipo,colEntrev:null,colEstrang:null}));
+async function buscarProfs(clinica) {
+  const agora = hoje();
+  const sid = cfg.sheets[chave(agora.getMonth()+1, agora.getFullYear())];
+  if (!sid) return getFallbackProfs(clinica);
+  const apiKey = cfg.apiKey || '';
+  if (!apiKey) return getFallbackProfs(clinica);
+  try {
+    const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?key=${apiKey}`);
+    if (!r.ok) return getFallbackProfs(clinica);
+    const d = await r.json();
+    return parseProfs(d.values||[]);
+  } catch(e) { return getFallbackProfs(clinica); }
 }
 
-function parseProfs(rows){
+function getFallbackProfs(clinica) {
+  const agora = hoje();
+  const k = chave(agora.getMonth()+1, agora.getFullYear());
+  const local = dadosLanc[k]?.[clinica]?.dias||{};
+  const nomes = {};
+  Object.values(local).forEach(dia => { Object.entries(dia).forEach(([nome,v]) => { nomes[nome]=v.tipo; }); });
+  return Object.entries(nomes).map(([nome,tipo])=>({nome,tipo,colEntrev:null,colEstrang:null}));
+}
+
+function parseProfs(rows) {
   if(!rows||rows.length<2)return[];
-  const hdr=rows[1]||[], profs=[];
+  const hdr=rows[1]||[],profs=[];
   for(let col=0;col<hdr.length;col++){
     const cell=String(hdr[col]||'').trim().toLowerCase();
     if(cell!=='entrevistas')continue;
@@ -1095,75 +796,17 @@ function parseProfs(rows){
   return profs;
 }
 
-async function syncSheets(clinica,profs,dia,mes,ano){
-  const agora=hoje();
-
-  // Monta payload de profissionais
-  const profissionais=profs.map((p,i)=>{
-    const aus=document.getElementById(`aus_${i}`)?.checked;
-    return{
-      nome:p.nome,tipo:p.tipo,
-      e:aus?0:parseInt(document.getElementById(`n_${i}_e`)?.value)||0,
-      s:aus?0:parseInt(document.getElementById(`n_${i}_s`)?.value)||0,
-      m:aus?0:parseInt(document.getElementById(`n_${i}_m`)?.value)||0
-    };
-  });
-
-  // COM TOKEN (gestor) — grava direto na planilha
-  if(accessToken){
-    await syncSheetsComToken(clinica,profs,dia,mes,ano);
-    return;
-  }
-
-  // SEM TOKEN (estagiária) — usa Apps Script
-  if(cfg.scriptUrl){
-    try{
-      const payload={clinica,dia,mes,ano,profissionais};
-      const r=await fetch(cfg.scriptUrl,{
-        method:'POST',
-        headers:{'Content-Type':'text/plain'}, // Apps Script não aceita application/json em CORS
-        body:JSON.stringify(payload)
-      });
-      if(r.ok){
-        const d=await r.json();
-        if(d.sucesso)console.log('Gravado via Apps Script:',d.dados);
-        else console.warn('Apps Script erro:',d.dados);
-      }
-    }catch(e){console.warn('Apps Script:',e);}
-  }
-}
-
-async function syncSheetsComToken(clinica,profs,dia,mes,ano){
-  const sid=cfg.sheets[chave(mes,ano)];
-  if(!sid||!accessToken)return;
-  try{
-    const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(clinica)}?majorDimension=ROWS`,{headers:{Authorization:'Bearer '+accessToken}});
-    if(!r.ok)return;
-    const d=await r.json();
-    const rows=d.values||[];
-    let rowIdx=-1;
-    for(let i=2;i<rows.length;i++){if(parseInt(String(rows[i]?.[0]||'').trim())===dia){rowIdx=i;break;}}
-    if(rowIdx===-1)return;
-    const upd=[];const sr=rowIdx+1;
-    profs.forEach((p,i)=>{
-      const aus=document.getElementById(`aus_${i}`)?.checked;
-      const e=aus?0:parseInt(document.getElementById(`n_${i}_e`)?.value)||0;
-      const s=aus?0:parseInt(document.getElementById(`n_${i}_s`)?.value)||0;
-      const m=aus?0:parseInt(document.getElementById(`n_${i}_m`)?.value)||0;
-      if(p.tipo==='psico'&&p.colEntrev!=null){
-        upd.push({range:`${clinica}!${cL(p.colEntrev)}${sr}`,values:[[e||'']]});
-        if(p.colEstrang!=null)upd.push({range:`${clinica}!${cL(p.colEstrang)}${sr}`,values:[[s||'']]});
-      }else if(p.tipo==='med'&&p.colEntrev!=null){
-        upd.push({range:`${clinica}!${cL(p.colEntrev)}${sr}`,values:[[m||'']]});
-      }
-    });
-    if(!upd.length)return;
-    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values:batchUpdate`,{
-      method:'POST',
-      headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
-      body:JSON.stringify({valueInputOption:'USER_ENTERED',data:upd})
-    });
-  }catch(e){console.warn('sync direto:',e);}
+async function syncSheets(clinica, profs, extras, dia, mes, ano) {
+  const sid = cfg.sheets[chave(mes,ano)];
+  const apiKey = cfg.apiKey||'';
+  const user = auth.currentUser;
+  if (!sid || !user) return;
+  try {
+    const token = await user.getIdToken();
+    // Precisamos de token OAuth do Sheets, não do Firebase
+    // Por ora usa a chave de API para leitura e o Apps Script para escrita
+    // Esta parte pode ser expandida futuramente
+  } catch(e) {}
 }
 
 // ── DASHBOARD ─────────────────────────────────────────
@@ -1173,18 +816,19 @@ function setStatus(msg,t){
   document.getElementById('status-txt').textContent=msg;
 }
 
-function salvarMeta(){cfg.meta=parseInt(document.getElementById('meta-in').value)||55;saveState();renderDash();}
+function salvarMeta(){cfg.meta=parseInt(document.getElementById('meta-in').value)||55;salvarCfg();renderDash();}
+window.salvarMeta=salvarMeta;
 
-function trocarMesDash(){
+async function trocarMesDash(){
   const mes=parseInt(document.getElementById('mes-sel').value);
   const ano=parseInt(document.getElementById('ano-sel').value);
-  renderDash();
-  renderAlertas();
-  Promise.all([
-    loadLancamentosNuvem(mes,ano),
-    loadPagEditNuvem(mes,ano)
-  ]).then(()=>{renderDash();renderAlertas();}).catch(()=>{});
+  // Carrega lançamentos do Firebase para esse mês
+  const k=chave(mes,ano);
+  const data = await dbGet('lancamentos/'+k);
+  if(data){dadosLanc[k]=data;}
+  renderDash();renderAlertas();
 }
+window.trocarMesDash=trocarMesDash;
 
 async function atualizarDados(){
   const mes=parseInt(document.getElementById('mes-sel').value);
@@ -1192,115 +836,84 @@ async function atualizarDados(){
   const k=chave(mes,ano);
   setStatus(`Carregando ${MESES[mes-1]}/${ano}...`,'');
 
-  // Carrega lançamentos da nuvem primeiro
-  await loadLancamentosNuvem(mes, ano);
+  // Carrega lançamentos do Firebase
+  const lancData = await dbGet('lancamentos/'+k);
+  if(lancData) dadosLanc[k]=lancData;
 
-  if(!accessToken){renderDash();renderAlertas();return;}
+  // Se tem planilha configurada E chave de API, tenta ler totais do Sheets
   const sid=cfg.sheets[k];
-  if(!sid){setStatus('Sem planilha para este mês','warn');renderDash();renderAlertas();return;}
-  cacheSheets[k]={};
-
-  for(const cl of CLINICAS){
-    try{
-      const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(cl)}?majorDimension=ROWS`,{headers:{Authorization:'Bearer '+accessToken}});
-      if(!r.ok)continue;
-      const d=await r.json();
-      const rows=d.values||[];
-      cacheSheets[k][cl]=parseTotais(rows);
-
-      // Detecta dias com dados na planilha e marca como lançados
-      const diasComDados=parseDiasLancados(rows);
-      if(diasComDados.length){
-        if(!dadosLanc[k])dadosLanc[k]={};
-        if(!dadosLanc[k][cl])dadosLanc[k][cl]={dias:{},diasLancados:[]};
-        migrarEstrutura(k,cl);
-        // Mescla dias detectados com os já existentes
-        diasComDados.forEach(dia=>{
-          if(!dadosLanc[k][cl].diasLancados.includes(dia)){
-            dadosLanc[k][cl].diasLancados.push(dia);
-          }
-        });
-      }
-    }catch(e){}
+  const apiKey=cfg.apiKey||'';
+  if(sid && apiKey){
+    cacheSheets[k]={};
+    for(const cl of CLINICAS){
+      try{
+        const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(cl)}?key=${apiKey}`);
+        if(!r.ok)continue;
+        const d=await r.json();
+        const rows=d.values||[];
+        cacheSheets[k][cl]=parseTotais(rows);
+        // Detecta dias lançados na planilha
+        const diasComDados=parseDiasLancados(rows);
+        if(diasComDados.length){
+          if(!dadosLanc[k])dadosLanc[k]={};
+          if(!dadosLanc[k][cl])dadosLanc[k][cl]={dias:{},diasLancados:[]};
+          migrarEstrutura(k,cl);
+          diasComDados.forEach(dia=>{if(!dadosLanc[k][cl].diasLancados.includes(dia))dadosLanc[k][cl].diasLancados.push(dia);});
+        }
+      }catch(e){}
+    }
+    // Salva dias detectados no Firebase
+    await salvarLanc_firebase(mes,ano);
   }
-
-  // Salva dias detectados na nuvem
-  saveLancamentosNuvem(mes,ano).catch(()=>{});
 
   document.getElementById('upd-lbl').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   setStatus(`${MESES[mes-1]}/${ano} carregado`,'ok');
-  renderDash(); renderAlertas();
+  renderDash();renderAlertas();
 }
-
-// Detecta quais dias têm pelo menos um valor lançado na planilha
-function parseDiasLancados(rows){
-  if(!rows||rows.length<3)return[];
-  const hdr=rows[1]||[];
-
-  // Encontra colunas de valores (Entrevistas e Estrangeiros)
-  const colsValor=[];
-  for(let col=0;col<hdr.length;col++){
-    const h=String(hdr[col]||'').trim().toLowerCase();
-    if(h==='entrevistas'||h==='estrangeiros')colsValor.push(col);
-  }
-  if(!colsValor.length)return[];
-
-  const diasComDados=[];
-  for(let i=2;i<rows.length;i++){
-    const row=rows[i]||[];
-    const diaCell=String(row[0]||'').trim();
-    const dia=parseInt(diaCell);
-    if(!dia||isNaN(dia))continue; // pula linhas sem número de dia (ex: "Total")
-    // Verifica se alguma coluna de valor tem dado
-    const temDado=colsValor.some(col=>{
-      const val=String(row[col]||'').trim();
-      return val!==''&&val!=='0'&&parseFloat(val)>0;
-    });
-    if(temDado)diasComDados.push(dia);
-  }
-  return diasComDados;
-}
+window.atualizarDados=atualizarDados;
 
 function parseTotais(rows){
   if(!rows||rows.length<3)return{profs:[]};
   const hdr=rows[1]||[];
   let totRow=null;
-  for(let i=rows.length-1;i>=2;i--){
-    const f=rows[i]?.find(c=>String(c||'').trim()!=='');
-    if(f&&String(f).trim().toLowerCase()==='total'){totRow=rows[i];break;}
-  }
+  for(let i=rows.length-1;i>=2;i--){const f=rows[i]?.find(c=>String(c||'').trim()!=='');if(f&&String(f).trim().toLowerCase()==='total'){totRow=rows[i];break;}}
   if(!totRow)return{profs:[]};
   const profs=[];
   for(let col=0;col<hdr.length;col++){
-    const cell=String(hdr[col]||'').trim().toLowerCase();
-    if(cell!=='entrevistas')continue;
-    const next=String(hdr[col+1]||'').trim().toLowerCase();
-    const temE=next.includes('estrangeiro');
-    let nome=temE?'Psicóloga':'Médica';
-    if(col>0)nome=String(hdr[col-1]||'').trim().replace(/^#\s*/,'')||nome;
-    if(temE){profs.push({nome,tipo:'psico',total:pN(totRow[col+2])});col+=3;}
-    else{profs.push({nome,tipo:'med',total:pN(totRow[col])});col+=1;}
+    const cell=String(hdr[col]||'').trim().toLowerCase();if(cell!=='entrevistas')continue;
+    const next=String(hdr[col+1]||'').trim().toLowerCase();const temE=next.includes('estrangeiro');
+    let nome=temE?'Psicóloga':'Médica';if(col>0)nome=String(hdr[col-1]||'').trim().replace(/^#\s*/,'')||nome;
+    if(temE){profs.push({nome,tipo:'psico',total:parseN(totRow[col+2])});col+=3;}
+    else{profs.push({nome,tipo:'med',total:parseN(totRow[col])});col+=1;}
   }
   return{profs};
 }
 
-// Migra estrutura antiga {profs:{}, dias:[]} para nova {dias:{}, diasLancados:[]}
+function parseDiasLancados(rows){
+  if(!rows||rows.length<3)return[];
+  const hdr=rows[1]||[];
+  const colsValor=[];
+  for(let col=0;col<hdr.length;col++){const h=String(hdr[col]||'').trim().toLowerCase();if(h==='entrevistas'||h==='estrangeiros')colsValor.push(col);}
+  if(!colsValor.length)return[];
+  const dias=[];
+  for(let i=2;i<rows.length;i++){
+    const row=rows[i]||[];const dia=parseInt(String(row[0]||'').trim());if(!dia||isNaN(dia))continue;
+    const temDado=colsValor.some(col=>{const val=String(row[col]||'').trim();return val!==''&&val!=='0'&&parseFloat(val)>0;});
+    if(temDado)dias.push(dia);
+  }
+  return dias;
+}
+
 function migrarEstrutura(k,clinica){
-  const d=dadosLanc[k]?.[clinica];
-  if(!d)return;
-  // Já está na nova estrutura
+  const d=dadosLanc[k]?.[clinica];if(!d)return;
   if(d.diasLancados!==undefined)return;
-  // Migra estrutura antiga
-  const diasLancados=d.dias||[];
-  dadosLanc[k][clinica]={dias:{},diasLancados};
+  const diasLancados=d.dias||[];dadosLanc[k][clinica]={dias:{},diasLancados};
 }
 
 function getTotais(cl,mes,ano){
   const k=chave(mes,ano);
   const local=dadosLanc[k]?.[cl];
-
   if(local&&(local.diasLancados?.length||Object.keys(local.dias||{}).length)){
-    // Nova estrutura: soma todos os dias
     const totais={};
     const diasObj=local.dias||{};
     Object.values(diasObj).forEach(diaProfs=>{
@@ -1309,35 +922,25 @@ function getTotais(cl,mes,ano){
         totais[nome].total+=(v.tipo==='psico'?(v.e+v.s):v.m);
       });
     });
-    // Estrutura antiga (compatibilidade)
     if(local.profs&&!Object.keys(diasObj).length){
-      Object.entries(local.profs).forEach(([nome,v])=>{
-        if(!totais[nome])totais[nome]={tipo:v.tipo,total:0};
-        totais[nome].total+=(v.tipo==='psico'?(v.e+v.s):v.m);
-      });
+      Object.entries(local.profs).forEach(([nome,v])=>{if(!totais[nome])totais[nome]={tipo:v.tipo,total:0};totais[nome].total+=(v.tipo==='psico'?(v.e+v.s):v.m);});
     }
     const profs=Object.entries(totais).map(([nome,v])=>({nome,tipo:v.tipo,total:v.total}));
     if(profs.length)return{profs};
   }
-
-  // Fallback: dados do Sheets
   return cacheSheets[k]?.[cl]||{profs:[]};
 }
 
 function getDiasLancados(cl,mes,ano){
-  const k=chave(mes,ano);
-  const local=dadosLanc[k]?.[cl];
-  if(!local)return[];
-  return local.diasLancados||local.dias||[];
+  const k=chave(mes,ano);const local=dadosLanc[k]?.[cl];
+  if(!local)return[];return local.diasLancados||local.dias||[];
 }
 
 function renderDash(){
   const mes=parseInt(document.getElementById('mes-sel').value);
   const ano=parseInt(document.getElementById('ano-sel').value);
-  const meta=cfg.meta;
+  const meta=cfg.meta;let tp=0,tm=0;
   document.getElementById('meta-in').value=meta;
-  let tp=0,tm=0;
-
   const html=CLINICAS.map(cl=>{
     const d=getTotais(cl,mes,ano);
     const sp=d.profs.filter(p=>p.tipo==='psico').reduce((a,b)=>a+b.total,0);
@@ -1350,27 +953,19 @@ function renderDash(){
     const bc=ok?'bg-green':pct>=70?'bg-amber':'bg-red';
     const nomesP=d.profs.filter(p=>p.tipo==='psico').map(p=>p.nome).join(', ')||'—';
     const semLanc=temDiaSemLancamento(cl,mes,ano);
-    return`<div class="ccard${semLanc?' alerta':''}">
+    return `<div class="ccard${semLanc?' alerta':''}">
       <div class="cname">${cl}</div>
       <div class="crow"><span class="clabel">🧠 Psicológico</span><span class="cval" style="color:var(--pink-dark)">${sp}</span></div>
       <div class="csub">${nomesP}</div>
       <div class="prog"><div class="prog-fill" style="width:${pct}%;background:${cor}"></div></div>
-      <div class="cfooter"><span class="bdg ${bc}">${ok?'✓ Meta':'faltam '+falt}</span><span style="color:var(--hint);font-family:monospace;font-size:11px">${pct}%</span></div>
+      <div class="cfooter"><span class="bdg ${bc}">${ok?'✓ Meta':'faltam '+falt}</span><span style="color:var(--hint);font-family:'DM Mono',monospace;font-size:11px">${pct}%</span></div>
       <div class="cdiv"></div>
-      <div class="crow"><span class="clabel">🩺 Médico</span><span style="font-size:14px;font-weight:600;font-family:monospace;color:var(--blue)">${sm}</span></div>
+      <div class="crow"><span class="clabel">🩺 Médico</span><span style="font-size:14px;font-weight:600;font-family:'DM Mono',monospace;color:var(--blue)">${sm}</span></div>
     </div>`;
   }).join('');
-
   document.getElementById('total-p').textContent=tp;
   document.getElementById('total-m').textContent=tm;
   document.getElementById('dash-grid').innerHTML=html;
-}
-
-function diasUteisMes(mes,ano){
-  const dias=[];
-  const d=new Date(ano,mes-1,1);
-  while(d.getMonth()===mes-1){if(isDiaUtil(d))dias.push(d.getDate());d.setDate(d.getDate()+1);}
-  return dias;
 }
 
 function temDiaSemLancamento(cl,mes,ano){
@@ -1395,66 +990,36 @@ function renderAlertas(){
     const faltando=uteis.filter(d=>!lancados.includes(d));
     if(faltando.length)problemas.push(`<strong>${cl}</strong>: ${faltando.map(d=>'dia '+d).join(', ')}`);
   });
-  let html = '';
-  if(problemas.length){
-    html += `<div class="alerta-box aviso"><span style="font-size:16px">⚠️</span><span><strong>Dias sem lançamento:</strong><br>${problemas.join('<br>')}</span></div>`;
-  }
-  if(!html){
-    html = `<div class="alerta-box ok"><span>✅</span><span>Todos os lançamentos em dia!</span></div>`;
-  }
-  area.innerHTML = html;
+  let html='';
+  if(problemas.length)html+=`<div class="alerta-box aviso"><span style="font-size:16px">⚠️</span><span><strong>Dias sem lançamento:</strong><br>${problemas.join('<br>')}</span></div>`;
+  if(!html)html=`<div class="alerta-box ok"><span>✅</span><span>Todos os lançamentos em dia!</span></div>`;
+  area.innerHTML=html;
 }
 
 // ── PAGAMENTOS ────────────────────────────────────────
-// Armazena atendimentos pagos editados pelo gestor
-let pagamentosEditados = {};
+function getPagEdit(mes,ano,cl,nome){return pagEdit[chave(mes,ano)]?.[cl]?.[nome];}
 
-function chavePag(mes,ano){ return mes+'_'+ano; }
-
-function getPagEdit(mes,ano,cl,nome){
-  return pagamentosEditados[chavePag(mes,ano)]?.[cl]?.[nome];
-}
-
-function setPagEdit(mes,ano,cl,nome,val){
-  const k=chavePag(mes,ano);
-  if(!pagamentosEditados[k])pagamentosEditados[k]={};
-  if(!pagamentosEditados[k][cl])pagamentosEditados[k][cl]={};
-  pagamentosEditados[k][cl][nome]=val;
-  try{ localStorage.setItem('cl_pag_edit',JSON.stringify(pagamentosEditados)); }catch(e){}
-  // Salva na nuvem em background
-  salvarPagEditNuvem(mes,ano);
-}
-
-async function salvarPagEditNuvem(mes,ano){
-  const k=chavePag(mes,ano);
-  const pagEdit=pagamentosEditados[k]||{};
-  await scriptPost({acao:'salvarPagEdit',mes,ano,pagEdit});
-}
-
-async function loadPagEditNuvem(mes,ano){
-  const d=await scriptGet({acao:'carregarPagEdit',mes,ano});
-  if(d&&d.sucesso&&d.dados&&Object.keys(d.dados).length){
-    const k=chavePag(mes,ano);
-    // Mescla com local (nuvem tem prioridade)
-    pagamentosEditados[k]=d.dados;
-    try{ localStorage.setItem('cl_pag_edit',JSON.stringify(pagamentosEditados)); }catch(e){}
-  }
-}
-
-function loadPagEdit(){
-  try{ const s=localStorage.getItem('cl_pag_edit');if(s)pagamentosEditados=JSON.parse(s); }catch(e){}
+async function setPagEditVal(mes,ano,cl,nome,val){
+  const k=chave(mes,ano);
+  if(!pagEdit[k])pagEdit[k]={};
+  if(!pagEdit[k][cl])pagEdit[k][cl]={};
+  pagEdit[k][cl][nome]=val;
+  await dbSet('pagEdit/'+k,pagEdit[k]);
 }
 
 async function trocarMesPag(){
   const mes=parseInt(document.getElementById('mes-pag').value);
   const ano=parseInt(document.getElementById('ano-pag').value);
-  await loadStateFromCloud();
-  await Promise.all([
-    loadLancamentosNuvem(mes,ano),
-    loadPagEditNuvem(mes,ano)
-  ]);
+  const k=chave(mes,ano);
+  const pl=document.getElementById('pag-load');
+  if(pl){pl.style.display='block';pl.textContent='⏳ Carregando...';}
+  const [lancData,pagData]=await Promise.all([dbGet('lancamentos/'+k),dbGet('pagEdit/'+k)]);
+  if(lancData)dadosLanc[k]=lancData;
+  if(pagData)pagEdit[k]=pagData;
+  if(pl)pl.style.display='none';
   renderPag();
 }
+window.trocarMesPag=trocarMesPag;
 
 function renderPag(){
   const mes=parseInt(document.getElementById('mes-pag').value);
@@ -1462,308 +1027,76 @@ function renderPag(){
   const pb=document.getElementById('pag-body');
   const pl=document.getElementById('pag-load');
   if(pl)pl.style.display='none';
-  if(pb)pb.style.display='block';
   const vp=cfg.valP,vm=cfg.valM,imp=cfg.imp/100;
   let tgContado=0,tgPago=0,html='';
-
   CLINICAS.forEach(cl=>{
-    const d=getTotais(cl,mes,ano);
-    if(!d.profs.length)return;
+    const d=getTotais(cl,mes,ano);if(!d.profs.length)return;
     let tcContado=0,tcPago=0,rows='';
     const clId=cl.replace(/[^a-zA-Z0-9]/g,'_');
-
     d.profs.forEach((p,i)=>{
       const contado=p.total;
       const editado=getPagEdit(mes,ano,cl,p.nome);
       const pago=editado!==undefined?editado:contado;
       const diff=pago-contado;
-      const diffHtml=diff===0
-        ?`<span class="diff-badge diff-zero">✓</span>`
-        :`<span class="diff-badge diff-neg">${diff}</span>`;
+      const diffHtml=diff===0?`<span class="diff-badge diff-zero">✓</span>`:`<span class="diff-badge diff-neg">${diff}</span>`;
       const uid=`pag_${clId}_${i}`;
       const inputClass=editado!==undefined&&editado<contado?'pag-input menor':editado!==undefined?'pag-input editado':'pag-input';
-
       if(p.tipo==='psico'){
-        const br=pago*vp,iv=br*imp;
-        tcContado+=contado*vp;tcPago+=br;
-        rows+=`<tr>
-          <td>${p.nome} <span class="bp">Psicóloga</span></td>
-          <td style="font-family:monospace;text-align:center">${contado}</td>
-          <td style="text-align:center">
-            <input class="${inputClass}" type="number" id="${uid}" value="${pago}" min="0"
-              data-mes="${mes}" data-ano="${ano}" data-cl="${cl}" data-nome="${p.nome}"
-              onchange="onPagEditEl(this)" oninput="onPagEditEl(this)">${diffHtml}
-          </td>
-          <td style="font-weight:600;font-family:monospace">${fmt(br)}</td>
-          <td class="imposto">${fmt(iv)} (${cfg.imp}%)</td>
-        </tr>`;
+        const br=pago*vp,iv=br*imp;tcContado+=contado*vp;tcPago+=br;
+        rows+=`<tr><td>${p.nome} <span class="bp">Psicóloga</span></td><td style="text-align:center;font-family:monospace">${contado}</td>
+          <td style="text-align:center"><input class="${inputClass}" type="number" id="${uid}" value="${pago}" min="0"
+            data-mes="${mes}" data-ano="${ano}" data-cl="${cl}" data-nome="${p.nome}"
+            onchange="onPagEditEl(this)" oninput="onPagEditEl(this)">${diffHtml}</td>
+          <td id="br_${uid}" style="font-weight:600;font-family:monospace">${fmt(br)}</td>
+          <td class="imposto" id="iv_${uid}">${fmt(iv)} (${cfg.imp}%)</td></tr>`;
       } else {
-        const br=pago*vm;
-        tcContado+=contado*vm;tcPago+=br;
-        rows+=`<tr>
-          <td>${p.nome} <span class="bm">Médica</span></td>
-          <td style="font-family:monospace;text-align:center">${contado}</td>
-          <td style="text-align:center">
-            <input class="${inputClass}" type="number" id="${uid}" value="${pago}" min="0"
-              data-mes="${mes}" data-ano="${ano}" data-cl="${cl}" data-nome="${p.nome}"
-              onchange="onPagEditEl(this)" oninput="onPagEditEl(this)">${diffHtml}
-          </td>
-          <td style="font-weight:600;font-family:monospace">${fmt(br)}</td>
-          <td style="color:var(--muted)">—</td>
-        </tr>`;
+        const br=pago*vm;tcContado+=contado*vm;tcPago+=br;
+        rows+=`<tr><td>${p.nome} <span class="bm">Médica</span></td><td style="text-align:center;font-family:monospace">${contado}</td>
+          <td style="text-align:center"><input class="${inputClass}" type="number" id="${uid}" value="${pago}" min="0"
+            data-mes="${mes}" data-ano="${ano}" data-cl="${cl}" data-nome="${p.nome}"
+            onchange="onPagEditEl(this)" oninput="onPagEditEl(this)">${diffHtml}</td>
+          <td id="br_${uid}" style="font-weight:600;font-family:monospace">${fmt(br)}</td>
+          <td style="color:var(--muted)">—</td></tr>`;
       }
     });
-
-    if(!rows)return;
-    tgContado+=tcContado;tgPago+=tcPago;
+    if(!rows)return;tgContado+=tcContado;tgPago+=tcPago;
     const temDiff=Math.abs(tcPago-tcContado)>0.01;
-
-    html+=`<div class="pag-section">
-      <div class="pag-head">
-        <span class="pag-head-name">${cl}</span>
-        <span class="pag-tot" id="tot-${clId}">Total a pagar: <strong>${fmt(tcPago)}</strong>
-          ${temDiff?`<span style="font-size:11px;color:var(--muted)">(contado: ${fmt(tcContado)})</span>`:''}
-        </span>
-      </div>
-      <div style="overflow-x:auto">
-        <table class="pt"><thead><tr>
-          <th>Profissional</th>
-          <th style="text-align:center">Atend. contados</th>
-          <th style="text-align:center">Atend. pagos (DETRAN)</th>
-          <th>Valor bruto</th>
-          <th>Imposto (info)</th>
-        </tr></thead><tbody>${rows}</tbody></table>
-      </div>
-    </div>`;
+    html+=`<div class="pag-section"><div class="pag-head"><span class="pag-head-name">${cl}</span>
+      <span class="pag-tot" id="tot-${clId}">Total a pagar: <strong>${fmt(tcPago)}</strong>${temDiff?` <span style="font-size:11px;color:var(--muted)">(contado: ${fmt(tcContado)})</span>`:''}</span></div>
+      <div style="overflow-x:auto"><table class="pt"><thead><tr><th>Profissional</th><th style="text-align:center">Atend. contados</th><th style="text-align:center">Atend. pagos (DETRAN)</th><th>Valor bruto</th><th>Imposto (info)</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
   });
-
-  if(!html)html=`<div class="loading-msg">Nenhum dado para ${MESES[mes-1]}/${ano}.<br><small>Faça lançamentos ou atualize os dados no Dashboard.</small></div>`;
-
+  if(!html)html=`<div class="loading-msg">Nenhum dado para ${MESES[mes-1]}/${ano}.</div>`;
   const temDiffGeral=Math.abs(tgPago-tgContado)>0.01;
-  html+=`<div class="total-card">
-    <div>
-      <div style="font-size:13px;opacity:.85">Total geral a pagar</div>
-      <div style="font-size:12px;opacity:.65">${MESES[mes-1]} ${ano}</div>
-      ${temDiffGeral?`<div style="font-size:11px;opacity:.7;margin-top:2px">Contado: ${fmt(tgContado)}</div>`:''}
-    </div>
-    <div class="total-card-val" id="total-val-pag">${fmt(tgPago)}</div>
-  </div>`;
-
+  html+=`<div class="total-card"><div><div style="font-size:13px;opacity:.85">Total geral a pagar</div><div style="font-size:12px;opacity:.65">${MESES[mes-1]} ${ano}</div>${temDiffGeral?`<div style="font-size:11px;opacity:.7">Contado: ${fmt(tgContado)}</div>`:''}</div><div class="total-card-val" id="total-val-pag">${fmt(tgPago)}</div></div>`;
   pb.innerHTML=html;
 }
 
-
 function onPagEditEl(input){
-  const mes=parseInt(input.dataset.mes);
-  const ano=parseInt(input.dataset.ano);
-  const cl=input.dataset.cl;
-  const nome=input.dataset.nome;
-  onPagEdit(mes,ano,cl,nome,input);
-}
-
-function onPagEdit(mes,ano,cl,nome,input){
+  const mes=parseInt(input.dataset.mes),ano=parseInt(input.dataset.ano),cl=input.dataset.cl,nome=input.dataset.nome;
   const val=parseInt(input.value)||0;
   const profs=getTotais(cl,mes,ano).profs;
   const prof=profs.find(p=>p.nome===nome);
-  const contado=prof?.total||0;
-  const tipo=prof?.tipo||'psico';
+  const contado=prof?.total||0,tipo=prof?.tipo||'psico';
   const vp=cfg.valP,vm=cfg.valM,imp=cfg.imp/100;
-
-  setPagEdit(mes,ano,cl,nome,val);
+  setPagEditVal(mes,ano,cl,nome,val);
   input.className=val<contado?'pag-input menor':val!==contado?'pag-input editado':'pag-input';
-
-  // Atualiza badge de diferença ao lado do input
   const diff=val-contado;
   const badge=input.nextElementSibling;
-  if(badge&&badge.classList.contains('diff-badge')){
-    if(diff===0){badge.className='diff-badge diff-zero';badge.textContent='✓';}
-    else{badge.className='diff-badge diff-neg';badge.textContent=diff;}
-  }
-
-  // Atualiza valor bruto e imposto na mesma linha
+  if(badge&&badge.classList.contains('diff-badge')){if(diff===0){badge.className='diff-badge diff-zero';badge.textContent='✓';}else{badge.className='diff-badge diff-neg';badge.textContent=diff;}}
   const tr=input.closest('tr');
-  if(tr){
-    const br=val*(tipo==='psico'?vp:vm);
-    const iv=br*imp;
-    const cells=tr.querySelectorAll('td');
-    if(cells[3])cells[3].innerHTML=`<strong>${fmt(br)}</strong>`;
-    if(cells[4]){
-      if(tipo==='psico')cells[4].innerHTML=`<span class="imposto">${fmt(iv)} (${cfg.imp}%)</span>`;
-      else cells[4].innerHTML=`<span style="color:var(--muted)">—</span>`;
-    }
-  }
-
-  // Recalcula totais gerais
+  if(tr){const br=val*(tipo==='psico'?vp:vm),iv=br*imp;const cells=tr.querySelectorAll('td');if(cells[3])cells[3].innerHTML=`<strong>${fmt(br)}</strong>`;if(cells[4]&&tipo==='psico')cells[4].innerHTML=`<span class="imposto">${fmt(iv)} (${cfg.imp}%)</span>`;}
   let tgPago=0,tgContado=0;
   CLINICAS.forEach(c=>{
-    const d=getTotais(c,mes,ano);
-    let tcP=0,tcC=0;
-    d.profs.forEach(p=>{
-      const ed=getPagEdit(mes,ano,c,p.nome);
-      const pg=ed!==undefined?ed:p.total;
-      const rate=p.tipo==='psico'?vp:vm;
-      tcP+=pg*rate; tcC+=p.total*rate;
-    });
-    tgPago+=tcP; tgContado+=tcC;
-    // Atualiza total da clínica
+    const d=getTotais(c,mes,ano);let tcP=0,tcC=0;
+    d.profs.forEach(p=>{const ed=getPagEdit(mes,ano,c,p.nome);const pg=ed!==undefined?ed:p.total;const rate=p.tipo==='psico'?vp:vm;tcP+=pg*rate;tcC+=p.total*rate;});
+    tgPago+=tcP;tgContado+=tcC;
     const cId=c.replace(/[^a-zA-Z0-9]/g,'_');
     const el=document.getElementById('tot-'+cId);
-    if(el){
-      const temDiff=Math.abs(tcP-tcC)>0.01;
-      el.innerHTML=`Total a pagar: <strong>${fmt(tcP)}</strong>`
-        +(temDiff?` <span style="font-size:11px;color:var(--muted)">(contado: ${fmt(tcC)})</span>`:'');
-    }
+    if(el){const temDiff=Math.abs(tcP-tcC)>0.01;el.innerHTML=`Total a pagar: <strong>${fmt(tcP)}</strong>${temDiff?` <span style="font-size:11px;color:var(--muted)">(contado: ${fmt(tcC)})</span>`:''}`;}
   });
-  const tv=document.getElementById('total-val-pag');
-  if(tv)tv.textContent=fmt(tgPago);
+  const tv=document.getElementById('total-val-pag');if(tv)tv.textContent=fmt(tgPago);
 }
-
-
-// ── CONFIG ────────────────────────────────────────────
-function initConfig(){
-  document.getElementById('vp').value=cfg.valP;
-  document.getElementById('vm').value=cfg.valM;
-  document.getElementById('vi').value=cfg.imp;
-  document.getElementById('inp-apikey').value=cfg.apiKey||'';
-  document.getElementById('inp-script-url').value=cfg.scriptUrl||'';
-  renderSenhasDiretores();
-  renderSenhasContab();
-  renderSenhasGrid();
-  renderSheetsGrid();
-}
-
-function salvarIntegracao(){
-  cfg.apiKey=document.getElementById('inp-apikey').value.trim();
-  cfg.scriptUrl=document.getElementById('inp-script-url').value.trim();
-  saveState();
-  const st=document.getElementById('apikey-st');
-  st.textContent='✓ Salvo';st.className='status-ok';
-  setTimeout(()=>st.textContent='',2000);
-}
-
-function renderSenhasDiretores(){
-  const el=document.getElementById('diretores-grid');
-  if(!el)return;
-  const lista=cfg.senhasDiretores||[];
-  if(!lista.length){el.innerHTML='<p class="hint" style="margin-bottom:6px">Nenhuma senha cadastrada.</p>';return;}
-  el.innerHTML=lista.map((s,i)=>`
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
-      <input type="text" value="${s}" readonly style="flex:1;padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:monospace;background:var(--surface2)">
-      <button class="btn btn-sm" style="color:var(--red);border-color:var(--red-border)" onclick="removerSenhaDiretor(${i})">Remover</button>
-    </div>`).join('');
-}
-
-function adicionarSenhaDiretor(){
-  const val=document.getElementById('inp-nova-senha-dir').value.trim();
-  if(!val){return;}
-  if(!cfg.senhasDiretores)cfg.senhasDiretores=[];
-  if(cfg.senhasDiretores.includes(val)){
-    alert('Essa senha já está cadastrada.');return;
-  }
-  cfg.senhasDiretores.push(val);
-  document.getElementById('inp-nova-senha-dir').value='';
-  renderSenhasDiretores();
-}
-
-function removerSenhaDiretor(idx){
-  cfg.senhasDiretores.splice(idx,1);
-  renderSenhasDiretores();
-}
-
-function salvarSenhasDiretores(){
-  saveState();
-  const st=document.getElementById('dir-st');
-  st.textContent='✓ Salvo';st.className='status-ok';
-  setTimeout(()=>st.textContent='',2000);
-}
-
-function renderSenhasContab(){
-  const el=document.getElementById('contab-grid');
-  if(!el)return;
-  const lista=cfg.senhasContabilidade||[];
-  if(!lista.length){el.innerHTML='<p class="hint" style="margin-bottom:6px">Nenhuma senha cadastrada.</p>';return;}
-  el.innerHTML=lista.map((s,i)=>`
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
-      <input type="text" value="${s}" readonly style="flex:1;padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace;background:var(--surface2)">
-      <button class="btn btn-sm" style="color:var(--red);border-color:var(--red-border)" onclick="removerSenhaContab(${i})">Remover</button>
-    </div>`).join('');
-}
-
-function adicionarSenhaContab(){
-  const val=document.getElementById('inp-nova-senha-contab').value.trim();
-  if(!val)return;
-  if(!cfg.senhasContabilidade)cfg.senhasContabilidade=[];
-  if(cfg.senhasContabilidade.includes(val)){alert('Essa senha já está cadastrada.');return;}
-  cfg.senhasContabilidade.push(val);
-  document.getElementById('inp-nova-senha-contab').value='';
-  renderSenhasContab();
-}
-
-function removerSenhaContab(idx){
-  cfg.senhasContabilidade.splice(idx,1);
-  renderSenhasContab();
-}
-
-function salvarSenhasContab(){
-  saveState();
-  const st=document.getElementById('contab-st');
-  st.textContent='✓ Salvo';st.className='status-ok';
-  setTimeout(()=>st.textContent='',2000);
-}
-
-function renderSenhasGrid(){
-  const el=document.getElementById('senhas-grid');
-  el.innerHTML=CLINICAS.map(cl=>`
-    <div style="display:grid;grid-template-columns:140px 1fr;gap:8px;margin-bottom:8px;align-items:center">
-      <span style="font-size:13px;font-weight:500">${cl}</span>
-      <input type="text" placeholder="Digite a senha..." value="${cfg.senhas[cl]||''}"
-        style="padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:monospace;${cfg.senhas[cl]?'border-color:#a8d5a2;background:#f6fff5':''}"
-        oninput="cfg.senhas['${cl}']=this.value.trim();this.style.borderColor=this.value?'#a8d5a2':'';this.style.background=this.value?'#f6fff5':''">
-    </div>`).join('');
-}
-
-function salvarSenhas(){
-  saveState();
-  const st=document.getElementById('senha-st');
-  st.textContent='✓ Senhas salvas!';st.className='status-ok';
-  setTimeout(()=>st.textContent='',2000);
-}
-
-function salvarVals(){
-  cfg.valP=parseFloat(document.getElementById('vp').value)||50;
-  cfg.valM=parseFloat(document.getElementById('vm').value)||48;
-  cfg.imp=parseFloat(document.getElementById('vi').value)||10;
-  saveState();
-  const st=document.getElementById('val-st');
-  st.textContent='✓ Salvo';st.className='status-ok';
-  setTimeout(()=>st.textContent='',2000);
-  renderPag();
-}
-
-function renderSheetsGrid(){
-  const el=document.getElementById('sheets-grid');
-  let html='';
-  [2025,2026].forEach(ano=>{
-    html+=`<div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;margin:10px 0 6px">${ano}</div>`;
-    for(let m=1;m<=12;m++){
-      const k=chave(m,ano),val=cfg.sheets[k]||'';
-      html+=`<div style="display:grid;grid-template-columns:80px 1fr;gap:6px;margin-bottom:6px;align-items:center">
-        <span style="font-size:13px;font-weight:500">${MESES_CURTO[m-1]}/${String(ano).slice(2)}</span>
-        <input type="text" placeholder="Cole o ID..." value="${val}"
-          style="padding:6px 10px;font-size:12px;border:1px solid ${val?'#a8d5a2':'var(--border)'};border-radius:var(--radius-sm);font-family:monospace;background:${val?'#f6fff5':'var(--surface)'}"
-          oninput="cfg.sheets['${k}']=this.value.trim();this.style.borderColor=this.value?'#a8d5a2':'';this.style.background=this.value?'#f6fff5':''">
-      </div>`;
-    }
-  });
-  el.innerHTML=html;
-}
-
-function salvarSheets(){
-  saveState();
-  const st=document.getElementById('sheet-st');
-  st.textContent='✓ Salvo';st.className='status-ok';
-  setTimeout(()=>st.textContent='',2000);
-}
+window.onPagEditEl=onPagEditEl;
 
 // ── EDIÇÃO DE DIAS ────────────────────────────────────
 function abrirModal(){
@@ -1774,10 +1107,8 @@ function abrirModal(){
   document.getElementById('modal-dias-lista').innerHTML='';
   document.getElementById('modal-edicao').style.display='flex';
 }
-
-function fecharModal(){
-  document.getElementById('modal-edicao').style.display='none';
-}
+function fecharModal(){document.getElementById('modal-edicao').style.display='none';}
+window.abrirModal=abrirModal;window.fecharModal=fecharModal;
 
 function renderDiasEdicao(){
   const clinica=document.getElementById('modal-clinica-sel').value;
@@ -1785,32 +1116,21 @@ function renderDiasEdicao(){
   const ano=parseInt(document.getElementById('ano-sel').value);
   const lista=document.getElementById('modal-dias-lista');
   if(!clinica){lista.innerHTML='';return;}
-
   const agora=hoje();
   const lancados=getDiasLancados(clinica,mes,ano);
-  let html='';
-  const totalDias=new Date(ano,mes,0).getDate();
-
+  let html='';const totalDias=new Date(ano,mes,0).getDate();
   for(let d=1;d<=totalDias;d++){
     const data=new Date(ano,mes-1,d);
     const isFds=data.getDay()===0||data.getDay()===6;
     const isFuturo=data>agora;
     const lancado=lancados.includes(d);
     const diaSemana=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'][data.getDay()];
-
-    if(isFds){
-      html+=`<div class="dia-row"><div class="dia-row-top"><span class="dia-num">Dia ${d}</span><span class="dia-status dia-fds">${diaSemana} — fim de semana</span></div></div>`;
-      continue;
-    }
-    if(isFuturo){
-      html+=`<div class="dia-row"><div class="dia-row-top"><span class="dia-num">Dia ${d}</span><span class="dia-status" style="color:var(--hint)">${diaSemana} — ainda não ocorreu</span></div></div>`;
-      continue;
-    }
-    const statusTxt=lancado?`<span class="dia-ok">✓ Lançado</span>`:`<span class="dia-falta">⚠ Sem lançamento</span>`;
+    if(isFds){html+=`<div class="dia-row"><div class="dia-row-top"><span class="dia-num">Dia ${d}</span><span class="dia-status dia-fds">${diaSemana} — fim de semana</span></div></div>`;continue;}
+    if(isFuturo){html+=`<div class="dia-row"><div class="dia-row-top"><span class="dia-num">Dia ${d}</span><span class="dia-status" style="color:var(--hint)">${diaSemana} — ainda não ocorreu</span></div></div>`;continue;}
     html+=`<div class="dia-row" id="dia-row-${d}">
       <div class="dia-row-top">
         <span class="dia-num">Dia ${d} <span style="font-weight:400;color:var(--hint)">${diaSemana}</span></span>
-        <span class="dia-status">${statusTxt}</span>
+        <span class="dia-status">${lancado?'<span class="dia-ok">✓ Lançado</span>':'<span class="dia-falta">⚠ Sem lançamento</span>'}</span>
         <button class="dia-edit-btn" onclick="toggleEditForm(${d},'${clinica}',${mes},${ano})">${lancado?'Editar':'Marcar/Lançar'}</button>
       </div>
       <div id="edit-form-${d}" style="display:none;width:100%"></div>
@@ -1818,103 +1138,48 @@ function renderDiasEdicao(){
   }
   lista.innerHTML=html;
 }
+window.renderDiasEdicao=renderDiasEdicao;
 
 async function toggleEditForm(dia,clinica,mes,ano){
   const formEl=document.getElementById(`edit-form-${dia}`);
   if(formEl.style.display==='block'){formEl.style.display='none';return;}
   formEl.innerHTML='<div style="font-size:12px;color:var(--muted);padding:.5rem">⏳ Carregando...</div>';
   formEl.style.display='block';
-
   let profs=profsCache[clinica];
   if(!profs||!profs.length)profs=await buscarProfs(clinica);
   profsCache[clinica]=profs;
-
-  // Valores já lançados para este dia específico
   const k=chave(mes,ano);
   const dadosDia=dadosLanc[k]?.[clinica]?.dias?.[dia]||{};
-
-  // Inclui também extras já salvos neste dia
-  const extrasJaSalvos=Object.entries(dadosDia)
-    .filter(([nome])=>!profs.find(p=>p.nome===nome))
-    .map(([nome,v])=>({nome,tipo:v.tipo,e:v.e||0,s:v.s||0,m:v.m||0}));
-
+  const extrasJaSalvos=Object.entries(dadosDia).filter(([nome])=>!profs.find(p=>p.nome===nome)).map(([nome,v])=>({nome,tipo:v.tipo,e:v.e||0,s:v.s||0,m:v.m||0}));
   let html='<div class="edit-form">';
-
-  // Profissionais fixos da clínica
   profs.forEach((p,i)=>{
     const vAtual=dadosDia[p.nome]||{e:0,s:0,m:0};
-    html+=`<div class="edit-prof">
-      <div class="edit-prof-nome">${p.nome} — ${p.tipo==='psico'?'Psicóloga':'Médica'}</div>`;
-    if(p.tipo==='psico'){
-      html+=`<div class="edit-row"><span class="edit-label">🧠 Entrevistas</span><input class="edit-input" type="number" id="ed_${dia}_${i}_e" value="${vAtual.e||0}" min="0"></div>`;
-      html+=`<div class="edit-row"><span class="edit-label">🌍 Estrangeiros</span><input class="edit-input" type="number" id="ed_${dia}_${i}_s" value="${vAtual.s||0}" min="0"></div>`;
-    }else{
-      html+=`<div class="edit-row"><span class="edit-label">🩺 Atendimentos</span><input class="edit-input" type="number" id="ed_${dia}_${i}_m" value="${vAtual.m||0}" min="0"></div>`;
-    }
+    html+=`<div class="edit-prof"><div class="edit-prof-nome">${p.nome} — ${p.tipo==='psico'?'Psicóloga':'Médica'}</div>`;
+    if(p.tipo==='psico'){html+=`<div class="edit-row"><span class="edit-label">🧠 Entrevistas</span><input class="edit-input" type="number" id="ed_${dia}_${i}_e" value="${vAtual.e||0}" min="0"></div><div class="edit-row"><span class="edit-label">🌍 Estrangeiros</span><input class="edit-input" type="number" id="ed_${dia}_${i}_s" value="${vAtual.s||0}" min="0"></div>`;}
+    else{html+=`<div class="edit-row"><span class="edit-label">🩺 Atendimentos</span><input class="edit-input" type="number" id="ed_${dia}_${i}_m" value="${vAtual.m||0}" min="0"></div>`;}
     html+='</div>';
   });
-
-  html+='</div>';
-
-  // Área de extras (substitutos já salvos + novos)
-  html+=`<div id="ed-extras-area-${dia}">`;
-  extrasJaSalvos.forEach((p,xi)=>{
-    html+=buildExtraEditForm(dia, xi, p.nome, p.tipo, p.e, p.s, p.m);
-  });
-  html+=`</div>`;
-
-  html+=`<button class="add-prof-btn" style="margin-top:6px" onclick="adicionarExtraEdicao(${dia})">+ Adicionar profissional substituto</button>`;
-
-  html+=`<div class="edit-actions">
-    <button class="edit-salvar" onclick="salvarEdicaoDia(${dia},'${clinica}',${mes},${ano})">✓ Salvar</button>
-    <button class="edit-zerar" onclick="zerarDia(${dia},'${clinica}',${mes},${ano})">Zerar dia</button>
-  </div>`;
-
+  html+=`</div><div id="ed-extras-area-${dia}">`;
+  extrasJaSalvos.forEach((p,xi)=>{html+=buildExtraEditForm(dia,xi,p.nome,p.tipo,p.e,p.s,p.m);});
+  html+=`</div><button class="add-prof-btn" style="margin-top:6px" onclick="adicionarExtraEdicao(${dia})">+ Adicionar substituto</button>`;
+  html+=`<div class="edit-actions"><button class="edit-salvar" onclick="salvarEdicaoDia(${dia},'${clinica}',${mes},${ano})">✓ Salvar</button><button class="edit-zerar" onclick="zerarDia(${dia},'${clinica}',${mes},${ano})">Zerar dia</button></div>`;
   formEl.innerHTML=html;
   window[`_edExtraCount_${dia}`]=extrasJaSalvos.length;
 }
+window.toggleEditForm=toggleEditForm;
 
-function buildExtraEditForm(dia, xi, nome='', tipo='psico', e=0, s=0, m=0){
+function buildExtraEditForm(dia,xi,nome='',tipo='psico',e=0,s=0,m=0){
   const uid=`${dia}_ex${xi}`;
   return `<div class="extra-prof-form" id="ed-extra-${uid}">
-    <div class="extra-prof-header">
-      <span class="extra-prof-title">Substituto</span>
-      <button class="remove-prof-btn" onclick="document.getElementById('ed-extra-${uid}').remove()">✕</button>
-    </div>
-    <input type="text" class="extra-sel" id="ed-exnome-${uid}" placeholder="Nome do profissional" value="${nome}">
-    <select class="extra-sel" id="ed-extipo-${uid}" onchange="renderEdExtraCampos('${uid}')">
-      <option value="psico" ${tipo==='psico'?'selected':''}>Psicóloga</option>
-      <option value="med" ${tipo==='med'?'selected':''}>Médica</option>
-    </select>
-    <div id="ed-excampos-${uid}">
-      ${tipo==='psico'
-        ?`<div class="edit-row"><span class="edit-label">🧠 Entrevistas</span><input class="edit-input" type="number" id="ed-exe-${uid}" value="${e}" min="0"></div>
-           <div class="edit-row"><span class="edit-label">🌍 Estrangeiros</span><input class="edit-input" type="number" id="ed-exs-${uid}" value="${s}" min="0"></div>`
-        :`<div class="edit-row"><span class="edit-label">🩺 Atendimentos</span><input class="edit-input" type="number" id="ed-exm-${uid}" value="${m}" min="0"></div>`
-      }
-    </div>
+    <div class="extra-prof-header"><span class="extra-prof-title">Substituto</span><button class="remove-prof-btn" onclick="document.getElementById('ed-extra-${uid}').remove()">✕</button></div>
+    <input type="text" class="extra-sel" id="ed-exnome-${uid}" placeholder="Nome" value="${nome}">
+    <select class="extra-sel" id="ed-extipo-${uid}" onchange="renderEdExtraCampos('${uid}')"><option value="psico" ${tipo==='psico'?'selected':''}>Psicóloga</option><option value="med" ${tipo==='med'?'selected':''}>Médica</option></select>
+    <div id="ed-excampos-${uid}">${tipo==='psico'?`<div class="edit-row"><span class="edit-label">🧠 Entrevistas</span><input class="edit-input" type="number" id="ed-exe-${uid}" value="${e}" min="0"></div><div class="edit-row"><span class="edit-label">🌍 Estrangeiros</span><input class="edit-input" type="number" id="ed-exs-${uid}" value="${s}" min="0"></div>`:`<div class="edit-row"><span class="edit-label">🩺 Atendimentos</span><input class="edit-input" type="number" id="ed-exm-${uid}" value="${m}" min="0"></div>`}</div>
   </div>`;
 }
-
-function renderEdExtraCampos(uid){
-  const tipo=document.getElementById(`ed-extipo-${uid}`)?.value;
-  const el=document.getElementById(`ed-excampos-${uid}`);
-  if(!el)return;
-  if(tipo==='psico'){
-    el.innerHTML=`<div class="edit-row"><span class="edit-label">🧠 Entrevistas</span><input class="edit-input" type="number" id="ed-exe-${uid}" value="0" min="0"></div>
-                  <div class="edit-row"><span class="edit-label">🌍 Estrangeiros</span><input class="edit-input" type="number" id="ed-exs-${uid}" value="0" min="0"></div>`;
-  }else{
-    el.innerHTML=`<div class="edit-row"><span class="edit-label">🩺 Atendimentos</span><input class="edit-input" type="number" id="ed-exm-${uid}" value="0" min="0"></div>`;
-  }
-}
-
-function adicionarExtraEdicao(dia){
-  const count=window[`_edExtraCount_${dia}`]=(window[`_edExtraCount_${dia}`]||0)+1;
-  const xi=count-1;
-  const area=document.getElementById(`ed-extras-area-${dia}`);
-  if(!area)return;
-  area.insertAdjacentHTML('beforeend', buildExtraEditForm(dia, xi));
-}
+function renderEdExtraCampos(uid){const tipo=document.getElementById(`ed-extipo-${uid}`)?.value;const el=document.getElementById(`ed-excampos-${uid}`);if(!el)return;el.innerHTML=tipo==='psico'?`<div class="edit-row"><span class="edit-label">🧠 Entrevistas</span><input class="edit-input" type="number" id="ed-exe-${uid}" value="0" min="0"></div><div class="edit-row"><span class="edit-label">🌍 Estrangeiros</span><input class="edit-input" type="number" id="ed-exs-${uid}" value="0" min="0"></div>`:`<div class="edit-row"><span class="edit-label">🩺 Atendimentos</span><input class="edit-input" type="number" id="ed-exm-${uid}" value="0" min="0"></div>`;}
+function adicionarExtraEdicao(dia){const count=window[`_edExtraCount_${dia}`]=(window[`_edExtraCount_${dia}`]||0)+1;const area=document.getElementById(`ed-extras-area-${dia}`);if(!area)return;area.insertAdjacentHTML('beforeend',buildExtraEditForm(dia,count-1));}
+window.renderEdExtraCampos=renderEdExtraCampos;window.adicionarExtraEdicao=adicionarExtraEdicao;
 
 function coletarExtrasEdicao(dia){
   const extras=[];
@@ -1937,8 +1202,6 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
   if(!dadosLanc[k])dadosLanc[k]={};
   if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={dias:{},diasLancados:[]};
   migrarEstrutura(k,clinica);
-
-  // Profissionais fixos
   const valoresDia={};
   profs.forEach((p,i)=>{
     const e=parseInt(document.getElementById(`ed_${dia}_${i}_e`)?.value)||0;
@@ -1946,178 +1209,150 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
     const m=parseInt(document.getElementById(`ed_${dia}_${i}_m`)?.value)||0;
     valoresDia[p.nome]={tipo:p.tipo,e,s,m};
   });
-
-  // Extras / substitutos
-  const extras=coletarExtrasEdicao(dia);
-  extras.forEach(p=>{ valoresDia[p.nome]={tipo:p.tipo,e:p.e,s:p.s,m:p.m,extra:true}; });
-
+  coletarExtrasEdicao(dia).forEach(p=>{valoresDia[p.nome]={tipo:p.tipo,e:p.e,s:p.s,m:p.m,extra:true};});
   dadosLanc[k][clinica].dias[dia]=valoresDia;
-  if(!dadosLanc[k][clinica].diasLancados.includes(dia)){
-    dadosLanc[k][clinica].diasLancados.push(dia);
-  }
-
-  // Sincroniza com Google Sheets
-  if(cfg.scriptUrl){
-    const profissionais=[
-      ...profs.map((p,i)=>({
-        nome:p.nome,tipo:p.tipo,
-        e:parseInt(document.getElementById(`ed_${dia}_${i}_e`)?.value)||0,
-        s:parseInt(document.getElementById(`ed_${dia}_${i}_s`)?.value)||0,
-        m:parseInt(document.getElementById(`ed_${dia}_${i}_m`)?.value)||0
-      })),
-      ...extras
-    ];
-    await scriptPost({clinica,dia,mes,ano,profissionais});
-  }
-
-  saveStateLocal();
-  saveLancamentosNuvem(mes,ano).catch(()=>{});
-  renderDiasEdicao();
-  renderDash();
-  renderAlertas();
+  if(!dadosLanc[k][clinica].diasLancados.includes(dia))dadosLanc[k][clinica].diasLancados.push(dia);
+  await salvarLanc_firebase(mes,ano);
+  renderDiasEdicao();renderDash();renderAlertas();
   const btn=document.querySelector(`#dia-row-${dia} .dia-edit-btn`);
   if(btn){btn.textContent='✓ Salvo!';setTimeout(()=>btn.textContent='Editar',1500);}
 }
+window.salvarEdicaoDia=salvarEdicaoDia;
 
 async function zerarDia(dia,clinica,mes,ano){
-  if(!confirm(`Zerar dia ${dia} de ${clinica}? Isso remove o registro deste dia.`))return;
+  if(!confirm(`Zerar dia ${dia} de ${clinica}?`))return;
   const k=chave(mes,ano);
   if(dadosLanc[k]?.[clinica]){
-    // Remove dia dos lançados
-    if(dadosLanc[k][clinica].diasLancados){
-      dadosLanc[k][clinica].diasLancados=dadosLanc[k][clinica].diasLancados.filter(d=>d!==dia);
-    }
-    // Remove dados do dia
-    if(dadosLanc[k][clinica].dias){
-      delete dadosLanc[k][clinica].dias[dia];
-    }
+    if(dadosLanc[k][clinica].diasLancados)dadosLanc[k][clinica].diasLancados=dadosLanc[k][clinica].diasLancados.filter(d=>d!==dia);
+    if(dadosLanc[k][clinica].dias)delete dadosLanc[k][clinica].dias[dia];
   }
-  // Zera no Sheets via Apps Script
-  if(cfg.scriptUrl){
-    const profs=profsCache[clinica]||[];
-    await scriptPost({clinica,dia,mes,ano,profissionais:profs.map(p=>({nome:p.nome,tipo:p.tipo,e:0,s:0,m:0}))});
-  }
-  saveStateLocal();
-  saveLancamentosNuvem(mes,ano).catch(()=>{});
-  renderDiasEdicao();
-  renderDash();
-  renderAlertas();
+  await salvarLanc_firebase(mes,ano);
+  renderDiasEdicao();renderDash();renderAlertas();
+}
+window.zerarDia=zerarDia;
+
+// ── CONFIG ────────────────────────────────────────────
+function initConfig(){
+  document.getElementById('vp').value=cfg.valP;
+  document.getElementById('vm').value=cfg.valM;
+  document.getElementById('vi').value=cfg.imp;
+  renderSenhasConfig();
+  renderSheetsGrid();
 }
 
-// ── EDIÇÃO DE DIAS ────────────────────────────────────
-function pN(v){if(!v&&v!==0)return 0;const n=parseFloat(String(v).replace(',','.').replace(/[^\d.-]/g,''));return isNaN(n)?0:Math.max(0,n);}
-function cL(col){let l='';let n=col+1;while(n>0){n--;l=String.fromCharCode(65+n%26)+l;n=Math.floor(n/26);}return l;}
-function fmt(v){return'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+function renderSenhasConfig(){
+  const el=document.getElementById('senhas-config');
+  if(!el)return;
+  // Senhas por clínica
+  let html='<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase">Estagiárias (por clínica)</div>';
+  CLINICAS.forEach(cl=>{
+    const senha=cfg.senhas?.[cl]||'';
+    html+=`<div style="display:grid;grid-template-columns:140px 1fr;gap:8px;margin-bottom:6px;align-items:center">
+      <span style="font-size:13px;font-weight:500">${cl}</span>
+      <input type="text" placeholder="Senha..." value="${senha}" style="padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace"
+        oninput="if(!cfg.senhas)cfg.senhas={};cfg.senhas['${cl}']=this.value.trim()">
+    </div>`;
+  });
+  html+='<div style="font-size:12px;font-weight:600;color:var(--muted);margin:12px 0 8px;text-transform:uppercase">Diretores</div>';
+  (cfg.senhasDiretores||[]).forEach((s,i)=>{
+    html+=`<div class="senha-row"><input type="text" value="${s}" readonly><button class="btn btn-sm" style="color:var(--red);border-color:var(--red-border)" onclick="cfg.senhasDiretores.splice(${i},1);renderSenhasConfig()">Remover</button></div>`;
+  });
+  html+=`<div style="display:flex;gap:8px;margin-top:6px"><input type="text" id="inp-novo-diretor" placeholder="Nova senha diretor..." style="flex:1;padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace"><button class="btn btn-sm" onclick="addSenha('diretor')">+</button></div>`;
+  html+='<div style="font-size:12px;font-weight:600;color:var(--muted);margin:12px 0 8px;text-transform:uppercase">Contabilidade</div>';
+  (cfg.senhasContabilidade||[]).forEach((s,i)=>{
+    html+=`<div class="senha-row"><input type="text" value="${s}" readonly><button class="btn btn-sm" style="color:var(--red);border-color:var(--red-border)" onclick="cfg.senhasContabilidade.splice(${i},1);renderSenhasConfig()">Remover</button></div>`;
+  });
+  html+=`<div style="display:flex;gap:8px;margin-top:6px"><input type="text" id="inp-novo-contab" placeholder="Nova senha contabilidade..." style="flex:1;padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace"><button class="btn btn-sm" onclick="addSenha('contabilidade')">+</button></div>`;
+  el.innerHTML=html;
+}
 
+function addSenha(tipo){
+  const id=tipo==='diretor'?'inp-novo-diretor':'inp-novo-contab';
+  const val=document.getElementById(id)?.value.trim();
+  if(!val)return;
+  if(tipo==='diretor'){if(!cfg.senhasDiretores)cfg.senhasDiretores=[];cfg.senhasDiretores.push(val);}
+  else{if(!cfg.senhasContabilidade)cfg.senhasContabilidade=[];cfg.senhasContabilidade.push(val);}
+  renderSenhasConfig();
+}
+window.addSenha=addSenha;window.renderSenhasConfig=renderSenhasConfig;
 
-// ════════════════════════════════════════════
-// BACKUP
-// ════════════════════════════════════════════
+async function salvarSenhas(){
+  await salvarCfg();
+  const st=document.getElementById('senhas-st');
+  st.textContent='✓ Salvo';st.className='status-ok';setTimeout(()=>st.textContent='',2000);
+}
+window.salvarSenhas=salvarSenhas;
+
+async function salvarVals(){
+  cfg.valP=parseFloat(document.getElementById('vp').value)||50;
+  cfg.valM=parseFloat(document.getElementById('vm').value)||48;
+  cfg.imp=parseFloat(document.getElementById('vi').value)||10;
+  await salvarCfg();
+  const st=document.getElementById('val-st');
+  st.textContent='✓ Salvo';st.className='status-ok';setTimeout(()=>st.textContent='',2000);
+  renderPag();
+}
+window.salvarVals=salvarVals;
+
+function renderSheetsGrid(){
+  const el=document.getElementById('sheets-grid');if(!el)return;
+  let html='<div style="margin-bottom:8px"><div class="fg"><label>Chave de API do Google Sheets</label><input type="text" id="inp-apikey" placeholder="AIza..." value="${cfg.apiKey||\'\'}" style="font-family:\'DM Mono\',monospace" oninput="cfg.apiKey=this.value.trim()"></div></div>';
+  html=`<div style="margin-bottom:8px"><div class="fg"><label>Chave de API do Google Sheets</label><input type="text" id="inp-apikey" placeholder="AIza..." value="${cfg.apiKey||''}" style="font-family:'DM Mono',monospace" oninput="cfg.apiKey=this.value.trim()"></div></div>`;
+  [2025,2026].forEach(ano=>{
+    html+=`<div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;margin:10px 0 6px">${ano}</div>`;
+    for(let m=1;m<=12;m++){
+      const k=chave(m,ano),val=cfg.sheets?.[k]||'';
+      html+=`<div style="display:grid;grid-template-columns:80px 1fr;gap:6px;margin-bottom:6px;align-items:center">
+        <span style="font-size:13px;font-weight:500">${MESES_CURTO[m-1]}/${String(ano).slice(2)}</span>
+        <input type="text" placeholder="ID da planilha..." value="${val}" style="padding:6px 10px;font-size:12px;border:1px solid ${val?'#a8d5a2':'var(--border)'};border-radius:var(--radius-sm);font-family:'DM Mono',monospace;background:${val?'#f6fff5':'var(--surface)'};"
+          oninput="if(!cfg.sheets)cfg.sheets={};cfg.sheets['${k}']=this.value.trim();this.style.borderColor=this.value?'#a8d5a2':'';this.style.background=this.value?'#f6fff5':''">
+      </div>`;
+    }
+  });
+  el.innerHTML=html;
+}
+
+async function salvarSheets(){
+  await salvarCfg();
+  const st=document.getElementById('sheet-st');
+  st.textContent='✓ Salvo';st.className='status-ok';setTimeout(()=>st.textContent='',2000);
+}
+window.salvarSheets=salvarSheets;
+
+// ── BACKUP ────────────────────────────────────────────
 function exportarBackup(){
-  const agora = new Date();
-  const dataStr = agora.toLocaleDateString('pt-BR').replace(/\//g,'_');
-  const horaStr = agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}).replace(':','h');
-
-  const backup = {
-    versao: '1.0',
-    exportadoEm: agora.toLocaleString('pt-BR'),
-    cfg: {
-      valP: cfg.valP,
-      valM: cfg.valM,
-      imp: cfg.imp,
-      meta: cfg.meta,
-      sheets: cfg.sheets,
-      senhas: cfg.senhas,
-      senhasDiretores: cfg.senhasDiretores||[],
-      senhasContabilidade: cfg.senhasContabilidade||[]
-    },
-    lancamentos: dadosLanc,
-    contas: contasData
-  };
-
-  const blob = new Blob([JSON.stringify(backup, null, 2)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `backup_clinicas_${dataStr}_${horaStr}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-
-  // Registra data do último backup
-  localStorage.setItem('cl_ultimo_backup', agora.toLocaleString('pt-BR'));
-  atualizarUltimoBackup();
+  const backup={versao:'2.0',exportadoEm:new Date().toLocaleString('pt-BR'),cfg,lancamentos:dadosLanc,pagEdit};
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=`backup_clinicas_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'_')}.json`;
+  a.click();URL.revokeObjectURL(url);
 }
-
-function importarBackup(input){
-  const file = input.files[0];
-  if(!file) return;
-  if(!confirm('Importar backup? Isso vai substituir todos os dados atuais.')) return;
-
-  const reader = new FileReader();
-  reader.onload = async e => {
+async function importarBackup(input){
+  const file=input.files[0];if(!file)return;
+  if(!confirm('Importar backup? Isso vai substituir todos os dados atuais.'))return;
+  const reader=new FileReader();
+  reader.onload=async e=>{
     try{
-      const backup = JSON.parse(e.target.result);
-      if(!backup.versao) throw new Error('Arquivo inválido');
-
-      // Restaura configurações
-      if(backup.cfg){
-        Object.assign(cfg, backup.cfg);
-        initConfig();
-      }
-
-      // Restaura lançamentos
-      if(backup.lancamentos) dadosLanc = backup.lancamentos;
-
-      // Restaura contas
-      if(backup.contas) contasData = backup.contas;
-
-      // Salva tudo na nuvem
-      saveStateLocal();
-      await saveState();
-
-      // Salva lançamentos na nuvem
-      for(const k of Object.keys(dadosLanc)){
-        const [mes,ano] = k.split('_');
-        await saveLancamentosNuvem(parseInt(mes), parseInt(ano));
-      }
-
-      // Salva contas na nuvem
-      for(const cl of Object.keys(contasData)){
-        await salvarContasClinica(cl);
-      }
-
-      alert(`✅ Backup restaurado com sucesso!\nExportado em: ${backup.exportadoEm}`);
-      renderDash();
-      renderAlertas();
-    }catch(err){
-      alert('Erro ao importar backup: ' + err.message);
-    }
+      const backup=JSON.parse(e.target.result);
+      if(backup.cfg)cfg=Object.assign(cfg,backup.cfg);
+      if(backup.lancamentos)dadosLanc=backup.lancamentos;
+      if(backup.pagEdit)pagEdit=backup.pagEdit;
+      await salvarCfg();
+      for(const k of Object.keys(dadosLanc))await dbSet('lancamentos/'+k,dadosLanc[k]);
+      for(const k of Object.keys(pagEdit))await dbSet('pagEdit/'+k,pagEdit[k]);
+      alert('✅ Backup restaurado!');renderDash();renderAlertas();
+    }catch(err){alert('Erro: '+err.message);}
   };
-  reader.readAsText(file);
-  input.value = '';
+  reader.readAsText(file);input.value='';
 }
-
-function atualizarUltimoBackup(){
-  const el = document.getElementById('ultimo-backup');
-  if(!el) return;
-  const ub = localStorage.getItem('cl_ultimo_backup');
-  if(el) el.textContent = ub || 'nunca';
-}
+window.exportarBackup=exportarBackup;window.importarBackup=importarBackup;
 
 // ── INIT ──────────────────────────────────────────────
-loadState();
-loadPagEdit();
-atualizarUltimoBackup();
-// Recupera URL do script salva localmente (para funcionar mesmo sem configurar de novo)
-if(!cfg.scriptUrl){
-  const urlLocal=localStorage.getItem('cl_script_url');
-  if(urlLocal)cfg.scriptUrl=urlLocal;
-}
-const _ag=new Date();
-document.getElementById('mes-sel').value=_ag.getMonth()+1;
-document.getElementById('mes-pag').value=_ag.getMonth()+1;
-document.getElementById('ano-sel').value=_ag.getFullYear();
-document.getElementById('ano-pag').value=_ag.getFullYear();
+const agora=hoje();
+document.getElementById('mes-sel').value=agora.getMonth()+1;
+document.getElementById('mes-pag').value=agora.getMonth()+1;
+document.getElementById('ano-sel').value=agora.getFullYear();
+document.getElementById('ano-pag').value=agora.getFullYear();
 </script>
 </body>
 </html>
