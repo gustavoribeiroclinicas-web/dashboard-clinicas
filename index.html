@@ -259,15 +259,15 @@ input:checked+.slider:before{transform:translateX(20px)}
       </button>
     </div>
     <div id="login-diretor" style="display:none">
-      <input class="inp" type="password" id="inp-senha-diretor" placeholder="Senha de diretor" onkeydown="if(event.key==='Enter')entrarSenha('diretor')">
+      <input class="inp" type="password" id="inp-senha-diretor" placeholder="Senha de diretor" id="kd-diretor">
       <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px" onclick="entrarSenha('diretor')">Entrar</button>
     </div>
     <div id="login-contabilidade" style="display:none">
-      <input class="inp" type="password" id="inp-senha-contab" placeholder="Senha da contabilidade" onkeydown="if(event.key==='Enter')entrarSenha('contabilidade')">
+      <input class="inp" type="password" id="inp-senha-contab" placeholder="Senha da contabilidade" id="kd-contab">
       <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px" onclick="entrarSenha('contabilidade')">Entrar</button>
     </div>
     <div id="login-estagiaria" style="display:none">
-      <input class="inp" type="password" id="inp-senha-estag" placeholder="Senha da clínica" onkeydown="if(event.key==='Enter')entrarSenha('estagiaria')">
+      <input class="inp" type="password" id="inp-senha-estag" placeholder="Senha da clínica" id="kd-estag">
       <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px" onclick="entrarSenha('estagiaria')">Entrar</button>
     </div>
     <div class="login-erro" id="login-erro"></div>
@@ -398,6 +398,48 @@ input:checked+.slider:before{transform:translateX(20px)}
     </div>
   </div>
 </div>
+
+
+<script>
+// Proxy para funções do módulo Firebase — aguarda inicialização
+function _call(fn, ...args) {
+  if (window[fn]) { window[fn](...args); }
+  else { setTimeout(() => _call(fn, ...args), 100); }
+}
+function setLoginTipo(t,el){ _call('setLoginTipo',t,el); }
+function handleLoginGoogle(){ _call('handleLoginGoogle'); }
+function entrarSenha(t){ _call('entrarSenha',t); }
+function sair(){ _call('sair'); }
+function showPage(p,el){ _call('showPage',p,el); }
+function atualizarDados(){ _call('atualizarDados'); }
+function trocarMesDash(){ _call('trocarMesDash'); }
+function trocarMesPag(){ _call('trocarMesPag'); }
+function salvarMeta(){ _call('salvarMeta'); }
+function abrirModal(){ _call('abrirModal'); }
+function fecharModal(){ _call('fecharModal'); }
+function renderDiasEdicao(){ _call('renderDiasEdicao'); }
+function toggleEditForm(d,c,m,a){ _call('toggleEditForm',d,c,m,a); }
+function salvarEdicaoDia(d,c,m,a){ _call('salvarEdicaoDia',d,c,m,a); }
+function zerarDia(d,c,m,a){ _call('zerarDia',d,c,m,a); }
+function renderEdExtraCampos(u){ _call('renderEdExtraCampos',u); }
+function adicionarExtraEdicao(d){ _call('adicionarExtraEdicao',d); }
+function renderLancForm(c,el){ _call('renderLancForm',c,el); }
+function adicionarProfExtra(c){ _call('adicionarProfExtra',c); }
+function renderExtraCampos(i){ _call('renderExtraCampos',i); }
+function salvarLanc(c){ _call('salvarLanc',c); }
+function alt(id,d){ _call('alt',id,d); }
+function vN(el){ _call('vN',el); }
+function togAus(i){ _call('togAus',i); }
+function onPagEditEl(el){ _call('onPagEditEl',el); }
+function salvarVals(){ _call('salvarVals'); }
+function salvarSenhas(){ _call('salvarSenhas'); }
+function salvarSheets(){ _call('salvarSheets'); }
+function addSenha(t){ _call('addSenha',t); }
+function renderSenhasConfig(){ _call('renderSenhasConfig'); }
+function exportarBackup(){ _call('exportarBackup'); }
+function importarBackup(el){ _call('importarBackup',el); }
+function initLancamento(c){ _call('initLancamento',c); }
+</script>
 
 <!-- Firebase -->
 <script type="module">
@@ -533,6 +575,7 @@ async function entrarSenha(tipo) {
 window.handleLoginGoogle = handleLoginGoogle;
 window.entrarSenha = entrarSenha;
 window.setLoginTipo = setLoginTipo;
+window.sair = sair;
 
 onAuthStateChanged(auth, async (user) => {
   if (user && perfilAtual === '') {
