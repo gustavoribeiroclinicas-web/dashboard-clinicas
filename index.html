@@ -509,7 +509,7 @@ async function carregarTudo() {
 async function salvarCfg() {
   await dbSet('config', cfg);
 }
-async function salvarLanc(mes, ano) {
+async function salvarLancDB(mes, ano) {
   const k = chave(mes, ano);
   await dbSet('lancamentos/' + k, dadosLanc[k] || {});
 }
@@ -784,7 +784,7 @@ async function salvarLanc(clinica) {
   if (!dadosLanc[k][clinica].diasLancados.includes(dia)) dadosLanc[k][clinica].diasLancados.push(dia);
 
   // Salva no Firebase
-  await salvarLanc_firebase(mes, ano);
+  await salvarLancDB(mes, ano);
   // Salva também no Sheets
   await syncSheets(clinica, profs, extras, dia, mes, ano);
 
@@ -794,7 +794,7 @@ async function salvarLanc(clinica) {
 }
 window['_m_salvarLanc']=salvarLanc;
 
-async function salvarLanc_firebase(mes, ano) {
+async function salvarLancDB(mes, ano) {
   const k = chave(mes, ano);
   await dbSet('lancamentos/'+k, dadosLanc[k]||{});
 }
@@ -916,7 +916,7 @@ async function atualizarDados(){
       }catch(e){}
     }
     // Salva dias detectados no Firebase
-    await salvarLanc_firebase(mes,ano);
+    await salvarLancDB(mes,ano);
   }
 
   document.getElementById('upd-lbl').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
@@ -1265,7 +1265,7 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
   coletarExtrasEdicao(dia).forEach(p=>{valoresDia[p.nome]={tipo:p.tipo,e:p.e,s:p.s,m:p.m,extra:true};});
   dadosLanc[k][clinica].dias[dia]=valoresDia;
   if(!dadosLanc[k][clinica].diasLancados.includes(dia))dadosLanc[k][clinica].diasLancados.push(dia);
-  await salvarLanc_firebase(mes,ano);
+  await salvarLancDB(mes,ano);
   renderDiasEdicao();renderDash();renderAlertas();
   const btn=document.querySelector(`#dia-row-${dia} .dia-edit-btn`);
   if(btn){btn.textContent='✓ Salvo!';setTimeout(()=>btn.textContent='Editar',1500);}
@@ -1279,7 +1279,7 @@ async function zerarDia(dia,clinica,mes,ano){
     if(dadosLanc[k][clinica].diasLancados)dadosLanc[k][clinica].diasLancados=dadosLanc[k][clinica].diasLancados.filter(d=>d!==dia);
     if(dadosLanc[k][clinica].dias)delete dadosLanc[k][clinica].dias[dia];
   }
-  await salvarLanc_firebase(mes,ano);
+  await salvarLancDB(mes,ano);
   renderDiasEdicao();renderDash();renderAlertas();
 }
 window['_m_zerarDia']=zerarDia;
