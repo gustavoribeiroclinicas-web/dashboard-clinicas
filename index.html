@@ -250,7 +250,7 @@ input:checked+.slider:before{transform:translateX(20px)}
       <button class="login-tab active" onclick="setLoginTipo('gestor',this)">Gestor</button>
       <button class="login-tab" onclick="setLoginTipo('diretor',this)">Diretor</button>
       <button class="login-tab" onclick="setLoginTipo('contabilidade',this)">Contabilidade</button>
-      <button class="login-tab" onclick="setLoginTipo('estagiaria',this)">Estagiária</button>
+      <button class="login-tab" onclick="setLoginTipo('recepcao',this)">Recepção</button>
     </div>
     <div id="login-gestor">
       <button class="btn-google-lg" onclick="handleLoginGoogle()">
@@ -266,9 +266,9 @@ input:checked+.slider:before{transform:translateX(20px)}
       <input class="inp" type="password" id="inp-senha-contab" placeholder="Senha da contabilidade" id="kd-contab">
       <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px" onclick="entrarSenha('contabilidade')">Entrar</button>
     </div>
-    <div id="login-estagiaria" style="display:none">
-      <input class="inp" type="password" id="inp-senha-estag" placeholder="Senha da clínica" id="kd-estag">
-      <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px" onclick="entrarSenha('estagiaria')">Entrar</button>
+    <div id="login-recepcao" style="display:none">
+      <input class="inp" type="password" id="inp-senha-recep" placeholder="Senha da clínica" id="kd-estag">
+      <button class="btn btn-purple" style="width:100%;justify-content:center;padding:11px" onclick="entrarSenha('recepcao')">Entrar</button>
     </div>
     <div class="login-erro" id="login-erro"></div>
   </div>
@@ -400,45 +400,55 @@ input:checked+.slider:before{transform:translateX(20px)}
 </div>
 
 
+
+
 <script>
-// Proxy para funções do módulo Firebase — aguarda inicialização
-function _call(fn, ...args) {
-  if (window[fn]) { window[fn](...args); }
-  else { setTimeout(() => _call(fn, ...args), 100); }
+// Fila de chamadas enquanto módulo carrega
+window._fila = [];
+window._pronto = false;
+
+function _exec(fn, args) {
+  if (window._pronto && window['_m_'+fn]) {
+    window['_m_'+fn](...args);
+  } else {
+    window._fila.push({fn, args});
+  }
 }
-function setLoginTipo(t,el){ _call('setLoginTipo',t,el); }
-function handleLoginGoogle(){ _call('handleLoginGoogle'); }
-function entrarSenha(t){ _call('entrarSenha',t); }
-function sair(){ _call('sair'); }
-function showPage(p,el){ _call('showPage',p,el); }
-function atualizarDados(){ _call('atualizarDados'); }
-function trocarMesDash(){ _call('trocarMesDash'); }
-function trocarMesPag(){ _call('trocarMesPag'); }
-function salvarMeta(){ _call('salvarMeta'); }
-function abrirModal(){ _call('abrirModal'); }
-function fecharModal(){ _call('fecharModal'); }
-function renderDiasEdicao(){ _call('renderDiasEdicao'); }
-function toggleEditForm(d,c,m,a){ _call('toggleEditForm',d,c,m,a); }
-function salvarEdicaoDia(d,c,m,a){ _call('salvarEdicaoDia',d,c,m,a); }
-function zerarDia(d,c,m,a){ _call('zerarDia',d,c,m,a); }
-function renderEdExtraCampos(u){ _call('renderEdExtraCampos',u); }
-function adicionarExtraEdicao(d){ _call('adicionarExtraEdicao',d); }
-function renderLancForm(c,el){ _call('renderLancForm',c,el); }
-function adicionarProfExtra(c){ _call('adicionarProfExtra',c); }
-function renderExtraCampos(i){ _call('renderExtraCampos',i); }
-function salvarLanc(c){ _call('salvarLanc',c); }
-function alt(id,d){ _call('alt',id,d); }
-function vN(el){ _call('vN',el); }
-function togAus(i){ _call('togAus',i); }
-function onPagEditEl(el){ _call('onPagEditEl',el); }
-function salvarVals(){ _call('salvarVals'); }
-function salvarSenhas(){ _call('salvarSenhas'); }
-function salvarSheets(){ _call('salvarSheets'); }
-function addSenha(t){ _call('addSenha',t); }
-function renderSenhasConfig(){ _call('renderSenhasConfig'); }
-function exportarBackup(){ _call('exportarBackup'); }
-function importarBackup(el){ _call('importarBackup',el); }
-function initLancamento(c){ _call('initLancamento',c); }
+
+// Funções globais que o HTML chama
+function setLoginTipo(t,el){ _exec('setLoginTipo',[t,el]); }
+function handleLoginGoogle(){ _exec('handleLoginGoogle',[]); }
+function entrarSenha(t){ _exec('entrarSenha',[t]); }
+function sair(){ _exec('sair',[]); }
+function showPage(p,el){ _exec('showPage',[p,el]); }
+function atualizarDados(){ _exec('atualizarDados',[]); }
+function trocarMesDash(){ _exec('trocarMesDash',[]); }
+function trocarMesPag(){ _exec('trocarMesPag',[]); }
+function salvarMeta(){ _exec('salvarMeta',[]); }
+function abrirModal(){ _exec('abrirModal',[]); }
+function fecharModal(){ _exec('fecharModal',[]); }
+function renderDiasEdicao(){ _exec('renderDiasEdicao',[]); }
+function toggleEditForm(d,c,m,a){ _exec('toggleEditForm',[d,c,m,a]); }
+function salvarEdicaoDia(d,c,m,a){ _exec('salvarEdicaoDia',[d,c,m,a]); }
+function zerarDia(d,c,m,a){ _exec('zerarDia',[d,c,m,a]); }
+function renderEdExtraCampos(u){ _exec('renderEdExtraCampos',[u]); }
+function adicionarExtraEdicao(d){ _exec('adicionarExtraEdicao',[d]); }
+function renderLancForm(c,el){ _exec('renderLancForm',[c,el]); }
+function adicionarProfExtra(c){ _exec('adicionarProfExtra',[c]); }
+function renderExtraCampos(i){ _exec('renderExtraCampos',[i]); }
+function salvarLanc(c){ _exec('salvarLanc',[c]); }
+function alt(id,d){ _exec('alt',[id,d]); }
+function vN(el){ _exec('vN',[el]); }
+function togAus(i){ _exec('togAus',[i]); }
+function onPagEditEl(el){ _exec('onPagEditEl',[el]); }
+function salvarVals(){ _exec('salvarVals',[]); }
+function salvarSenhas(){ _exec('salvarSenhas',[]); }
+function salvarSheets(){ _exec('salvarSheets',[]); }
+function addSenha(t){ _exec('addSenha',[t]); }
+function renderSenhasConfig(){ _exec('renderSenhasConfig',[]); }
+function exportarBackup(){ _exec('exportarBackup',[]); }
+function importarBackup(el){ _exec('importarBackup',[el]); }
+function initLancamento(c){ _exec('initLancamento',[c]); }
 </script>
 
 <!-- Firebase -->
@@ -527,7 +537,7 @@ function setLoginTipo(tipo, el) {
   loginTipo = tipo;
   document.querySelectorAll('.login-tab').forEach(x=>x.classList.remove('active'));
   el.classList.add('active');
-  ['gestor','diretor','contabilidade','estagiaria'].forEach(t => {
+  ['gestor','diretor','contabilidade','recepcao'].forEach(t => {
     document.getElementById('login-'+t).style.display = t===tipo ? 'block' : 'none';
   });
   document.getElementById('login-erro').style.display = 'none';
@@ -545,7 +555,7 @@ async function handleLoginGoogle() {
 }
 
 async function entrarSenha(tipo) {
-  const ids = { diretor:'inp-senha-diretor', contabilidade:'inp-senha-contab', estagiaria:'inp-senha-estag' };
+  const ids = { diretor:'inp-senha-diretor', contabilidade:'inp-senha-contab', recepcao:'inp-senha-recep' };
   const senha = document.getElementById(ids[tipo])?.value.trim();
   if (!senha) { showErro('Digite a senha.'); return; }
 
@@ -564,18 +574,18 @@ async function entrarSenha(tipo) {
     if (!(cfg.senhasContabilidade||[]).includes(senha)) { showErro('Senha incorreta.'); return; }
     perfilAtual = 'contabilidade';
     iniciarContabilidade();
-  } else if (tipo === 'estagiaria') {
+  } else if (tipo === 'recepcao') {
     const clinica = Object.entries(cfg.senhas||{}).find(([cl,pw])=>pw===senha)?.[0];
     if (!clinica) { showErro('Senha incorreta.'); return; }
     perfilAtual = clinica;
-    iniciarEstagiaria(clinica);
+    iniciarRecepcao(clinica);
   }
 }
 
-window.handleLoginGoogle = handleLoginGoogle;
-window.entrarSenha = entrarSenha;
-window.setLoginTipo = setLoginTipo;
-window.sair = sair;
+window['_m_handleLoginGoogle'] = handleLoginGoogle;
+window['_m_entrarSenha'] = entrarSenha;
+window['_m_setLoginTipo'] = setLoginTipo;
+window['_m_sair'] = sair;
 
 onAuthStateChanged(auth, async (user) => {
   if (user && perfilAtual === '') {
@@ -590,12 +600,12 @@ function sair() {
   signOut(auth);
   document.getElementById('app').style.display = 'none';
   document.getElementById('tela-login').style.display = 'flex';
-  ['inp-senha-diretor','inp-senha-contab','inp-senha-estag'].forEach(id => {
+  ['inp-senha-diretor','inp-senha-contab','inp-senha-recep'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   document.getElementById('login-erro').style.display = 'none';
 }
-window.sair = sair;
+window['_m_sair'] = sair;
 
 // ── INICIAR PERFIS ────────────────────────────────────
 function iniciarGestor() {
@@ -627,7 +637,7 @@ function iniciarContabilidade() {
   renderPag();
 }
 
-function iniciarEstagiaria(clinica) {
+function iniciarRecepcao(clinica) {
   document.getElementById('tela-login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-chip').textContent = '🏥 ' + clinica;
@@ -647,7 +657,7 @@ function showPage(p, el) {
   if (p === 'pagamentos') renderPag();
   if (p === 'lancamento' && perfilAtual === 'gestor') initLancamento(null);
 }
-window.showPage = showPage;
+window['_m_showPage'] = showPage;
 
 // ── LANÇAMENTO ────────────────────────────────────────
 function initLancamento(clinicaFixa) {
@@ -677,7 +687,7 @@ function initLancamento(clinicaFixa) {
     </div><div id="lanc-inner-profs"></div>`;
   }
 }
-window.initLancamento = initLancamento;
+window['_m_initLancamento'] = initLancamento;
 
 async function renderLancForm(clinica, container) {
   container.innerHTML = '<div class="loading-msg" style="padding:1.5rem">⏳ Carregando...</div>';
@@ -699,7 +709,7 @@ async function renderLancForm(clinica, container) {
     <button class="btn btn-purple btn-full" id="btn-salvar-lanc" onclick="salvarLanc('${clinica}')">✓ Registrar atendimentos</button>`;
   container.innerHTML = html;
 }
-window.renderLancForm = renderLancForm;
+window['_m_renderLancForm'] = renderLancForm;
 
 function cCtrl(i, t, label) {
   return `<div class="campo-row"><span class="campo-label">${label}</span>
@@ -712,7 +722,7 @@ function cCtrl(i, t, label) {
 function alt(id,d){const el=document.getElementById(id);if(!el||el.disabled)return;const v=Math.max(0,(parseInt(el.value)||0)+d);el.value=v;el.className='cnum'+(v>0?' filled':'');}
 function vN(el){const v=parseInt(el.value);if(isNaN(v)||v<0)el.value=0;el.className='cnum'+(parseInt(el.value)>0?' filled':'');}
 function togAus(i){const cb=document.getElementById(`aus_${i}`);['e','s','m'].forEach(t=>{const el=document.getElementById(`n_${i}_${t}`);if(!el)return;el.disabled=cb.checked;if(cb.checked){el.value=0;el.className='cnum';}});}
-window.alt=alt;window.vN=vN;window.togAus=togAus;
+window['_m_alt']=alt;window['_m_vN']=vN;window['_m_togAus']=togAus;
 
 function adicionarProfExtra(clinica) {
   window._extrasCount = (window._extrasCount||0)+1;
@@ -728,7 +738,7 @@ function adicionarProfExtra(clinica) {
   area.appendChild(div);
 }
 function renderExtraCampos(idx){const tipo=document.getElementById(`extra-tipo-${idx}`)?.value;const el=document.getElementById(`extra-campos-${idx}`);if(!el)return;el.innerHTML=tipo==='psico'?cCtrl('x'+idx,'e','🧠 Entrevistas')+cCtrl('x'+idx,'s','🌍 Estrangeiros'):cCtrl('x'+idx,'m','🩺 Atendimentos');}
-window.adicionarProfExtra=adicionarProfExtra;window.renderExtraCampos=renderExtraCampos;
+window['_m_adicionarProfExtra']=adicionarProfExtra;window['_m_renderExtraCampos']=renderExtraCampos;
 
 function coletarExtras() {
   const extras = [];
@@ -782,7 +792,7 @@ async function salvarLanc(clinica) {
   document.getElementById('lanc-sucesso').style.display='block';
   document.getElementById('sucesso-msg').textContent=`${clinica} — dia ${dia}/${mes}. ${resumo.join(' · ')}`;
 }
-window.salvarLanc=salvarLanc;
+window['_m_salvarLanc']=salvarLanc;
 
 async function salvarLanc_firebase(mes, ano) {
   const k = chave(mes, ano);
@@ -860,7 +870,7 @@ function setStatus(msg,t){
 }
 
 function salvarMeta(){cfg.meta=parseInt(document.getElementById('meta-in').value)||55;salvarCfg();renderDash();}
-window.salvarMeta=salvarMeta;
+window['_m_salvarMeta']=salvarMeta;
 
 async function trocarMesDash(){
   const mes=parseInt(document.getElementById('mes-sel').value);
@@ -871,7 +881,7 @@ async function trocarMesDash(){
   if(data){dadosLanc[k]=data;}
   renderDash();renderAlertas();
 }
-window.trocarMesDash=trocarMesDash;
+window['_m_trocarMesDash']=trocarMesDash;
 
 async function atualizarDados(){
   const mes=parseInt(document.getElementById('mes-sel').value);
@@ -913,7 +923,7 @@ async function atualizarDados(){
   setStatus(`${MESES[mes-1]}/${ano} carregado`,'ok');
   renderDash();renderAlertas();
 }
-window.atualizarDados=atualizarDados;
+window['_m_atualizarDados']=atualizarDados;
 
 function parseTotais(rows){
   if(!rows||rows.length<3)return{profs:[]};
@@ -1062,7 +1072,7 @@ async function trocarMesPag(){
   if(pl)pl.style.display='none';
   renderPag();
 }
-window.trocarMesPag=trocarMesPag;
+window['_m_trocarMesPag']=trocarMesPag;
 
 function renderPag(){
   const mes=parseInt(document.getElementById('mes-pag').value);
@@ -1139,7 +1149,7 @@ function onPagEditEl(input){
   });
   const tv=document.getElementById('total-val-pag');if(tv)tv.textContent=fmt(tgPago);
 }
-window.onPagEditEl=onPagEditEl;
+window['_m_onPagEditEl']=onPagEditEl;
 
 // ── EDIÇÃO DE DIAS ────────────────────────────────────
 function abrirModal(){
@@ -1151,7 +1161,7 @@ function abrirModal(){
   document.getElementById('modal-edicao').style.display='flex';
 }
 function fecharModal(){document.getElementById('modal-edicao').style.display='none';}
-window.abrirModal=abrirModal;window.fecharModal=fecharModal;
+window['_m_abrirModal']=abrirModal;window['_m_fecharModal']=fecharModal;
 
 function renderDiasEdicao(){
   const clinica=document.getElementById('modal-clinica-sel').value;
@@ -1181,7 +1191,7 @@ function renderDiasEdicao(){
   }
   lista.innerHTML=html;
 }
-window.renderDiasEdicao=renderDiasEdicao;
+window['_m_renderDiasEdicao']=renderDiasEdicao;
 
 async function toggleEditForm(dia,clinica,mes,ano){
   const formEl=document.getElementById(`edit-form-${dia}`);
@@ -1209,7 +1219,7 @@ async function toggleEditForm(dia,clinica,mes,ano){
   formEl.innerHTML=html;
   window[`_edExtraCount_${dia}`]=extrasJaSalvos.length;
 }
-window.toggleEditForm=toggleEditForm;
+window['_m_toggleEditForm']=toggleEditForm;
 
 function buildExtraEditForm(dia,xi,nome='',tipo='psico',e=0,s=0,m=0){
   const uid=`${dia}_ex${xi}`;
@@ -1222,7 +1232,7 @@ function buildExtraEditForm(dia,xi,nome='',tipo='psico',e=0,s=0,m=0){
 }
 function renderEdExtraCampos(uid){const tipo=document.getElementById(`ed-extipo-${uid}`)?.value;const el=document.getElementById(`ed-excampos-${uid}`);if(!el)return;el.innerHTML=tipo==='psico'?`<div class="edit-row"><span class="edit-label">🧠 Entrevistas</span><input class="edit-input" type="number" id="ed-exe-${uid}" value="0" min="0"></div><div class="edit-row"><span class="edit-label">🌍 Estrangeiros</span><input class="edit-input" type="number" id="ed-exs-${uid}" value="0" min="0"></div>`:`<div class="edit-row"><span class="edit-label">🩺 Atendimentos</span><input class="edit-input" type="number" id="ed-exm-${uid}" value="0" min="0"></div>`;}
 function adicionarExtraEdicao(dia){const count=window[`_edExtraCount_${dia}`]=(window[`_edExtraCount_${dia}`]||0)+1;const area=document.getElementById(`ed-extras-area-${dia}`);if(!area)return;area.insertAdjacentHTML('beforeend',buildExtraEditForm(dia,count-1));}
-window.renderEdExtraCampos=renderEdExtraCampos;window.adicionarExtraEdicao=adicionarExtraEdicao;
+window['_m_renderEdExtraCampos']=renderEdExtraCampos;window['_m_adicionarExtraEdicao']=adicionarExtraEdicao;
 
 function coletarExtrasEdicao(dia){
   const extras=[];
@@ -1260,7 +1270,7 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
   const btn=document.querySelector(`#dia-row-${dia} .dia-edit-btn`);
   if(btn){btn.textContent='✓ Salvo!';setTimeout(()=>btn.textContent='Editar',1500);}
 }
-window.salvarEdicaoDia=salvarEdicaoDia;
+window['_m_salvarEdicaoDia']=salvarEdicaoDia;
 
 async function zerarDia(dia,clinica,mes,ano){
   if(!confirm(`Zerar dia ${dia} de ${clinica}?`))return;
@@ -1272,7 +1282,7 @@ async function zerarDia(dia,clinica,mes,ano){
   await salvarLanc_firebase(mes,ano);
   renderDiasEdicao();renderDash();renderAlertas();
 }
-window.zerarDia=zerarDia;
+window['_m_zerarDia']=zerarDia;
 
 // ── CONFIG ────────────────────────────────────────────
 function initConfig(){
@@ -1287,7 +1297,7 @@ function renderSenhasConfig(){
   const el=document.getElementById('senhas-config');
   if(!el)return;
   // Senhas por clínica
-  let html='<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase">Estagiárias (por clínica)</div>';
+  let html='<div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;text-transform:uppercase">Recepçãos (por clínica)</div>';
   CLINICAS.forEach(cl=>{
     const senha=cfg.senhas?.[cl]||'';
     html+=`<div style="display:grid;grid-template-columns:140px 1fr;gap:8px;margin-bottom:6px;align-items:center">
@@ -1317,14 +1327,14 @@ function addSenha(tipo){
   else{if(!cfg.senhasContabilidade)cfg.senhasContabilidade=[];cfg.senhasContabilidade.push(val);}
   renderSenhasConfig();
 }
-window.addSenha=addSenha;window.renderSenhasConfig=renderSenhasConfig;
+window['_m_addSenha']=addSenha;window['_m_renderSenhasConfig']=renderSenhasConfig;
 
 async function salvarSenhas(){
   await salvarCfg();
   const st=document.getElementById('senhas-st');
   st.textContent='✓ Salvo';st.className='status-ok';setTimeout(()=>st.textContent='',2000);
 }
-window.salvarSenhas=salvarSenhas;
+window['_m_salvarSenhas']=salvarSenhas;
 
 async function salvarVals(){
   cfg.valP=parseFloat(document.getElementById('vp').value)||50;
@@ -1335,7 +1345,7 @@ async function salvarVals(){
   st.textContent='✓ Salvo';st.className='status-ok';setTimeout(()=>st.textContent='',2000);
   renderPag();
 }
-window.salvarVals=salvarVals;
+window['_m_salvarVals']=salvarVals;
 
 function renderSheetsGrid(){
   const el=document.getElementById('sheets-grid');if(!el)return;
@@ -1360,7 +1370,7 @@ async function salvarSheets(){
   const st=document.getElementById('sheet-st');
   st.textContent='✓ Salvo';st.className='status-ok';setTimeout(()=>st.textContent='',2000);
 }
-window.salvarSheets=salvarSheets;
+window['_m_salvarSheets']=salvarSheets;
 
 // ── BACKUP ────────────────────────────────────────────
 function exportarBackup(){
@@ -1388,9 +1398,48 @@ async function importarBackup(input){
   };
   reader.readAsText(file);input.value='';
 }
-window.exportarBackup=exportarBackup;window.importarBackup=importarBackup;
+window['_m_exportarBackup']=exportarBackup;window['_m_importarBackup']=importarBackup;
 
 // ── INIT ──────────────────────────────────────────────
+// Registra todas as funções com prefixo e processa fila
+window['_m_setLoginTipo'] = setLoginTipo;
+window['_m_handleLoginGoogle'] = handleLoginGoogle;
+window['_m_entrarSenha'] = entrarSenha;
+window['_m_sair'] = sair;
+window['_m_showPage'] = showPage;
+window['_m_atualizarDados'] = atualizarDados;
+window['_m_trocarMesDash'] = trocarMesDash;
+window['_m_trocarMesPag'] = trocarMesPag;
+window['_m_salvarMeta'] = salvarMeta;
+window['_m_abrirModal'] = abrirModal;
+window['_m_fecharModal'] = fecharModal;
+window['_m_renderDiasEdicao'] = renderDiasEdicao;
+window['_m_toggleEditForm'] = toggleEditForm;
+window['_m_salvarEdicaoDia'] = salvarEdicaoDia;
+window['_m_zerarDia'] = zerarDia;
+window['_m_renderEdExtraCampos'] = renderEdExtraCampos;
+window['_m_adicionarExtraEdicao'] = adicionarExtraEdicao;
+window['_m_renderLancForm'] = renderLancForm;
+window['_m_adicionarProfExtra'] = adicionarProfExtra;
+window['_m_renderExtraCampos'] = renderExtraCampos;
+window['_m_salvarLanc'] = salvarLanc;
+window['_m_alt'] = alt;
+window['_m_vN'] = vN;
+window['_m_togAus'] = togAus;
+window['_m_onPagEditEl'] = onPagEditEl;
+window['_m_salvarVals'] = salvarVals;
+window['_m_salvarSenhas'] = salvarSenhas;
+window['_m_salvarSheets'] = salvarSheets;
+window['_m_addSenha'] = addSenha;
+window['_m_renderSenhasConfig'] = renderSenhasConfig;
+window['_m_exportarBackup'] = exportarBackup;
+window['_m_importarBackup'] = importarBackup;
+window['_m_initLancamento'] = initLancamento;
+window._pronto = true;
+(window._fila||[]).forEach(({fn,args})=>{ if(window['_m_'+fn]) window['_m_'+fn](...args); });
+window._fila = [];
+
+
 const agora=hoje();
 document.getElementById('mes-sel').value=agora.getMonth()+1;
 document.getElementById('mes-pag').value=agora.getMonth()+1;
