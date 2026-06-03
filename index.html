@@ -794,10 +794,6 @@ async function salvarLanc(clinica) {
 }
 window['_m_salvarLanc']=salvarLanc;
 
-async function salvarLancDB(mes, ano) {
-  const k = chave(mes, ano);
-  await dbSet('lancamentos/'+k, dadosLanc[k]||{});
-}
 
 // ── SHEETS SYNC ───────────────────────────────────────
 let sheetsToken = null;
