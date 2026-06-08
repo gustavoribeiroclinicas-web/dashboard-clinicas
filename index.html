@@ -973,27 +973,35 @@ function migrarEstrutura(k,clinica){
 function getTotais(cl,mes,ano){
   const k=chave(mes,ano);
   const local=dadosLanc[k]?.[cl];
-  if(local&&(local.diasLancados?.length||Object.keys(local.dias||{}).length)){
-    const totais={};
+  if(local){
     const diasObj=local.dias||{};
-    Object.values(diasObj).forEach(diaProfs=>{
-      Object.entries(diaProfs).forEach(([nome,v])=>{
-        if(!totais[nome])totais[nome]={tipo:v.tipo,total:0};
-        totais[nome].total+=(v.tipo==='psico'?(v.e+v.s):v.m);
+    const diasLancados=local.diasLancados||[];
+    // Tem dados se há dias salvos ou diasLancados
+    if(Object.keys(diasObj).length||diasLancados.length){
+      const totais={};
+      Object.values(diasObj).forEach(diaProfs=>{
+        if(!diaProfs||typeof diaProfs!=='object')return;
+        Object.entries(diaProfs).forEach(([nome,v])=>{
+          if(!v||typeof v!=='object')return;
+          if(!totais[nome])totais[nome]={tipo:v.tipo||'psico',total:0};
+          totais[nome].total+=(v.tipo==='psico'?(parseInt(v.e)||0)+(parseInt(v.s)||0):(parseInt(v.m)||0));
+        });
       });
-    });
-    if(local.profs&&!Object.keys(diasObj).length){
-      Object.entries(local.profs).forEach(([nome,v])=>{if(!totais[nome])totais[nome]={tipo:v.tipo,total:0};totais[nome].total+=(v.tipo==='psico'?(v.e+v.s):v.m);});
+      const profs=Object.entries(totais).map(([nome,v])=>({nome,tipo:v.tipo,total:v.total}));
+      if(profs.length)return{profs};
     }
-    const profs=Object.entries(totais).map(([nome,v])=>({nome,tipo:v.tipo,total:v.total}));
-    if(profs.length)return{profs};
   }
   return cacheSheets[k]?.[cl]||{profs:[]};
 }
 
 function getDiasLancados(cl,mes,ano){
-  const k=chave(mes,ano);const local=dadosLanc[k]?.[cl];
-  if(!local)return[];return local.diasLancados||local.dias||[];
+  const k=chave(mes,ano);
+  const local=dadosLanc[k]?.[cl];
+  if(!local)return[];
+  if(Array.isArray(local.diasLancados))return local.diasLancados;
+  // Fallback: pega dias do objeto dias
+  const diasObj=local.dias||{};
+  return Object.keys(diasObj).map(d=>parseInt(d)).filter(d=>!isNaN(d));
 }
 
 function renderDash(){
@@ -1259,23 +1267,13 @@ function coletarExtrasEdicao(dia){
 async function salvarEdicaoDia(dia,clinica,mes,ano){
   const profs=profsCache[clinica]||[];
   const k=chave(mes,ano);
-  if(!dadosLanc[k])dadosLanc[k]={};
-  if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={dias:{},diasLancados:[]};
-  migrarEstrutura(k,clinica);
 
-  // Garante que dias é sempre objeto (Firebase pode converter para array)
-  if(Array.isArray(dadosLanc[k][clinica].dias)){
-    const diasObj={};
-    dadosLanc[k][clinica].dias.forEach((v,i)=>{if(v)diasObj[i]=v;});
-    dadosLanc[k][clinica].dias=diasObj;
-  }
-  if(!dadosLanc[k][clinica].dias||typeof dadosLanc[k][clinica].dias!=='object'){
-    dadosLanc[k][clinica].dias={};
-  }
-  // Garante que diasLancados é array
-  if(!Array.isArray(dadosLanc[k][clinica].diasLancados)){
-    dadosLanc[k][clinica].diasLancados=[];
-  }
+  // Garante estrutura completa
+  if(!dadosLanc[k])dadosLanc[k]={};
+  if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={};
+  const cl=dadosLanc[k][clinica];
+  if(!cl.dias||typeof cl.dias!=='object'||Array.isArray(cl.dias))cl.dias={};
+  if(!Array.isArray(cl.diasLancados))cl.diasLancados=[];
 
   const valoresDia={};
   profs.forEach((p,i)=>{
@@ -1285,8 +1283,10 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
     valoresDia[p.nome]={tipo:p.tipo,e,s,m};
   });
   coletarExtrasEdicao(dia).forEach(p=>{valoresDia[p.nome]={tipo:p.tipo,e:p.e,s:p.s,m:p.m,extra:true};});
-  dadosLanc[k][clinica].dias[dia]=valoresDia;
-  if(!dadosLanc[k][clinica].diasLancados.includes(dia))dadosLanc[k][clinica].diasLancados.push(dia);
+
+  cl.dias[String(dia)]=valoresDia;
+  if(!cl.diasLancados.includes(dia))cl.diasLancados.push(dia);
+
   await salvarLancDB(mes,ano);
   renderDiasEdicao();renderDash();renderAlertas();
   const btn=document.querySelector(`#dia-row-${dia} .dia-edit-btn`);
