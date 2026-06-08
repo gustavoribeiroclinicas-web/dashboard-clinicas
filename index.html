@@ -955,8 +955,19 @@ function parseDiasLancados(rows){
 
 function migrarEstrutura(k,clinica){
   const d=dadosLanc[k]?.[clinica];if(!d)return;
-  if(d.diasLancados!==undefined)return;
-  const diasLancados=d.dias||[];dadosLanc[k][clinica]={dias:{},diasLancados};
+  // Converte arrays para objetos (Firebase converte chaves numéricas para arrays)
+  if(Array.isArray(d.dias)){
+    const diasObj={};
+    d.dias.forEach((v,i)=>{if(v)diasObj[i]=v;});
+    dadosLanc[k][clinica].dias=diasObj;
+  }
+  if(!d.dias||typeof d.dias!=='object')dadosLanc[k][clinica].dias={};
+  if(Array.isArray(d.diasLancados)){
+    // já é array, ok
+  } else if(d.diasLancados!==undefined&&!Array.isArray(d.diasLancados)){
+    dadosLanc[k][clinica].diasLancados=[];
+  }
+  if(!d.diasLancados)dadosLanc[k][clinica].diasLancados=[];
 }
 
 function getTotais(cl,mes,ano){
@@ -1251,6 +1262,21 @@ async function salvarEdicaoDia(dia,clinica,mes,ano){
   if(!dadosLanc[k])dadosLanc[k]={};
   if(!dadosLanc[k][clinica])dadosLanc[k][clinica]={dias:{},diasLancados:[]};
   migrarEstrutura(k,clinica);
+
+  // Garante que dias é sempre objeto (Firebase pode converter para array)
+  if(Array.isArray(dadosLanc[k][clinica].dias)){
+    const diasObj={};
+    dadosLanc[k][clinica].dias.forEach((v,i)=>{if(v)diasObj[i]=v;});
+    dadosLanc[k][clinica].dias=diasObj;
+  }
+  if(!dadosLanc[k][clinica].dias||typeof dadosLanc[k][clinica].dias!=='object'){
+    dadosLanc[k][clinica].dias={};
+  }
+  // Garante que diasLancados é array
+  if(!Array.isArray(dadosLanc[k][clinica].diasLancados)){
+    dadosLanc[k][clinica].diasLancados=[];
+  }
+
   const valoresDia={};
   profs.forEach((p,i)=>{
     const e=parseInt(document.getElementById(`ed_${dia}_${i}_e`)?.value)||0;
