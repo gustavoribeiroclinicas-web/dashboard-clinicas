@@ -444,6 +444,28 @@ input:checked+.slider:before{transform:translateX(20px)}
       <span id="sheet-st" style="margin-left:8px"></span>
     </div>
   </div>
+
+  <!-- CONTAS A PAGAR -->
+  <div id="page-contas" class="page">
+    <div class="page-header">
+      <h2>Contas a pagar</h2>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <select class="sel" id="mes-contas" onchange="trocarMesContas()">
+          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+          <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+          <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+          <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+        <select class="sel" id="ano-contas" onchange="trocarMesContas()">
+          <option value="2025">2025</option><option value="2026" selected>2026</option>
+        </select>
+        <button class="btn btn-purple" id="btn-nova-conta" onclick="abrirModalConta()">+ Nova conta</button>
+      </div>
+    </div>
+    <div class="clinica-tabs" id="contas-clinica-tabs"></div>
+    <div id="contas-area"></div>
+  </div>
+
 </div>
 
 
@@ -1838,12 +1860,13 @@ window._fila = [];
 
 
 const agora=hoje();
-document.getElementById('mes-sel').value=agora.getMonth()+1;
-document.getElementById('mes-pag').value=agora.getMonth()+1;
-document.getElementById('mes-contas').value=agora.getMonth()+1;
-document.getElementById('ano-sel').value=agora.getFullYear();
-document.getElementById('ano-pag').value=agora.getFullYear();
-document.getElementById('ano-contas').value=agora.getFullYear();
+const _s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
+_s('mes-sel',agora.getMonth()+1);
+_s('mes-pag',agora.getMonth()+1);
+_s('mes-contas',agora.getMonth()+1);
+_s('ano-sel',agora.getFullYear());
+_s('ano-pag',agora.getFullYear());
+_s('ano-contas',agora.getFullYear());
 </script>
 </body>
 </html>
