@@ -335,6 +335,7 @@ input:checked+.slider:before{transform:translateX(20px)}
       <select class="sel" id="ano-pag" onchange="trocarMesPag()">
         <option value="2025">2025</option><option value="2026" selected>2026</option>
       </select>
+      <button class="btn" onclick="gerarPDF()" style="color:var(--red);border-color:var(--red-border);background:var(--red-bg)">📄 Exportar PDF</button>
     </div>
     <div id="pag-load" class="loading-msg" style="display:none">⏳ Carregando...</div>
     <div id="pag-body"></div>
@@ -449,6 +450,7 @@ function renderSenhasConfig(){ _exec('renderSenhasConfig',[]); }
 function exportarBackup(){ _exec('exportarBackup',[]); }
 function importarBackup(el){ _exec('importarBackup',[el]); }
 function initLancamento(c){ _exec('initLancamento',[c]); }
+function gerarPDF(){ _exec('gerarPDF',[]); }
 </script>
 
 <!-- Firebase -->
@@ -1422,7 +1424,129 @@ async function importarBackup(input){
 }
 window['_m_exportarBackup']=exportarBackup;window['_m_importarBackup']=importarBackup;
 
-// ── INIT ──────────────────────────────────────────────
+// ── EXPORTAR PDF ──────────────────────────────────────
+function gerarPDF(){
+  const mes=parseInt(document.getElementById('mes-pag').value);
+  const ano=parseInt(document.getElementById('ano-pag').value);
+  const vp=cfg.valP,vm=cfg.valM,imp=cfg.imp/100;
+  const nomeMes=MESES[mes-1];
+  let tgContado=0,tgPago=0;
+
+  // Monta HTML do PDF
+  let corpo='';
+  CLINICAS.forEach(cl=>{
+    const d=getTotais(cl,mes,ano);
+    if(!d.profs.length)return;
+    let tcContado=0,tcPago=0,linhas='';
+    d.profs.forEach(p=>{
+      const contado=p.total;
+      const editado=getPagEdit(mes,ano,cl,p.nome);
+      const pago=editado!==undefined?editado:contado;
+      const diff=pago-contado;
+      if(p.tipo==='psico'){
+        const br=pago*vp,iv=br*imp;
+        tcContado+=contado*vp;tcPago+=br;
+        linhas+=`<tr>
+          <td>${p.nome} <span class="tag psico">Psicóloga</span></td>
+          <td class="num">${contado}</td>
+          <td class="num">${pago}${diff!==0?` <span class="diff">(${diff})</span>`:''}</td>
+          <td class="num">${fmtN(br)}</td>
+          <td class="num imp">${fmtN(iv)} (${cfg.imp}%)</td>
+        </tr>`;
+      } else {
+        const br=pago*vm;
+        tcContado+=contado*vm;tcPago+=br;
+        linhas+=`<tr>
+          <td>${p.nome} <span class="tag med">Médica</span></td>
+          <td class="num">${contado}</td>
+          <td class="num">${pago}${diff!==0?` <span class="diff">(${diff})</span>`:''}</td>
+          <td class="num">${fmtN(br)}</td>
+          <td class="num">—</td>
+        </tr>`;
+      }
+    });
+    if(!linhas)return;
+    tgContado+=tcContado;tgPago+=tcPago;
+    const temDiff=Math.abs(tcPago-tcContado)>0.01;
+    corpo+=`
+      <div class="clinica">
+        <div class="clinica-header">
+          <span class="clinica-nome">${cl}</span>
+          <span class="clinica-total">Total a pagar: <strong>${fmtN(tcPago)}</strong>${temDiff?` <span class="contado">(contado: ${fmtN(tcContado)})</span>`:''}</span>
+        </div>
+        <table>
+          <thead><tr>
+            <th>Profissional</th>
+            <th class="num">Atend. contados</th>
+            <th class="num">Atend. pagos (DETRAN)</th>
+            <th class="num">Valor bruto</th>
+            <th class="num">Imposto (info)</th>
+          </tr></thead>
+          <tbody>${linhas}</tbody>
+        </table>
+      </div>`;
+  });
+
+  const temDiffGeral=Math.abs(tgPago-tgContado)>0.01;
+  const html=`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Pagamentos ${nomeMes} ${ano}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Arial,sans-serif;font-size:11px;color:#1a1a18;padding:24px}
+  h1{font-size:18px;font-weight:700;margin-bottom:4px}
+  .subtitulo{font-size:12px;color:#6b6b66;margin-bottom:20px}
+  .clinica{margin-bottom:20px;page-break-inside:avoid}
+  .clinica-header{display:flex;justify-content:space-between;align-items:baseline;background:#f5f4f0;padding:6px 10px;border-radius:6px 6px 0 0;border:1px solid #e0dfd8;border-bottom:none}
+  .clinica-nome{font-size:13px;font-weight:700}
+  .clinica-total{font-size:12px;color:#444}
+  .contado{font-size:10px;color:#888}
+  table{width:100%;border-collapse:collapse;border:1px solid #e0dfd8}
+  th{background:#efefeb;padding:6px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#6b6b66;border-bottom:1px solid #e0dfd8}
+  td{padding:7px 10px;border-bottom:1px solid #f0efe8;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:#fafaf8}
+  .num{text-align:right;font-family:'Courier New',monospace}
+  .tag{font-size:9px;font-weight:700;padding:1px 5px;border-radius:99px;margin-left:4px}
+  .tag.psico{background:#FBEAF0;color:#72243E}
+  .tag.med{background:#E6F1FB;color:#0C447C}
+  .imp{color:#a32d2d;font-size:10px}
+  .diff{color:#a32d2d;font-size:10px}
+  .total-geral{margin-top:24px;background:#3b6d11;color:#fff;padding:14px 20px;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
+  .total-geral-label{font-size:13px}
+  .total-geral-val{font-size:22px;font-weight:700;font-family:'Courier New',monospace}
+  .total-contado{font-size:10px;opacity:.75;margin-top:2px}
+  .rodape{margin-top:20px;font-size:10px;color:#888;text-align:center;border-top:1px solid #e0dfd8;padding-top:10px}
+  @media print{body{padding:12px}.clinica{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+  <h1>Relatório de Pagamentos</h1>
+  <div class="subtitulo">${nomeMes} de ${ano} — Gerado em ${new Date().toLocaleString('pt-BR')}</div>
+  ${corpo}
+  <div class="total-geral">
+    <div>
+      <div class="total-geral-label">Total geral a pagar — ${nomeMes} ${ano}</div>
+      ${temDiffGeral?`<div class="total-contado">Contado: ${fmtN(tgContado)}</div>`:''}
+    </div>
+    <div class="total-geral-val">${fmtN(tgPago)}</div>
+  </div>
+  <div class="rodape">Sistema de Clínicas — Documento gerado automaticamente</div>
+</body>
+</html>`;
+
+  // Abre em nova aba e dispara impressão/salvar como PDF
+  const janela=window.open('','_blank');
+  janela.document.write(html);
+  janela.document.close();
+  janela.focus();
+  setTimeout(()=>janela.print(),500);
+}
+
+function fmtN(v){return'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+window['_m_gerarPDF']=gerarPDF;
 // Registra todas as funções com prefixo e processa fila
 window['_m_setLoginTipo'] = setLoginTipo;
 window['_m_handleLoginGoogle'] = handleLoginGoogle;
@@ -1456,6 +1580,7 @@ window['_m_addSenha'] = addSenha;
 window['_m_renderSenhasConfig'] = renderSenhasConfig;
 window['_m_exportarBackup'] = exportarBackup;
 window['_m_importarBackup'] = importarBackup;
+window['_m_gerarPDF'] = gerarPDF;
 window['_m_initLancamento'] = initLancamento;
 window._pronto = true;
 (window._fila||[]).forEach(({fn,args})=>{ if(window['_m_'+fn]) window['_m_'+fn](...args); });
