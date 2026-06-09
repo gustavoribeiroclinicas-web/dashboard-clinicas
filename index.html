@@ -493,7 +493,7 @@ input:checked+.slider:before{transform:translateX(20px)}
         <select class="sel" id="ano-contas" onchange="trocarMesContas()">
           <option value="2025">2025</option><option value="2026" selected>2026</option>
         </select>
-        <button class="btn btn-purple" id="btn-nova-conta" onclick="abrirModalConta()">+ Nova conta</button>
+
       </div>
     </div>
     <div class="clinica-tabs" id="contas-clinica-tabs"></div>
@@ -1716,13 +1716,26 @@ function renderContasTabs(){
   const{k}=getContasMes();
   const hoje=new Date();hoje.setHours(0,0,0,0);
   const amanha=new Date(hoje);amanha.setDate(amanha.getDate()+1);
-  el.innerHTML=CLINICAS.map(cl=>{
-    const contas=Object.values(contasData[k]?.[cl]||{});
+  el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:1.25rem">`+
+  CLINICAS.map(cl=>{
+    const contas=Object.values(contasData[k]?.[cl]||{}).filter(c=>!c.padrao);
     const temV=contas.some(c=>!c.pago&&c.venc&&new Date(c.venc+'T00:00:00')<hoje);
     const temA=contas.some(c=>!c.pago&&c.venc&&new Date(c.venc+'T00:00:00').getTime()===amanha.getTime());
-    const cls=['ctab',cl===contasClinicaAtiva?'active':'',temV?'vencida':temA?'amanha':''].filter(Boolean).join(' ');
-    return`<button class="${cls}" onclick="selecionarClinicaContas('${cl}')">${cl}${temV?' ⚠':temA?' 🔔':''}</button>`;
-  }).join('');
+    const total=contas.reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
+    const isAtivo=cl===contasClinicaAtiva;
+    const bgAtivo='background:var(--purple,#534AB7);color:#fff;border-color:var(--purple,#534AB7)';
+    const bgVenc='background:#FCEBEB;color:#A32D2D;border-color:#F7C1C1';
+    const bgAmanha='background:#FAEEDA;color:#854F0B;border-color:#FAC775';
+    const bgNormal='background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-tertiary)';
+    const estilo=isAtivo?bgAtivo:temV?bgVenc:temA?bgAmanha:bgNormal;
+    const badge=temV?'<span style="font-size:9px;background:#A32D2D;color:#fff;border-radius:99px;padding:1px 5px;margin-left:4px">⚠</span>':temA?'<span style="font-size:9px;background:#854F0B;color:#fff;border-radius:99px;padding:1px 5px;margin-left:4px">!</span>':'';
+    const totalStr=total>0?`<div style="font-size:11px;margin-top:2px;font-family:var(--font-mono,monospace);opacity:.85">${fmt(total)}</div>`:'<div style="font-size:11px;margin-top:2px;opacity:.5">—</div>';
+    return`<button onclick="selecionarClinicaContas('${cl}')"
+      style="padding:10px 12px;border-radius:10px;border:1px solid;cursor:pointer;text-align:left;font-family:var(--font-sans,sans-serif);transition:all .15s;${estilo}">
+      <div style="font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:space-between">${cl}${badge}</div>
+      ${totalStr}
+    </button>`;
+  }).join('')+'</div>';
 }
 
 function selecionarClinicaContas(clinica){contasClinicaAtiva=clinica;renderContasTabs();renderContasTabela();}
@@ -1753,7 +1766,7 @@ function renderContasTabela(){
 
   const icones={'Copel':'ti-bolt','Sanepar':'ti-droplet','Internet':'ti-wifi','Aluguel':'ti-building','Diarista':'ti-user','CIEE':'ti-certificate','Sapiens':'ti-device-desktop','Pedido de Material':'ti-shopping-cart'};
 
-  const rows=contas.map(c=>{
+  const rows=contas.map((c,idx)=>{
     const vd=c.venc?new Date(c.venc+'T00:00:00'):null;
     const isV=vd&&vd<hoje&&!c.pago;
     const isA=vd&&vd.getTime()===amanha.getTime()&&!c.pago;
@@ -1775,7 +1788,8 @@ function renderContasTabela(){
     const toggleBtn=!c.padrao
       ?`<button onclick="togglePagoConta('${c.id}')" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:99px;${sCls};cursor:pointer;font-family:var(--font-sans);white-space:nowrap">${sTxt}</button>`
       :`<span style="color:var(--color-text-secondary);font-size:12px">—</span>`;
-    return`<tr>
+    const rowBg=idx%2===0?'var(--color-background-primary)':'var(--color-background-secondary)';
+    return`<tr style="background:${rowBg}">
       <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);font-weight:500;color:var(--color-text-primary)"><i class="ti ${icon}" style="font-size:15px;vertical-align:-2px;margin-right:6px;color:var(--color-text-secondary)" aria-hidden="true"></i>${c.desc||'—'}</td>
       <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);${vencStyle}">${vStr}</td>
       <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-family:var(--font-mono);color:var(--color-text-primary)">${valStr}</td>
@@ -1786,10 +1800,13 @@ function renderContasTabela(){
     </tr>`;
   }).join('');
 
-  area.innerHTML=`<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden">
-    <div style="padding:.85rem 1.25rem;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:14px;font-weight:500;color:var(--color-text-primary)">${contasClinicaAtiva} — ${MESES[mes-1]} ${ano}</span>
-      <span style="font-size:12px;color:var(--color-text-secondary)">${contas.filter(c=>!c.padrao).length} conta(s) cadastrada(s)</span>
+  area.innerHTML=`<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+    <div style="padding:1rem 1.25rem;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div>
+        <div style="font-size:15px;font-weight:500;color:var(--color-text-primary)">${contasClinicaAtiva}</div>
+        <div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px">${MESES[mes-1]} ${ano} · ${contas.filter(c=>!c.padrao).length} conta(s) cadastrada(s)</div>
+      </div>
+      <button onclick="abrirModalConta()" style="font-size:12px;padding:6px 14px;border-radius:99px;background:var(--purple,#534AB7);color:#fff;border:none;cursor:pointer;font-family:var(--font-sans,sans-serif);font-weight:500">+ Nova conta</button>
     </div>
     <div style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed">
@@ -1808,8 +1825,9 @@ function renderContasTabela(){
         <tbody>${rows}</tbody>
       </table>
     </div>
-    <div style="padding:10px 14px;background:var(--color-background-secondary);border-top:0.5px solid var(--color-border-tertiary);display:flex;justify-content:flex-end;align-items:center;font-size:13px">
-      <span style="color:var(--color-text-secondary)">Total: <strong style="color:var(--color-text-primary);font-family:var(--font-mono)">${fmt(totalG)}</strong></span>
+    <div style="padding:12px 1.25rem;background:var(--color-background-secondary);border-top:0.5px solid var(--color-border-tertiary);display:flex;justify-content:flex-end;align-items:center;gap:1rem;font-size:13px">
+      <span style="color:var(--color-text-secondary)">Total do mês:</span>
+      <span style="font-size:16px;font-weight:500;font-family:var(--font-mono,monospace);color:var(--color-text-primary)">${fmt(totalG)}</span>
     </div>
   </div>`;
 }
