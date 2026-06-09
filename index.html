@@ -557,6 +557,7 @@ function trocarMesContas(){ _exec('trocarMesContas',[]); }
 function selecionarClinicaContas(c){ _exec('selecionarClinicaContas',[c]); }
 function togglePagoConta(id){ _exec('togglePagoConta',[id]); }
 function abrirModalConta(c){ _exec('abrirModalConta',[c]); }
+function abrirModalContaDescricao(d){ _exec('abrirModalContaDescricao',[d]); }
 function fecharModalConta(){ _exec('fecharModalConta',[]); }
 function editarConta(id){ _exec('editarConta',[id]); }
 function handleArquivoConta(el){ _exec('handleArquivoConta',[el]); }
@@ -1731,46 +1732,84 @@ function renderContasTabela(){
   const area=document.getElementById('contas-area');if(!area)return;
   const{k,mes,ano}=getContasMes();
   const contasObj=contasData[k]?.[contasClinicaAtiva]||{};
+
+  // Itens padrão — garante que aparecem sempre
+  const PADRAO=['Copel','Sanepar','Internet','Aluguel','Diarista','CIEE','Sapiens','Pedido de Material'];
   const contas=Object.entries(contasObj).map(([id,c])=>({...c,id}));
+  const nomesExist=new Set(contas.map(c=>c.desc));
+  PADRAO.forEach(nome=>{
+    if(!nomesExist.has(nome)) contas.push({id:'padrao_'+nome.replace(/\s/g,'_'),desc:nome,venc:'',valor:'',arquivo:'',arquivoNome:'',obs:'',pago:false,padrao:true});
+  });
+  contas.sort((a,b)=>{
+    const ia=PADRAO.indexOf(a.desc),ib=PADRAO.indexOf(b.desc);
+    if(ia>=0&&ib>=0)return ia-ib;
+    if(ia>=0)return -1;if(ib>=0)return 1;
+    return (a.desc||'').localeCompare(b.desc||'');
+  });
+
   const hoje=new Date();hoje.setHours(0,0,0,0);
   const amanha=new Date(hoje);amanha.setDate(amanha.getDate()+1);
-  contas.sort((a,b)=>{if(a.pago!==b.pago)return a.pago?1:-1;return new Date(a.venc||'9999')-new Date(b.venc||'9999');});
-  const totalP=contas.filter(c=>!c.pago).reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
-  const totalG=contas.reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
-  let rows='';
-  if(!contas.length){
-    rows=`<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--muted)">Nenhuma conta para ${MESES[mes-1]}/${ano}</td></tr>`;
-  }else{
-    rows=contas.map(c=>{
-      const vd=c.venc?new Date(c.venc+'T00:00:00'):null;
-      const isV=vd&&vd<hoje&&!c.pago;const isA=vd&&vd.getTime()===amanha.getTime()&&!c.pago;
-      const vStr=vd?vd.toLocaleDateString('pt-BR'):'—';
-      const valStr=c.valor?fmt(parseFloat(c.valor)):'—';
-      let sCls='pendente',sTxt='○ Pendente';
-      if(c.pago){sCls='pago';sTxt='✓ Pago';}
-      else if(isV){sCls='vencida-s';sTxt='⚠ Vencida';}
-      else if(isA){sCls='amanha-s';sTxt='🔔 Amanhã';}
-      const arqHtml=c.arquivo?`<a class="btn-pdf-link" href="${c.arquivo}" download="${c.arquivoNome||'arquivo'}" target="_blank">📄 ${(c.arquivoNome||'Ver').substring(0,15)}</a>`:'<span style="color:var(--hint);font-size:12px">—</span>';
-      const editBtn=perfilAtual==='gestor'?`<button class="btn btn-sm" onclick="editarConta('${c.id}')" style="padding:4px 8px;font-size:11px">✏️</button>`:'';
-      return`<tr class="${c.pago?'pago-row':''}">
-        <td style="font-weight:500">${c.desc||'—'}</td>
-        <td style="${isV?'color:var(--red);font-weight:600':isA?'color:var(--amber);font-weight:600':''}">${vStr}</td>
-        <td style="font-family:monospace">${valStr}</td>
-        <td>${arqHtml}</td>
-        <td style="max-width:120px;color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.obs||''}">${c.obs||'—'}</td>
-        <td><button class="status-pago ${sCls}" onclick="togglePagoConta('${c.id}')">${sTxt}</button></td>
-        <td>${editBtn}</td>
-      </tr>`;
-    }).join('');
-  }
-  area.innerHTML=`<div class="contas-table-wrap">
-    <div class="contas-toolbar"><span class="contas-toolbar-title">${contasClinicaAtiva} — ${MESES[mes-1]} ${ano}</span><span style="font-size:12px;color:var(--muted)">${contas.length} conta(s)</span></div>
-    <div style="overflow-x:auto"><table class="ctable"><thead><tr>
-      <th>Descrição</th><th>Vencimento</th><th>Valor</th><th>Arquivo</th><th>Observação</th><th>Status</th><th></th>
-    </tr></thead><tbody>${rows}</tbody></table></div>
-    <div class="soma-contas">
-      <span>Pendente: <span class="soma-val" style="color:var(--red)">${fmt(totalP)}</span></span>
-      <span>Total: <span class="soma-val">${fmt(totalG)}</span></span>
+  const totalG=contas.filter(c=>!c.padrao&&c.valor).reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
+
+  const icones={'Copel':'ti-bolt','Sanepar':'ti-droplet','Internet':'ti-wifi','Aluguel':'ti-building','Diarista':'ti-user','CIEE':'ti-certificate','Sapiens':'ti-device-desktop','Pedido de Material':'ti-shopping-cart'};
+
+  const rows=contas.map(c=>{
+    const vd=c.venc?new Date(c.venc+'T00:00:00'):null;
+    const isV=vd&&vd<hoje&&!c.pago;
+    const isA=vd&&vd.getTime()===amanha.getTime()&&!c.pago;
+    const vStr=vd?vd.toLocaleDateString('pt-BR'):'—';
+    const valStr=c.valor?fmt(parseFloat(c.valor)):'—';
+    let sCls,sTxt;
+    if(c.pago){sCls='background:#EAF3DE;color:#3B6D11;border:0.5px solid #C0DD97';sTxt='✓ Pago';}
+    else if(isV){sCls='background:#FCEBEB;color:#A32D2D;border:0.5px solid #F7C1C1';sTxt='⚠ Vencida';}
+    else if(isA){sCls='background:#FAEEDA;color:#854F0B;border:0.5px solid #FAC775';sTxt='🔔 Amanhã';}
+    else{sCls='background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)';sTxt='○ Pendente';}
+    const arqHtml=c.arquivo
+      ?`<a href="${c.arquivo}" download="${c.arquivoNome||'arquivo'}" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:99px;background:#E6F1FB;color:#0C447C;font-weight:500;text-decoration:none">📄 ${(c.arquivoNome||'Ver').substring(0,12)}</a>`
+      :'<span style="color:var(--color-text-secondary);font-size:12px">—</span>';
+    const icon=icones[c.desc]||'ti-receipt';
+    const vencStyle=isV?'color:#A32D2D;font-weight:500':isA?'color:#854F0B;font-weight:500':'color:var(--color-text-primary)';
+    const editBtn=c.padrao
+      ?`<button onclick="abrirModalContaDescricao('${c.desc}')" style="background:none;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;color:var(--color-text-secondary);font-size:12px;padding:3px 8px">+ Preencher</button>`
+      :`<button onclick="editarConta('${c.id}')" style="background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:15px">✏️</button>`;
+    const toggleBtn=!c.padrao
+      ?`<button onclick="togglePagoConta('${c.id}')" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:99px;${sCls};cursor:pointer;font-family:var(--font-sans);white-space:nowrap">${sTxt}</button>`
+      :`<span style="color:var(--color-text-secondary);font-size:12px">—</span>`;
+    return`<tr>
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);font-weight:500;color:var(--color-text-primary)"><i class="ti ${icon}" style="font-size:15px;vertical-align:-2px;margin-right:6px;color:var(--color-text-secondary)" aria-hidden="true"></i>${c.desc||'—'}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);${vencStyle}">${vStr}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-family:var(--font-mono);color:var(--color-text-primary)">${valStr}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary)">${arqHtml}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:center">${toggleBtn}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.obs||''}">${c.obs||'—'}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:center">${editBtn}</td>
+    </tr>`;
+  }).join('');
+
+  area.innerHTML=`<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden">
+    <div style="padding:.85rem 1.25rem;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:14px;font-weight:500;color:var(--color-text-primary)">${contasClinicaAtiva} — ${MESES[mes-1]} ${ano}</span>
+      <span style="font-size:12px;color:var(--color-text-secondary)">${contas.filter(c=>!c.padrao).length} conta(s) cadastrada(s)</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed">
+        <colgroup><col style="width:20%"><col style="width:13%"><col style="width:12%"><col style="width:15%"><col style="width:13%"><col style="width:18%"><col style="width:9%"></colgroup>
+        <thead>
+          <tr style="background:var(--color-background-secondary)">
+            <th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Descrição</th>
+            <th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Vencimento</th>
+            <th style="padding:8px 14px;text-align:right;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Valor</th>
+            <th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Arquivo</th>
+            <th style="padding:8px 14px;text-align:center;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Status</th>
+            <th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Observação</th>
+            <th style="padding:8px 14px;border-bottom:0.5px solid var(--color-border-tertiary)"></th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div style="padding:10px 14px;background:var(--color-background-secondary);border-top:0.5px solid var(--color-border-tertiary);display:flex;justify-content:flex-end;align-items:center;font-size:13px">
+      <span style="color:var(--color-text-secondary)">Total: <strong style="color:var(--color-text-primary);font-family:var(--font-mono)">${fmt(totalG)}</strong></span>
     </div>
   </div>`;
 }
@@ -1802,6 +1841,15 @@ function abrirModalConta(clinica){
   m.style.display='flex';
 }
 window['_m_abrirModalConta']=abrirModalConta;
+
+function abrirModalContaDescricao(desc){
+  abrirModalConta(contasClinicaAtiva);
+  setTimeout(()=>{
+    const el=document.getElementById('conta-desc');
+    if(el)el.value=desc;
+  },50);
+}
+window['_m_abrirModalContaDescricao']=abrirModalContaDescricao;
 
 function fecharModalConta(){document.getElementById('modal-conta').style.display='none';}
 window['_m_fecharModalConta']=fecharModalConta;
