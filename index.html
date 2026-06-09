@@ -216,6 +216,51 @@ input:checked+.slider:before{transform:translateX(20px)}
 </head>
 <body>
 
+
+<!-- MODAL CONTA -->
+<div id="modal-conta" class="conta-overlay" style="display:none" onclick="if(event.target===this)fecharModalConta()">
+  <div class="conta-modal">
+    <div class="conta-modal-header">
+      <span style="font-size:15px;font-weight:600" id="modal-conta-titulo">Nova conta</span>
+      <button class="modal-close" onclick="fecharModalConta()">×</button>
+    </div>
+    <div class="conta-modal-body">
+      <input type="hidden" id="conta-id">
+      <input type="hidden" id="conta-clinica-hidden">
+      <div class="cfg">
+        <label>Descrição</label>
+        <input type="text" id="conta-desc" placeholder="Ex: Aluguel, Copel, Sanepar...">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="cfg">
+          <label>Vencimento</label>
+          <input type="date" id="conta-venc">
+        </div>
+        <div class="cfg">
+          <label>Valor (R$)</label>
+          <input type="number" id="conta-valor" placeholder="0,00" min="0" step="0.01">
+        </div>
+      </div>
+      <div class="cfg">
+        <label>Arquivo (PDF ou imagem)</label>
+        <div class="upload-area" onclick="document.getElementById('conta-arquivo-input').click()">
+          <input type="file" id="conta-arquivo-input" accept=".pdf,image/*" style="display:none" onchange="handleArquivoConta(this)">
+          <div style="font-size:13px;color:var(--muted)">📎 Clique para anexar</div>
+          <div class="upload-preview" id="upload-preview-conta" style="display:none"></div>
+        </div>
+      </div>
+      <div class="cfg">
+        <label>Observação</label>
+        <textarea id="conta-obs" placeholder="Informações adicionais..."></textarea>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn btn-purple" style="flex:1;justify-content:center" onclick="salvarConta()">Salvar</button>
+        <button class="btn" id="btn-excluir-conta" style="color:var(--red);border-color:var(--red-border);display:none" onclick="excluirConta()">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL EDIÇÃO DIAS -->
 <div id="modal-edicao" class="modal-overlay" style="display:none" onclick="if(event.target===this)fecharModal()">
   <div class="modal">
@@ -282,6 +327,7 @@ input:checked+.slider:before{transform:translateX(20px)}
     <div class="nav-tab" id="tab-pag" onclick="showPage('pagamentos',this)">Pagamentos</div>
     <div class="nav-tab" id="tab-lanc" onclick="showPage('lancamento',this)">Lançamento</div>
     <div class="nav-tab" id="tab-cfg" onclick="showPage('config',this)">Configurações</div>
+    <div class="nav-tab" id="tab-contas" onclick="showPage('contas',this)">Contas</div>
     <div class="topbar-right">
       <div class="user-chip" id="user-chip"></div>
       <button class="btn btn-sm" onclick="sair()">Sair</button>
@@ -451,6 +497,15 @@ function exportarBackup(){ _exec('exportarBackup',[]); }
 function importarBackup(el){ _exec('importarBackup',[el]); }
 function initLancamento(c){ _exec('initLancamento',[c]); }
 function gerarPDF(){ _exec('gerarPDF',[]); }
+function trocarMesContas(){ _exec('trocarMesContas',[]); }
+function selecionarClinicaContas(c){ _exec('selecionarClinicaContas',[c]); }
+function togglePagoConta(id){ _exec('togglePagoConta',[id]); }
+function abrirModalConta(c){ _exec('abrirModalConta',[c]); }
+function fecharModalConta(){ _exec('fecharModalConta',[]); }
+function editarConta(id){ _exec('editarConta',[id]); }
+function handleArquivoConta(el){ _exec('handleArquivoConta',[el]); }
+function salvarConta(){ _exec('salvarConta',[]); }
+function excluirConta(){ _exec('excluirConta',[]); }
 </script>
 
 <!-- Firebase -->
@@ -614,7 +669,7 @@ function iniciarGestor() {
   document.getElementById('tela-login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-chip').textContent = '👤 Gestor';
-  ['tab-dash','tab-pag','tab-lanc','tab-cfg'].forEach(id => document.getElementById(id).style.display = '');
+  ['tab-dash','tab-pag','tab-lanc','tab-cfg','tab-contas'].forEach(id => document.getElementById(id).style.display = '');
   initConfig();
   const agora = hoje();
   document.getElementById('mes-sel').value = agora.getMonth()+1;
@@ -630,7 +685,7 @@ function iniciarContabilidade() {
   document.getElementById('tela-login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-chip').textContent = '📊 Contabilidade';
-  ['tab-dash','tab-lanc','tab-cfg'].forEach(id => document.getElementById(id).style.display = 'none');
+  ['tab-dash','tab-lanc','tab-cfg','tab-contas'].forEach(id => document.getElementById(id).style.display = 'none');
   document.getElementById('tab-pag').style.display = '';
   const agora = hoje();
   document.getElementById('mes-pag').value = agora.getMonth()+1;
@@ -643,7 +698,7 @@ function iniciarRecepcao(clinica) {
   document.getElementById('tela-login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-chip').textContent = '🏥 ' + clinica;
-  ['tab-dash','tab-pag','tab-cfg'].forEach(id => document.getElementById(id).style.display = 'none');
+  ['tab-dash','tab-pag','tab-cfg','tab-contas'].forEach(id => document.getElementById(id).style.display = 'none');
   document.getElementById('tab-lanc').style.display = '';
   showPage('lancamento', document.getElementById('tab-lanc'));
   initLancamento(clinica);
@@ -1060,8 +1115,13 @@ function renderAlertas(){
     const faltando=uteis.filter(d=>!lancados.includes(d));
     if(faltando.length)problemas.push(`<strong>${cl}</strong>: ${faltando.map(d=>'dia '+d).join(', ')}`);
   });
+  // Alertas de contas
+  let contasAlertas = {vencidas:[], proximas:[]};
+  try { contasAlertas = renderAlertasContas() || {vencidas:[],proximas:[]}; } catch(e){}
   let html='';
   if(problemas.length)html+=`<div class="alerta-box aviso"><span style="font-size:16px">⚠️</span><span><strong>Dias sem lançamento:</strong><br>${problemas.join('<br>')}</span></div>`;
+  if(contasAlertas.vencidas?.length) html+=`<div class="alerta-box erro"><span style="font-size:16px">🔴</span><span><strong>Contas vencidas:</strong><br>${contasAlertas.vencidas.join('<br>')}</span></div>`;
+  if(contasAlertas.proximas?.length) html+=`<div class="alerta-box aviso"><span style="font-size:16px">🟡</span><span><strong>Vencem amanhã:</strong><br>${contasAlertas.proximas.join('<br>')}</span></div>`;
   if(!html)html=`<div class="alerta-box ok"><span>✅</span><span>Todos os lançamentos em dia!</span></div>`;
   area.innerHTML=html;
 }
@@ -1188,6 +1248,9 @@ function renderDiasEdicao(){
   if(!clinica){lista.innerHTML='';return;}
   const agora=hoje();
   const lancados=getDiasLancados(clinica,mes,ano);
+  // Alertas de contas
+  let contasAlertas = {vencidas:[], proximas:[]};
+  try { contasAlertas = renderAlertasContas() || {vencidas:[],proximas:[]}; } catch(e){}
   let html='';const totalDias=new Date(ano,mes,0).getDate();
   for(let d=1;d<=totalDias;d++){
     const data=new Date(ano,mes-1,d);
@@ -1547,6 +1610,193 @@ function gerarPDF(){
 
 function fmtN(v){return'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 window['_m_gerarPDF']=gerarPDF;
+
+// ── CONTAS A PAGAR ────────────────────────────────────
+let contasData = {};
+let contasClinicaAtiva = CLINICAS[0];
+let contaArquivoBase64 = '';
+let contaArquivoNome = '';
+
+async function initContas(){
+  const mes=parseInt(document.getElementById('mes-contas').value);
+  const ano=parseInt(document.getElementById('ano-contas').value);
+  await carregarContas(mes,ano);
+  renderContasTabs();
+  renderContasTabela();
+  const btn=document.getElementById('btn-nova-conta');
+  if(btn)btn.style.display=perfilAtual==='gestor'?'inline-flex':'none';
+}
+window['_m_initContas']=initContas;
+
+async function carregarContas(mes,ano){
+  const k=chave(mes,ano);
+  const data=await dbGet('contas/'+k);
+  contasData[k]=data||{};
+}
+
+async function salvarContasDB(mes,ano){
+  const k=chave(mes,ano);
+  await dbSet('contas/'+k,contasData[k]||{});
+}
+
+async function trocarMesContas(){
+  const mes=parseInt(document.getElementById('mes-contas').value);
+  const ano=parseInt(document.getElementById('ano-contas').value);
+  await carregarContas(mes,ano);
+  renderContasTabs();
+  renderContasTabela();
+}
+window['_m_trocarMesContas']=trocarMesContas;
+
+function getContasMes(){
+  const mes=parseInt(document.getElementById('mes-contas').value);
+  const ano=parseInt(document.getElementById('ano-contas').value);
+  return{k:chave(mes,ano),mes,ano};
+}
+
+function renderContasTabs(){
+  const el=document.getElementById('contas-clinica-tabs');if(!el)return;
+  const{k}=getContasMes();
+  const hoje=new Date();hoje.setHours(0,0,0,0);
+  const amanha=new Date(hoje);amanha.setDate(amanha.getDate()+1);
+  el.innerHTML=CLINICAS.map(cl=>{
+    const contas=Object.values(contasData[k]?.[cl]||{});
+    const temV=contas.some(c=>!c.pago&&c.venc&&new Date(c.venc+'T00:00:00')<hoje);
+    const temA=contas.some(c=>!c.pago&&c.venc&&new Date(c.venc+'T00:00:00').getTime()===amanha.getTime());
+    const cls=['ctab',cl===contasClinicaAtiva?'active':'',temV?'vencida':temA?'amanha':''].filter(Boolean).join(' ');
+    return`<button class="${cls}" onclick="selecionarClinicaContas('${cl}')">${cl}${temV?' ⚠':temA?' 🔔':''}</button>`;
+  }).join('');
+}
+
+function selecionarClinicaContas(clinica){contasClinicaAtiva=clinica;renderContasTabs();renderContasTabela();}
+window['_m_selecionarClinicaContas']=selecionarClinicaContas;
+
+function renderContasTabela(){
+  const area=document.getElementById('contas-area');if(!area)return;
+  const{k,mes,ano}=getContasMes();
+  const contasObj=contasData[k]?.[contasClinicaAtiva]||{};
+  const contas=Object.entries(contasObj).map(([id,c])=>({...c,id}));
+  const hoje=new Date();hoje.setHours(0,0,0,0);
+  const amanha=new Date(hoje);amanha.setDate(amanha.getDate()+1);
+  contas.sort((a,b)=>{if(a.pago!==b.pago)return a.pago?1:-1;return new Date(a.venc||'9999')-new Date(b.venc||'9999');});
+  const totalP=contas.filter(c=>!c.pago).reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
+  const totalG=contas.reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
+  let rows='';
+  if(!contas.length){
+    rows=`<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--muted)">Nenhuma conta para ${MESES[mes-1]}/${ano}</td></tr>`;
+  }else{
+    rows=contas.map(c=>{
+      const vd=c.venc?new Date(c.venc+'T00:00:00'):null;
+      const isV=vd&&vd<hoje&&!c.pago;const isA=vd&&vd.getTime()===amanha.getTime()&&!c.pago;
+      const vStr=vd?vd.toLocaleDateString('pt-BR'):'—';
+      const valStr=c.valor?fmt(parseFloat(c.valor)):'—';
+      let sCls='pendente',sTxt='○ Pendente';
+      if(c.pago){sCls='pago';sTxt='✓ Pago';}
+      else if(isV){sCls='vencida-s';sTxt='⚠ Vencida';}
+      else if(isA){sCls='amanha-s';sTxt='🔔 Amanhã';}
+      const arqHtml=c.arquivo?`<a class="btn-pdf-link" href="${c.arquivo}" download="${c.arquivoNome||'arquivo'}" target="_blank">📄 ${(c.arquivoNome||'Ver').substring(0,15)}</a>`:'<span style="color:var(--hint);font-size:12px">—</span>';
+      const editBtn=perfilAtual==='gestor'?`<button class="btn btn-sm" onclick="editarConta('${c.id}')" style="padding:4px 8px;font-size:11px">✏️</button>`:'';
+      return`<tr class="${c.pago?'pago-row':''}">
+        <td style="font-weight:500">${c.desc||'—'}</td>
+        <td style="${isV?'color:var(--red);font-weight:600':isA?'color:var(--amber);font-weight:600':''}">${vStr}</td>
+        <td style="font-family:monospace">${valStr}</td>
+        <td>${arqHtml}</td>
+        <td style="max-width:120px;color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.obs||''}">${c.obs||'—'}</td>
+        <td><button class="status-pago ${sCls}" onclick="togglePagoConta('${c.id}')">${sTxt}</button></td>
+        <td>${editBtn}</td>
+      </tr>`;
+    }).join('');
+  }
+  area.innerHTML=`<div class="contas-table-wrap">
+    <div class="contas-toolbar"><span class="contas-toolbar-title">${contasClinicaAtiva} — ${MESES[mes-1]} ${ano}</span><span style="font-size:12px;color:var(--muted)">${contas.length} conta(s)</span></div>
+    <div style="overflow-x:auto"><table class="ctable"><thead><tr>
+      <th>Descrição</th><th>Vencimento</th><th>Valor</th><th>Arquivo</th><th>Observação</th><th>Status</th><th></th>
+    </tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="soma-contas">
+      <span>Pendente: <span class="soma-val" style="color:var(--red)">${fmt(totalP)}</span></span>
+      <span>Total: <span class="soma-val">${fmt(totalG)}</span></span>
+    </div>
+  </div>`;
+}
+
+async function togglePagoConta(id){
+  const{k,mes,ano}=getContasMes();
+  if(!contasData[k]?.[contasClinicaAtiva]?.[id])return;
+  const c=contasData[k][contasClinicaAtiva][id];
+  c.pago=!c.pago;c.dataPago=c.pago?new Date().toLocaleDateString('pt-BR'):null;
+  await salvarContasDB(mes,ano);renderContasTabela();renderContasTabs();
+}
+window['_m_togglePagoConta']=togglePagoConta;
+
+function abrirModalConta(clinica){
+  contaArquivoBase64='';contaArquivoNome='';
+  document.getElementById('conta-id').value='';
+  document.getElementById('conta-clinica-hidden').value=clinica||contasClinicaAtiva;
+  document.getElementById('conta-desc').value='';
+  document.getElementById('conta-venc').value='';
+  document.getElementById('conta-valor').value='';
+  document.getElementById('conta-obs').value='';
+  document.getElementById('upload-preview-conta').style.display='none';
+  document.getElementById('modal-conta-titulo').textContent='Nova conta — '+(clinica||contasClinicaAtiva);
+  document.getElementById('btn-excluir-conta').style.display='none';
+  document.getElementById('modal-conta').style.display='flex';
+}
+window['_m_abrirModalConta']=abrirModalConta;
+
+function fecharModalConta(){document.getElementById('modal-conta').style.display='none';}
+window['_m_fecharModalConta']=fecharModalConta;
+
+function editarConta(id){
+  const{k}=getContasMes();const c=contasData[k]?.[contasClinicaAtiva]?.[id];if(!c)return;
+  contaArquivoBase64=c.arquivo||'';contaArquivoNome=c.arquivoNome||'';
+  document.getElementById('conta-id').value=id;
+  document.getElementById('conta-clinica-hidden').value=contasClinicaAtiva;
+  document.getElementById('conta-desc').value=c.desc||'';
+  document.getElementById('conta-venc').value=c.venc||'';
+  document.getElementById('conta-valor').value=c.valor||'';
+  document.getElementById('conta-obs').value=c.obs||'';
+  if(c.arquivoNome){const p=document.getElementById('upload-preview-conta');p.style.display='block';p.textContent='📎 '+c.arquivoNome;}
+  document.getElementById('modal-conta-titulo').textContent='Editar conta — '+contasClinicaAtiva;
+  document.getElementById('btn-excluir-conta').style.display='inline-flex';
+  document.getElementById('modal-conta').style.display='flex';
+}
+window['_m_editarConta']=editarConta;
+
+function handleArquivoConta(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>5*1024*1024){alert('Máximo 5MB.');return;}
+  contaArquivoNome=file.name;
+  const r=new FileReader();
+  r.onload=e=>{contaArquivoBase64=e.target.result;const p=document.getElementById('upload-preview-conta');p.style.display='block';p.textContent='📎 '+file.name;};
+  r.readAsDataURL(file);
+}
+window['_m_handleArquivoConta']=handleArquivoConta;
+
+async function salvarConta(){
+  const desc=document.getElementById('conta-desc').value.trim();if(!desc){alert('Digite a descrição.');return;}
+  const{k,mes,ano}=getContasMes();
+  const clinica=document.getElementById('conta-clinica-hidden').value||contasClinicaAtiva;
+  const idExist=document.getElementById('conta-id').value;
+  const id=idExist||'c_'+Date.now();
+  const venc=document.getElementById('conta-venc').value;
+  const valor=parseFloat(document.getElementById('conta-valor').value.replace(',','.'))||0;
+  const obs=document.getElementById('conta-obs').value.trim();
+  if(!contasData[k])contasData[k]={};if(!contasData[k][clinica])contasData[k][clinica]={};
+  const exist=contasData[k][clinica][idExist]||{};
+  contasData[k][clinica][id]={desc,venc,valor,obs,arquivo:contaArquivoBase64||exist.arquivo||'',arquivoNome:contaArquivoNome||exist.arquivoNome||'',pago:exist.pago||false,dataPago:exist.dataPago||null,criadoEm:exist.criadoEm||new Date().toLocaleDateString('pt-BR')};
+  fecharModalConta();await salvarContasDB(mes,ano);renderContasTabela();renderContasTabs();
+}
+window['_m_salvarConta']=salvarConta;
+
+async function excluirConta(){
+  if(!confirm('Excluir esta conta?'))return;
+  const{k,mes,ano}=getContasMes();
+  const id=document.getElementById('conta-id').value;
+  const clinica=document.getElementById('conta-clinica-hidden').value;
+  if(contasData[k]?.[clinica]?.[id])delete contasData[k][clinica][id];
+  fecharModalConta();await salvarContasDB(mes,ano);renderContasTabela();renderContasTabs();
+}
+window['_m_excluirConta']=excluirConta;
 // Registra todas as funções com prefixo e processa fila
 window['_m_setLoginTipo'] = setLoginTipo;
 window['_m_handleLoginGoogle'] = handleLoginGoogle;
@@ -1590,8 +1840,10 @@ window._fila = [];
 const agora=hoje();
 document.getElementById('mes-sel').value=agora.getMonth()+1;
 document.getElementById('mes-pag').value=agora.getMonth()+1;
+document.getElementById('mes-contas').value=agora.getMonth()+1;
 document.getElementById('ano-sel').value=agora.getFullYear();
 document.getElementById('ano-pag').value=agora.getFullYear();
+document.getElementById('ano-contas').value=agora.getFullYear();
 </script>
 </body>
 </html>
