@@ -217,50 +217,6 @@ input:checked+.slider:before{transform:translateX(20px)}
 <body>
 
 
-<!-- MODAL CONTA -->
-<div id="modal-conta" class="conta-overlay" style="display:none" onclick="if(event.target===this)fecharModalConta()">
-  <div class="conta-modal">
-    <div class="conta-modal-header">
-      <span style="font-size:15px;font-weight:600" id="modal-conta-titulo">Nova conta</span>
-      <button class="modal-close" onclick="fecharModalConta()">×</button>
-    </div>
-    <div class="conta-modal-body">
-      <input type="hidden" id="conta-id">
-      <input type="hidden" id="conta-clinica-hidden">
-      <div class="cfg">
-        <label>Descrição</label>
-        <input type="text" id="conta-desc" placeholder="Ex: Aluguel, Copel, Sanepar...">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="cfg">
-          <label>Vencimento</label>
-          <input type="date" id="conta-venc">
-        </div>
-        <div class="cfg">
-          <label>Valor (R$)</label>
-          <input type="number" id="conta-valor" placeholder="0,00" min="0" step="0.01">
-        </div>
-      </div>
-      <div class="cfg">
-        <label>Arquivo (PDF ou imagem)</label>
-        <div class="upload-area" onclick="document.getElementById('conta-arquivo-input').click()">
-          <input type="file" id="conta-arquivo-input" accept=".pdf,image/*" style="display:none" onchange="handleArquivoConta(this)">
-          <div style="font-size:13px;color:var(--muted)">📎 Clique para anexar</div>
-          <div class="upload-preview" id="upload-preview-conta" style="display:none"></div>
-        </div>
-      </div>
-      <div class="cfg">
-        <label>Observação</label>
-        <textarea id="conta-obs" placeholder="Informações adicionais..."></textarea>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:4px">
-        <button class="btn btn-purple" style="flex:1;justify-content:center" onclick="salvarConta()">Salvar</button>
-        <button class="btn" id="btn-excluir-conta" style="color:var(--red);border-color:var(--red-border);display:none" onclick="excluirConta()">Excluir</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- MODAL EDIÇÃO DIAS -->
 <div id="modal-edicao" class="modal-overlay" style="display:none" onclick="if(event.target===this)fecharModal()">
   <div class="modal">
@@ -444,6 +400,84 @@ input:checked+.slider:before{transform:translateX(20px)}
       <span id="sheet-st" style="margin-left:8px"></span>
     </div>
   </div>
+
+
+<!-- MODAL CONTA A PAGAR -->
+<div id="modal-conta" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem" onclick="if(event.target===this)fecharModalConta()">
+  <div style="background:var(--surface);border-radius:var(--radius);max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)">
+    <div style="padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1">
+      <span style="font-size:15px;font-weight:600" id="modal-conta-titulo">Nova conta</span>
+      <button onclick="fecharModalConta()" style="width:30px;height:30px;border-radius:50%;border:none;background:var(--surface2);cursor:pointer;font-size:18px;color:var(--muted)">×</button>
+    </div>
+    <div style="padding:1.25rem">
+      <input type="hidden" id="conta-id">
+      <input type="hidden" id="conta-clinica-hidden">
+
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Clínica</label>
+        <select id="conta-clinica-sel" style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);cursor:pointer">
+          <option value="">Selecione a clínica...</option>
+          <option value="Boa Vista">Boa Vista</option><option value="Bacacheri">Bacacheri</option>
+          <option value="ColomboMed">ColomboMed</option><option value="Etika SJP">Etika SJP</option>
+          <option value="FRG">FRG</option><option value="GPTRAN">GPTRAN</option>
+          <option value="Galeb">Galeb</option><option value="Hauer">Hauer</option>
+          <option value="Lifetran">Lifetran</option><option value="MM">MM</option>
+          <option value="PrimeMed">PrimeMed</option><option value="PPTRAN">PPTRAN</option>
+          <option value="Rio Sul">Rio Sul</option><option value="São José">São José</option>
+          <option value="Tolmac">Tolmac</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Descrição</label>
+        <input type="text" id="conta-desc" placeholder="Ex: Aluguel, Copel, Sanepar..."
+          style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text)"
+          onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div>
+          <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Vencimento</label>
+          <input type="date" id="conta-venc"
+            style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text)"
+            onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Valor (R$)</label>
+          <input type="number" id="conta-valor" placeholder="0,00" min="0" step="0.01"
+            style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text)"
+            onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Arquivo (PDF ou imagem)</label>
+        <div id="upload-area-conta" onclick="document.getElementById('conta-arquivo-input').click()"
+          style="border:2px dashed var(--border);border-radius:var(--radius-sm);padding:1.2rem;text-align:center;cursor:pointer;transition:all .15s;background:var(--surface2)"
+          onmouseover="this.style.borderColor='var(--purple)';this.style.background='var(--purple-light)'"
+          onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
+          <input type="file" id="conta-arquivo-input" accept=".pdf,image/*" style="display:none" onchange="handleArquivoConta(this)">
+          <div style="font-size:22px;margin-bottom:4px">📎</div>
+          <div style="font-size:13px;color:var(--muted)">Clique para anexar</div>
+          <div style="font-size:11px;color:var(--hint);margin-top:2px">PDF ou imagem • máx. 5MB</div>
+          <div id="upload-preview-conta" style="display:none;font-size:12px;color:var(--green);margin-top:6px;font-weight:500"></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:18px">
+        <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Observação</label>
+        <textarea id="conta-obs" placeholder="Informações adicionais..." rows="2"
+          style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);resize:vertical"
+          onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      </div>
+
+      <div style="display:flex;gap:8px">
+        <button onclick="salvarConta()" class="btn btn-purple" style="flex:1;justify-content:center;padding:11px;font-size:14px">✓ Salvar conta</button>
+        <button id="btn-excluir-conta" onclick="excluirConta()" class="btn" style="color:var(--red);border-color:var(--red-border);display:none;padding:11px">🗑 Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
 
   <!-- CONTAS A PAGAR -->
   <div id="page-contas" class="page">
@@ -1753,15 +1787,19 @@ window['_m_togglePagoConta']=togglePagoConta;
 function abrirModalConta(clinica){
   contaArquivoBase64='';contaArquivoNome='';
   document.getElementById('conta-id').value='';
+  const sel=document.getElementById('conta-clinica-sel');
+  if(sel)sel.value=clinica||contasClinicaAtiva;
   document.getElementById('conta-clinica-hidden').value=clinica||contasClinicaAtiva;
   document.getElementById('conta-desc').value='';
   document.getElementById('conta-venc').value='';
   document.getElementById('conta-valor').value='';
   document.getElementById('conta-obs').value='';
-  document.getElementById('upload-preview-conta').style.display='none';
-  document.getElementById('modal-conta-titulo').textContent='Nova conta — '+(clinica||contasClinicaAtiva);
+  const prev=document.getElementById('upload-preview-conta');
+  if(prev){prev.style.display='none';prev.textContent='';}
+  document.getElementById('modal-conta-titulo').textContent='Nova conta';
   document.getElementById('btn-excluir-conta').style.display='none';
-  document.getElementById('modal-conta').style.display='flex';
+  const m=document.getElementById('modal-conta');
+  m.style.display='flex';
 }
 window['_m_abrirModalConta']=abrirModalConta;
 
@@ -1773,6 +1811,7 @@ function editarConta(id){
   contaArquivoBase64=c.arquivo||'';contaArquivoNome=c.arquivoNome||'';
   document.getElementById('conta-id').value=id;
   document.getElementById('conta-clinica-hidden').value=contasClinicaAtiva;
+  const sel2=document.getElementById('conta-clinica-sel');if(sel2)sel2.value=contasClinicaAtiva;
   document.getElementById('conta-desc').value=c.desc||'';
   document.getElementById('conta-venc').value=c.venc||'';
   document.getElementById('conta-valor').value=c.valor||'';
@@ -1797,7 +1836,9 @@ window['_m_handleArquivoConta']=handleArquivoConta;
 async function salvarConta(){
   const desc=document.getElementById('conta-desc').value.trim();if(!desc){alert('Digite a descrição.');return;}
   const{k,mes,ano}=getContasMes();
-  const clinica=document.getElementById('conta-clinica-hidden').value||contasClinicaAtiva;
+  // Pega clínica do select (modal) ou do hidden field
+  const selCl=document.getElementById('conta-clinica-sel');
+  const clinica=(selCl&&selCl.value?selCl.value:document.getElementById('conta-clinica-hidden').value)||contasClinicaAtiva;
   const idExist=document.getElementById('conta-id').value;
   const id=idExist||'c_'+Date.now();
   const venc=document.getElementById('conta-venc').value;
