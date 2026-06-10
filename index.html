@@ -2052,6 +2052,224 @@ function exportarContasPDF(clinica, mes, ano){
   setTimeout(()=>w.print(),500);
 }
 window['_m_exportarContasPDF']=exportarContasPDF;
+// ── FOLHA DE PAGAMENTO ────────────────────────────────
+let folhaData = {};
+let folhaClinicaAtiva = CLINICAS[0];
+
+async function initFolha(){
+  const mes=parseInt(document.getElementById('mes-folha').value);
+  const ano=parseInt(document.getElementById('ano-folha').value);
+  const k=chave(mes,ano);
+  const [lancData,pagData,contasDb,folhaDb]=await Promise.all([
+    dbGet('lancamentos/'+k),dbGet('pagEdit/'+k),dbGet('contas/'+k),dbGet('folha/'+k)
+  ]);
+  if(lancData)dadosLanc[k]=lancData;
+  if(pagData)pagEdit[k]=pagData;
+  if(contasDb){if(!contasData[k])contasData[k]={};Object.assign(contasData[k],contasDb);}
+  folhaData[k]=folhaDb||{};
+  folhaClinicaAtiva=CLINICAS[0];
+  renderFolhaTabs();
+  renderFolhaTabela();
+}
+window['_m_initFolha']=initFolha;
+
+async function carregarFolha(mes,ano){
+  const k=chave(mes,ano);const data=await dbGet('folha/'+k);folhaData[k]=data||{};
+}
+async function salvarFolhaDB(mes,ano){
+  const k=chave(mes,ano);await dbSet('folha/'+k,folhaData[k]||{});
+}
+async function trocarMesFolha(){
+  const mes=parseInt(document.getElementById('mes-folha').value);
+  const ano=parseInt(document.getElementById('ano-folha').value);
+  const k=chave(mes,ano);
+  const [lancData,pagData,contasDb,folhaDb]=await Promise.all([
+    dbGet('lancamentos/'+k),dbGet('pagEdit/'+k),dbGet('contas/'+k),dbGet('folha/'+k)
+  ]);
+  if(lancData)dadosLanc[k]=lancData;
+  if(pagData)pagEdit[k]=pagData;
+  if(contasDb){if(!contasData[k])contasData[k]={};Object.assign(contasData[k],contasDb);}
+  folhaData[k]=folhaDb||{};
+  renderFolhaTabs();renderFolhaTabela();
+}
+window['_m_trocarMesFolha']=trocarMesFolha;
+
+function getFolhaMes(){
+  const mes=parseInt(document.getElementById('mes-folha').value);
+  const ano=parseInt(document.getElementById('ano-folha').value);
+  return{k:chave(mes,ano),mes,ano};
+}
+
+function calcTotalFolhaClinica(cl,k){
+  const{mes,ano}=getFolhaMes();
+  const d=getTotais(cl,mes,ano);let total=0;
+  d.profs.forEach(p=>{const ed=getPagEdit(mes,ano,cl,p.nome);const pg=ed!==undefined?ed:p.total;total+=p.tipo==='psico'?pg*cfg.valP:pg*cfg.valM;});
+  const contasK=chave(mes,ano);
+  const diarista=Object.values(contasData[contasK]?.[cl]||{}).find(c=>c.desc==='Diarista'&&!c.padrao);
+  if(diarista)total+=parseFloat(diarista.valor)||0;
+  Object.values(folhaData[k]?.[cl]||{}).forEach(item=>{total+=(parseFloat(item.valor)||0)+(parseFloat(item.vt)||0)-(parseFloat(item.desconto)||0)+(parseFloat(item.extra)||0);});
+  return total;
+}
+
+function renderFolhaTabs(){
+  const el=document.getElementById('folha-clinica-tabs');if(!el)return;
+  const{k}=getFolhaMes();
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:1.25rem">'+
+  CLINICAS.map(cl=>{
+    const total=calcTotalFolhaClinica(cl,k);
+    const isAtivo=cl===folhaClinicaAtiva;
+    return`<button onclick="selecionarClinicaFolha('${cl}')"
+      style="padding:10px 12px;border-radius:10px;border:1px solid ${isAtivo?'#534AB7':'var(--color-border-tertiary)'};background:${isAtivo?'#534AB7':'var(--color-background-primary)'};color:${isAtivo?'#fff':'var(--color-text-primary)'};text-align:left;cursor:pointer;font-family:var(--font-sans)">
+      <div style="font-size:12px;font-weight:500">${cl}</div>
+      <div style="font-size:11px;margin-top:2px;${isAtivo?'opacity:.85':'color:var(--color-text-secondary)'}">${total>0?fmt(total):'—'}</div>
+    </button>`;
+  }).join('')+'</div>';
+}
+
+function selecionarClinicaFolha(cl){folhaClinicaAtiva=cl;renderFolhaTabs();renderFolhaTabela();}
+window['_m_selecionarClinicaFolha']=selecionarClinicaFolha;
+
+function renderFolhaTabela(){
+  const area=document.getElementById('folha-area');if(!area)return;
+  const{k,mes,ano}=getFolhaMes();
+  const d=getTotais(folhaClinicaAtiva,mes,ano);
+  let totalGeral=0;
+
+  const renderLinha=(nome,cargo,cor,valor,vt,desconto,extra,auto,origem,id)=>{
+    const vtN=parseFloat(vt)||0,descN=parseFloat(desconto)||0,extraN=parseFloat(extra)||0;
+    const total=valor+vtN-descN+extraN;totalGeral+=total;
+    const editBtn=auto
+      ?`<span title="${origem}"><i class="ti ti-lock" aria-hidden="true" style="font-size:14px;color:var(--color-text-secondary)"></i></span>`
+      :`<button onclick="editarItemFolha('${id}')" style="background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:15px">✏️</button>`;
+    const vtCell=auto&&cargo!=='Diarista'?`<td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;color:var(--color-text-secondary)">—</td>`:
+      `<td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-family:var(--font-mono);color:var(--color-text-secondary)">${vtN>0?'+'+fmt(vtN):'—'}</td>`;
+    return`<tr>
+      <td style="padding:11px 14px;border-bottom:0.5px solid var(--color-border-tertiary)">
+        <div style="font-size:11px;color:${cor};margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em;font-weight:500">${cargo}${auto?` <span style="font-size:10px;opacity:.65">${origem}</span>`:''}</div>
+        <div style="font-weight:500;color:var(--color-text-primary)">${nome}</div>
+      </td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-family:var(--font-mono)">${fmt(valor)}</td>
+      ${vtCell}
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-family:var(--font-mono);color:#A32D2D">${descN>0?'–'+fmt(descN):'—'}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-family:var(--font-mono);color:#3B6D11">${extraN>0?'+'+fmt(extraN):'—'}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-weight:500;font-family:var(--font-mono)">${fmt(total)}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:center">${editBtn}</td>
+    </tr>`;
+  };
+
+  let rows='';
+  d.profs.forEach(p=>{
+    const ed=getPagEdit(mes,ano,folhaClinicaAtiva,p.nome);
+    const pg=ed!==undefined?ed:p.total;
+    const valor=p.tipo==='psico'?pg*cfg.valP:pg*cfg.valM;
+    rows+=renderLinha(p.nome,p.tipo==='psico'?'Psicóloga':'Médica',p.tipo==='psico'?'#3B6D11':'#185FA5',valor,0,0,0,true,'via Pagamentos','');
+  });
+  const contasK=chave(mes,ano);
+  const diarista=Object.values(contasData[contasK]?.[folhaClinicaAtiva]||{}).find(c=>c.desc==='Diarista'&&!c.padrao);
+  if(diarista&&diarista.valor)rows+=renderLinha('Diarista','Diarista','#6b6b66',parseFloat(diarista.valor)||0,0,0,0,true,'via Contas','');
+  Object.entries(folhaData[k]?.[folhaClinicaAtiva]||{}).forEach(([id,item])=>{
+    rows+=renderLinha(item.cargo,'Cargo manual','#6b6b66',parseFloat(item.valor)||0,item.vt,item.desconto,item.extra,false,'',id);
+  });
+  const total=d.profs.length+(diarista?1:0)+Object.keys(folhaData[k]?.[folhaClinicaAtiva]||{}).length;
+
+  area.innerHTML=`<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden">
+    <div style="padding:1rem 1.25rem;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div><div style="font-size:15px;font-weight:500">${folhaClinicaAtiva}</div><div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px">${MESES[mes-1]} ${ano} · ${total} colaborador(es)</div></div>
+      <div style="display:flex;gap:8px">
+        <button onclick="exportarFolhaPDF('${folhaClinicaAtiva}',${mes},${ano})" style="font-size:12px;padding:6px 14px;border-radius:99px;background:none;color:#A32D2D;border:1px solid #F7C1C1;cursor:pointer;font-weight:500;font-family:var(--font-sans)"><i class="ti ti-file-text" aria-hidden="true" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>PDF</button>
+        <button onclick="abrirModalFolha()" style="font-size:12px;padding:6px 14px;border-radius:99px;background:#534AB7;color:#fff;border:none;cursor:pointer;font-weight:500;font-family:var(--font-sans)"><i class="ti ti-plus" aria-hidden="true" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Novo cargo</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;min-width:620px">
+      <colgroup><col style="width:22%"><col style="width:15%"><col style="width:12%"><col style="width:13%"><col style="width:12%"><col style="width:15%"><col style="width:11%"></colgroup>
+      <thead><tr style="background:var(--color-background-secondary)">
+        <th style="padding:9px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">Cargo / Nome</th>
+        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">Valor base</th>
+        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">VT</th>
+        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:#A32D2D;text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">Desconto</th>
+        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:#3B6D11;text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">Extra</th>
+        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">Total</th>
+        <th style="padding:9px 14px;border-bottom:0.5px solid var(--color-border-tertiary)"></th>
+      </tr></thead>
+      <tbody>${rows||`<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--color-text-secondary)">Nenhum dado para ${MESES[mes-1]}/${ano}<br><small>Atualize o Dashboard para carregar os lançamentos do mês</small></td></tr>`}</tbody>
+    </table></div>
+    <div style="padding:12px 1.25rem;background:var(--color-background-secondary);border-top:0.5px solid var(--color-border-tertiary);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <span style="font-size:12px;color:var(--color-text-secondary)"><i class="ti ti-lock" aria-hidden="true" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Psicóloga/Médica via Pagamentos · Diarista via Contas</span>
+      <span style="font-size:13px;color:var(--color-text-secondary)">Total: <strong style="font-size:16px;font-weight:500;font-family:var(--font-mono);color:var(--color-text-primary)">${fmt(totalGeral)}</strong></span>
+    </div>
+  </div>`;
+}
+
+function abrirModalFolha(){
+  document.getElementById('folha-item-id').value='';
+  document.getElementById('folha-cargo').value='';
+  document.getElementById('folha-valor').value='';
+  document.getElementById('folha-vt').value='';
+  document.getElementById('folha-desconto').value='';
+  document.getElementById('folha-extra').value='';
+  document.getElementById('modal-folha-titulo').textContent='Novo cargo — '+folhaClinicaAtiva;
+  document.getElementById('btn-excluir-folha').style.display='none';
+  document.getElementById('modal-folha').style.display='flex';
+}
+window['_m_abrirModalFolha']=abrirModalFolha;
+
+function fecharModalFolha(){document.getElementById('modal-folha').style.display='none';}
+window['_m_fecharModalFolha']=fecharModalFolha;
+
+function editarItemFolha(id){
+  const{k}=getFolhaMes();const item=folhaData[k]?.[folhaClinicaAtiva]?.[id];if(!item)return;
+  document.getElementById('folha-item-id').value=id;
+  document.getElementById('folha-cargo').value=item.cargo||'';
+  document.getElementById('folha-valor').value=item.valor||'';
+  document.getElementById('folha-vt').value=item.vt||'';
+  document.getElementById('folha-desconto').value=item.desconto||'';
+  document.getElementById('folha-extra').value=item.extra||'';
+  document.getElementById('modal-folha-titulo').textContent='Editar — '+folhaClinicaAtiva;
+  document.getElementById('btn-excluir-folha').style.display='inline-flex';
+  document.getElementById('modal-folha').style.display='flex';
+}
+window['_m_editarItemFolha']=editarItemFolha;
+
+async function salvarItemFolha(){
+  const cargo=document.getElementById('folha-cargo').value.trim();
+  if(!cargo){alert('Digite o cargo/nome.');return;}
+  const{k,mes,ano}=getFolhaMes();
+  const idExist=document.getElementById('folha-item-id').value;
+  const id=idExist||'f_'+Date.now();
+  if(!folhaData[k])folhaData[k]={};
+  if(!folhaData[k][folhaClinicaAtiva])folhaData[k][folhaClinicaAtiva]={};
+  folhaData[k][folhaClinicaAtiva][id]={cargo,valor:parseFloat(document.getElementById('folha-valor').value)||0,vt:parseFloat(document.getElementById('folha-vt').value)||0,desconto:parseFloat(document.getElementById('folha-desconto').value)||0,extra:parseFloat(document.getElementById('folha-extra').value)||0};
+  fecharModalFolha();await salvarFolhaDB(mes,ano);renderFolhaTabela();renderFolhaTabs();
+}
+window['_m_salvarItemFolha']=salvarItemFolha;
+
+async function excluirItemFolha(){
+  if(!confirm('Excluir este item?'))return;
+  const{k,mes,ano}=getFolhaMes();
+  const id=document.getElementById('folha-item-id').value;
+  if(folhaData[k]?.[folhaClinicaAtiva]?.[id])delete folhaData[k][folhaClinicaAtiva][id];
+  fecharModalFolha();await salvarFolhaDB(mes,ano);renderFolhaTabela();renderFolhaTabs();
+}
+window['_m_excluirItemFolha']=excluirItemFolha;
+
+function exportarFolhaPDF(clinica,mes,ano){
+  const k=chave(mes,ano);const d=getTotais(clinica,mes,ano);
+  let totalGeral=0,rows='';
+  const addLinha=(nome,cargo,valor,vt,desconto,extra)=>{
+    const vtN=parseFloat(vt)||0,descN=parseFloat(desconto)||0,extraN=parseFloat(extra)||0;
+    const total=valor+vtN-descN+extraN;totalGeral+=total;
+    rows+=`<tr><td style="padding:8px 12px;border-bottom:1px solid #f0efe8"><span style="font-size:10px;color:#888;text-transform:uppercase;font-weight:600">${cargo}</span><br><strong>${nome}</strong></td><td style="padding:8px 12px;border-bottom:1px solid #f0efe8;text-align:right;font-family:'Courier New',monospace">${fmtN(valor)}</td><td style="padding:8px 12px;border-bottom:1px solid #f0efe8;text-align:right;font-family:'Courier New',monospace">${vtN>0?'+'+fmtN(vtN):'—'}</td><td style="padding:8px 12px;border-bottom:1px solid #f0efe8;text-align:right;font-family:'Courier New',monospace;color:#A32D2D">${descN>0?'–'+fmtN(descN):'—'}</td><td style="padding:8px 12px;border-bottom:1px solid #f0efe8;text-align:right;font-family:'Courier New',monospace;color:#3B6D11">${extraN>0?'+'+fmtN(extraN):'—'}</td><td style="padding:8px 12px;border-bottom:1px solid #f0efe8;text-align:right;font-weight:700;font-family:'Courier New',monospace">${fmtN(total)}</td></tr>`;
+  };
+  d.profs.forEach(p=>{const ed=getPagEdit(mes,ano,clinica,p.nome);const pg=ed!==undefined?ed:p.total;addLinha(p.nome,p.tipo==='psico'?'Psicóloga':'Médica',p.tipo==='psico'?pg*cfg.valP:pg*cfg.valM,0,0,0);});
+  const contasK=chave(mes,ano);
+  const diarista=Object.values(contasData[contasK]?.[clinica]||{}).find(c=>c.desc==='Diarista'&&!c.padrao);
+  if(diarista&&diarista.valor)addLinha('Diarista','Diarista',parseFloat(diarista.valor)||0,0,0,0);
+  Object.values(folhaData[k]?.[clinica]||{}).forEach(item=>addLinha(item.cargo,'Cargo',parseFloat(item.valor)||0,item.vt,item.desconto,item.extra));
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Folha — ${clinica} — ${MESES[mes-1]} ${ano}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;font-size:12px;color:#1a1a18;padding:28px}.header{display:flex;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #534AB7}h1{font-size:20px;font-weight:700;color:#534AB7;margin-bottom:2px}table{width:100%;border-collapse:collapse;margin-bottom:16px}thead tr{background:#f5f4f0}th{padding:9px 12px;text-align:left;font-size:10px;font-weight:600;color:#6b6b66;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #e0dfd8}th.r{text-align:right}tbody tr:nth-child(even){background:#fafaf8}.total-box{background:#534AB7;color:#fff;border-radius:8px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}.rodape{margin-top:20px;font-size:10px;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:10px}@media print{body{padding:14px}}</style></head><body><div class="header"><div><h1>${clinica}</h1><p style="font-size:12px;color:#6b6b66">Folha de pagamento — ${MESES[mes-1]} de ${ano}</p></div><div style="font-size:11px;color:#888">Gerado em ${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</div></div><table><thead><tr><th>Cargo / Nome</th><th class="r">Valor base</th><th class="r">VT</th><th class="r">Desconto</th><th class="r">Extra</th><th class="r">Total</th></tr></thead><tbody>${rows}</tbody></table><div class="total-box"><span>Total da folha — ${clinica}</span><span style="font-size:20px;font-weight:700;font-family:'Courier New',monospace">${fmtN(totalGeral)}</span></div><div class="rodape">Sistema de Clínicas — documento gerado automaticamente</div></body></html>`;
+  const w=window.open('','_blank');w.document.write(html);w.document.close();w.focus();setTimeout(()=>w.print(),500);
+}
+window['_m_exportarFolhaPDF']=exportarFolhaPDF;
+
 
 function fecharModalConta(){document.getElementById('modal-conta').style.display='none';}
 window['_m_fecharModalConta']=fecharModalConta;
