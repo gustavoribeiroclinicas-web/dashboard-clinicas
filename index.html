@@ -407,43 +407,44 @@ input:checked+.slider:before{transform:translateX(20px)}
 
 <!-- MODAL CARGO FOLHA -->
 <div id="modal-folha" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:1rem" onclick="if(event.target===this)fecharModalFolha()">
-  <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);max-width:420px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)">
-    <div style="padding:1rem 1.25rem;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--color-background-primary)">
-      <span style="font-size:15px;font-weight:500" id="modal-folha-titulo">Novo cargo</span>
-      <button onclick="fecharModalFolha()" style="width:28px;height:28px;border-radius:50%;border:none;background:var(--color-background-secondary);cursor:pointer;font-size:16px;color:var(--color-text-secondary)">×</button>
+  <div style="background:#fff;border-radius:12px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)">
+    <div style="padding:1rem 1.25rem;border-bottom:1px solid #e0dfd8;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff">
+      <span style="font-size:15px;font-weight:600;color:#1a1a18" id="modal-folha-titulo">Novo cargo</span>
+      <button onclick="fecharModalFolha()" style="width:28px;height:28px;border-radius:50%;border:none;background:#efefeb;cursor:pointer;font-size:18px;color:#6b6b66;display:flex;align-items:center;justify-content:center">×</button>
     </div>
     <div style="padding:1.25rem">
       <input type="hidden" id="folha-item-id">
-      <div style="margin-bottom:12px">
-        <label style="display:block;font-size:11px;color:var(--color-text-secondary);margin-bottom:5px;text-transform:uppercase;font-weight:500">Cargo / Nome</label>
+      <input type="hidden" id="folha-tipo-hidden" value="extra">
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;color:#6b6b66;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Cargo / Nome</label>
         <input type="text" id="folha-cargo" placeholder="Ex: Recepção — Ana Paula"
-          style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary)">
+          style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid #e0dfd8;border-radius:8px;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a18;outline:none">
       </div>
-      <div style="margin-bottom:12px">
-        <label style="display:block;font-size:11px;color:var(--color-text-secondary);margin-bottom:5px;text-transform:uppercase;font-weight:500">Valor base (R$)</label>
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;color:#6b6b66;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Valor base (R$)</label>
         <input type="number" id="folha-valor" placeholder="0,00" min="0" step="0.01"
-          style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary)">
+          style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid #e0dfd8;border-radius:8px;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a18;outline:none">
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px">
         <div>
-          <label style="display:block;font-size:11px;color:var(--color-text-secondary);margin-bottom:5px;text-transform:uppercase;font-weight:500">VT (R$)</label>
-          <input type="number" id="folha-vt" placeholder="0,00" min="0" step="0.01"
-            style="width:100%;padding:8px 10px;font-size:13px;border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary)">
+          <label style="display:block;font-size:11px;color:#6b6b66;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">VT (R$)</label>
+          <input type="number" id="folha-vt" placeholder="0" min="0" step="0.01"
+            style="width:100%;padding:9px 10px;font-size:13px;border:1.5px solid #e0dfd8;border-radius:8px;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a18;outline:none">
         </div>
         <div>
-          <label style="display:block;font-size:11px;color:#A32D2D;margin-bottom:5px;text-transform:uppercase;font-weight:500">Desconto (R$)</label>
-          <input type="number" id="folha-desconto" placeholder="0,00" min="0" step="0.01"
-            style="width:100%;padding:8px 10px;font-size:13px;border:1.5px solid #F7C1C1;border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary)">
+          <label style="display:block;font-size:11px;color:#a32d2d;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Desconto (R$)</label>
+          <input type="number" id="folha-desconto" placeholder="0" min="0" step="0.01"
+            style="width:100%;padding:9px 10px;font-size:13px;border:1.5px solid #f7c1c1;border-radius:8px;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a18;outline:none">
         </div>
         <div>
-          <label style="display:block;font-size:11px;color:#3B6D11;margin-bottom:5px;text-transform:uppercase;font-weight:500">Extra (R$)</label>
-          <input type="number" id="folha-extra" placeholder="0,00" min="0" step="0.01"
-            style="width:100%;padding:8px 10px;font-size:13px;border:1.5px solid #C0DD97;border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary)">
+          <label style="display:block;font-size:11px;color:#3b6d11;margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Extra (R$)</label>
+          <input type="number" id="folha-extra" placeholder="0" min="0" step="0.01"
+            style="width:100%;padding:9px 10px;font-size:13px;border:1.5px solid #b5d98a;border-radius:8px;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a18;outline:none">
         </div>
       </div>
       <div style="display:flex;gap:8px">
-        <button onclick="salvarItemFolha()" style="flex:1;padding:11px;font-size:14px;font-weight:500;font-family:var(--font-sans);background:#534AB7;color:#fff;border:none;border-radius:99px;cursor:pointer">✓ Salvar</button>
-        <button id="btn-excluir-folha" onclick="excluirItemFolha()" style="padding:11px 16px;font-size:13px;font-family:var(--font-sans);background:none;color:#A32D2D;border:1px solid #F7C1C1;border-radius:99px;cursor:pointer;display:none">Excluir</button>
+        <button onclick="salvarItemFolha()" style="flex:1;padding:12px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;background:#534AB7;color:#fff;border:none;border-radius:99px;cursor:pointer">✓ Salvar</button>
+        <button id="btn-excluir-folha" onclick="excluirItemFolha()" style="padding:12px 16px;font-size:13px;font-family:'DM Sans',sans-serif;background:none;color:#a32d2d;border:1px solid #f7c1c1;border-radius:99px;cursor:pointer;display:none">Excluir</button>
       </div>
     </div>
   </div>
@@ -636,6 +637,8 @@ function exportarContasPDF(cl,m,a){ _exec('exportarContasPDF',[cl,m,a]); }
 function trocarMesFolha(){ _exec('trocarMesFolha',[]); }
 function selecionarClinicaFolha(c){ _exec('selecionarClinicaFolha',[c]); }
 function abrirModalFolha(){ _exec('abrirModalFolha',[]); }
+function abrirModalFolhaExtra(){ _exec('abrirModalFolhaExtra',[]); }
+function editarLinhaFixa(t){ _exec('editarLinhaFixa',[t]); }
 function fecharModalFolha(){ _exec('fecharModalFolha',[]); }
 function editarItemFolha(id){ _exec('editarItemFolha',[id]); }
 function salvarItemFolha(){ _exec('salvarItemFolha',[]); }
@@ -2135,70 +2138,192 @@ function renderFolhaTabela(){
   const d=getTotais(folhaClinicaAtiva,mes,ano);
   let totalGeral=0;
 
-  const renderLinha=(nome,cargo,cor,valor,vt,desconto,extra,auto,origem,id)=>{
-    const vtN=parseFloat(vt)||0,descN=parseFloat(desconto)||0,extraN=parseFloat(extra)||0;
-    const total=valor+vtN-descN+extraN;totalGeral+=total;
-    const editBtn=auto
-      ?`<span title="${origem}"><i class="ti ti-lock" aria-hidden="true" style="font-size:14px;color:var(--color-text-secondary)"></i></span>`
-      :`<button onclick="editarItemFolha('${id}')" style="background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:15px">✏️</button>`;
-    const vtCell=auto&&cargo!=='Diarista'?`<td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;color:var(--color-text-secondary)">—</td>`:
-      `<td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-family:var(--font-mono);color:var(--color-text-secondary)">${vtN>0?'+'+fmt(vtN):'—'}</td>`;
+  // Linhas fixas salvas (estagiária, diarista, extras manuais)
+  const folhaCl=folhaData[k]?.[folhaClinicaAtiva]||{};
+
+  // Busca linha por tipo fixo
+  const findLinha=(tipo)=>Object.entries(folhaCl).find(([id,item])=>item.tipo===tipo);
+  const linhaEstag=findLinha('estagiaria');
+  const linhaDiar=findLinha('diarista_manual');
+  // Diarista automática de Contas
+  const contasK=chave(mes,ano);
+  const contasDiarista=Object.values(contasData[contasK]?.[folhaClinicaAtiva]||{}).find(c=>c.desc==='Diarista'&&!c.padrao);
+  const valorDiaristaAuto=contasDiarista?parseFloat(contasDiarista.valor)||0:0;
+
+  const renderLinhaAuto=(nome,cargo,cor,valor,origem)=>{
+    totalGeral+=valor;
     return`<tr>
-      <td style="padding:11px 14px;border-bottom:0.5px solid var(--color-border-tertiary)">
-        <div style="font-size:11px;color:${cor};margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em;font-weight:500">${cargo}${auto?` <span style="font-size:10px;opacity:.65">${origem}</span>`:''}</div>
-        <div style="font-weight:500;color:var(--color-text-primary)">${nome}</div>
+      <td style="padding:11px 14px;border-bottom:0.5px solid #e0dfd8">
+        <div style="font-size:11px;color:${cor};margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em;font-weight:600">${cargo} <span style="font-size:10px;opacity:.65;text-transform:none;font-weight:400">${origem}</span></div>
+        <div style="font-weight:500;color:#1a1a18">${nome}</div>
       </td>
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-family:var(--font-mono)">${fmt(valor)}</td>
-      ${vtCell}
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-family:var(--font-mono);color:#A32D2D">${descN>0?'–'+fmt(descN):'—'}</td>
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-family:var(--font-mono);color:#3B6D11">${extraN>0?'+'+fmt(extraN):'—'}</td>
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-weight:500;font-family:var(--font-mono)">${fmt(total)}</td>
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:center">${editBtn}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-family:'DM Mono',monospace">${fmt(valor)}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;color:#a0a09a">—</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;color:#a0a09a">—</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;color:#a0a09a">—</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-weight:600;font-family:'DM Mono',monospace">${fmt(valor)}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:center"><span title="${origem}" style="color:#a0a09a;font-size:13px">🔒</span></td>
+    </tr>`;
+  };
+
+  const renderLinhaEditavel=(titulo,cargo,cor,id,item,tipo)=>{
+    const valor=parseFloat(item?.valor)||0;
+    const vt=parseFloat(item?.vt)||0;
+    const desc=parseFloat(item?.desconto)||0;
+    const extra=parseFloat(item?.extra)||0;
+    const total=valor+vt-desc+extra;
+    totalGeral+=total;
+    const vazio=!item;
+    return`<tr style="background:${vazio?'#fffef5':''}">
+      <td style="padding:11px 14px;border-bottom:0.5px solid #e0dfd8">
+        <div style="font-size:11px;color:${cor};margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em;font-weight:600">${cargo}</div>
+        <div style="font-weight:500;color:${vazio?'#a0a09a':'#1a1a18'};font-style:${vazio?'italic':''}">${vazio?'Clique em ✏️ para preencher':titulo}</div>
+      </td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-family:'DM Mono',monospace;color:${vazio?'#a0a09a':'#1a1a18'}">${vazio?'—':fmt(valor)}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-family:'DM Mono',monospace;color:#6b6b66">${vt>0?'+'+fmt(vt):'—'}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-family:'DM Mono',monospace;color:#a32d2d">${desc>0?'–'+fmt(desc):'—'}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-family:'DM Mono',monospace;color:#3b6d11">${extra>0?'+'+fmt(extra):'—'}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-weight:600;font-family:'DM Mono',monospace">${vazio?'—':fmt(total)}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:center">
+        <button onclick="editarLinhaFixa('${tipo}')" style="background:none;border:none;cursor:pointer;font-size:15px" title="Editar">✏️</button>
+      </td>
     </tr>`;
   };
 
   let rows='';
+
+  // 1. Estagiária (sempre aparece, editável)
+  rows+=renderLinhaEditavel(
+    linhaEstag?linhaEstag[1].nome||'Estagiária':'Estagiária',
+    'Estagiária','#534AB7',
+    linhaEstag?linhaEstag[0]:null,linhaEstag?linhaEstag[1]:null,'estagiaria'
+  );
+
+  // 2. Diarista — automática se veio de Contas, senão editável manualmente
+  if(valorDiaristaAuto>0){
+    rows+=renderLinhaAuto('Diarista','Diarista','#6b6b66',valorDiaristaAuto,'via Contas');
+    // Permite ajuste manual também (desconto/extra)
+    if(linhaDiar){
+      const desc=parseFloat(linhaDiar[1].desconto)||0;
+      const extra=parseFloat(linhaDiar[1].extra)||0;
+      if(desc>0||extra>0){
+        totalGeral+=(-desc+extra);
+        rows+=`<tr style="background:#f5f4f0">
+          <td style="padding:6px 14px 10px 30px;border-bottom:0.5px solid #e0dfd8;color:#6b6b66;font-size:12px">↳ Ajuste diarista</td>
+          <td style="padding:6px 14px 10px;border-bottom:0.5px solid #e0dfd8"></td>
+          <td style="padding:6px 14px 10px;border-bottom:0.5px solid #e0dfd8"></td>
+          <td style="padding:6px 14px 10px;border-bottom:0.5px solid #e0dfd8;text-align:right;color:#a32d2d;font-family:'DM Mono',monospace;font-size:12px">${desc>0?'–'+fmt(desc):''}</td>
+          <td style="padding:6px 14px 10px;border-bottom:0.5px solid #e0dfd8;text-align:right;color:#3b6d11;font-family:'DM Mono',monospace;font-size:12px">${extra>0?'+'+fmt(extra):''}</td>
+          <td colspan="2" style="padding:6px 14px 10px;border-bottom:0.5px solid #e0dfd8;text-align:right">
+            <button onclick="editarLinhaFixa('diarista_manual')" style="background:none;border:none;cursor:pointer;font-size:13px">✏️</button>
+          </td>
+        </tr>`;
+      }
+    } else {
+      rows+=`<tr style="background:#f5f4f0"><td colspan="7" style="padding:6px 14px 10px 30px;border-bottom:0.5px solid #e0dfd8;font-size:12px;color:#a0a09a">
+        ↳ <button onclick="editarLinhaFixa('diarista_manual')" style="background:none;border:none;cursor:pointer;color:#534AB7;font-size:12px;text-decoration:underline">+ Adicionar desconto/extra para diarista</button>
+      </td></tr>`;
+    }
+  } else {
+    rows+=renderLinhaEditavel(
+      linhaDiar?linhaDiar[1].nome||'Diarista':'Diarista',
+      'Diarista','#6b6b66',
+      linhaDiar?linhaDiar[0]:null,linhaDiar?linhaDiar[1]:null,'diarista_manual'
+    );
+  }
+
+  // 3. Psicólogas e Médicas (automáticas de Pagamentos)
   d.profs.forEach(p=>{
     const ed=getPagEdit(mes,ano,folhaClinicaAtiva,p.nome);
     const pg=ed!==undefined?ed:p.total;
     const valor=p.tipo==='psico'?pg*cfg.valP:pg*cfg.valM;
-    rows+=renderLinha(p.nome,p.tipo==='psico'?'Psicóloga':'Médica',p.tipo==='psico'?'#3B6D11':'#185FA5',valor,0,0,0,true,'via Pagamentos','');
+    rows+=renderLinhaAuto(p.nome,p.tipo==='psico'?'Psicóloga':'Médica',p.tipo==='psico'?'#3b6d11':'#185fa5',valor,'via Pagamentos');
   });
-  const contasK=chave(mes,ano);
-  const diarista=Object.values(contasData[contasK]?.[folhaClinicaAtiva]||{}).find(c=>c.desc==='Diarista'&&!c.padrao);
-  if(diarista&&diarista.valor)rows+=renderLinha('Diarista','Diarista','#6b6b66',parseFloat(diarista.valor)||0,0,0,0,true,'via Contas','');
-  Object.entries(folhaData[k]?.[folhaClinicaAtiva]||{}).forEach(([id,item])=>{
-    rows+=renderLinha(item.cargo,'Cargo manual','#6b6b66',parseFloat(item.valor)||0,item.vt,item.desconto,item.extra,false,'',id);
-  });
-  const total=d.profs.length+(diarista?1:0)+Object.keys(folhaData[k]?.[folhaClinicaAtiva]||{}).length;
 
-  area.innerHTML=`<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden">
-    <div style="padding:1rem 1.25rem;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-      <div><div style="font-size:15px;font-weight:500">${folhaClinicaAtiva}</div><div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px">${MESES[mes-1]} ${ano} · ${total} colaborador(es)</div></div>
+  // 4. Cargos extras manuais
+  Object.entries(folhaCl).filter(([id,item])=>item.tipo==='extra').forEach(([id,item])=>{
+    const valor=parseFloat(item.valor)||0,vt=parseFloat(item.vt)||0,desc=parseFloat(item.desconto)||0,extra=parseFloat(item.extra)||0;
+    const total=valor+vt-desc+extra;totalGeral+=total;
+    rows+=`<tr>
+      <td style="padding:11px 14px;border-bottom:0.5px solid #e0dfd8">
+        <div style="font-size:11px;color:#6b6b66;margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em;font-weight:600">Cargo extra</div>
+        <div style="font-weight:500;color:#1a1a18">${item.cargo||item.nome||'—'}</div>
+      </td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-family:'DM Mono',monospace">${fmt(valor)}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-family:'DM Mono',monospace;color:#6b6b66">${vt>0?'+'+fmt(vt):'—'}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-family:'DM Mono',monospace;color:#a32d2d">${desc>0?'–'+fmt(desc):'—'}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-family:'DM Mono',monospace;color:#3b6d11">${extra>0?'+'+fmt(extra):'—'}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:right;font-weight:600;font-family:'DM Mono',monospace">${fmt(total)}</td>
+      <td style="padding:10px 14px;border-bottom:0.5px solid #e0dfd8;text-align:center"><button onclick="editarItemFolha('${id}')" style="background:none;border:none;cursor:pointer;font-size:15px">✏️</button></td>
+    </tr>`;
+  });
+
+  const totalLinhas=2+d.profs.length+Object.values(folhaCl).filter(i=>i.tipo==='extra').length;
+
+  area.innerHTML=`<div style="background:#fff;border:1px solid #e0dfd8;border-radius:12px;overflow:hidden">
+    <div style="padding:1rem 1.25rem;border-bottom:1px solid #e0dfd8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div><div style="font-size:15px;font-weight:500;color:#1a1a18">${folhaClinicaAtiva}</div><div style="font-size:12px;color:#6b6b66;margin-top:2px">${MESES[mes-1]} ${ano} · ${totalLinhas} colaborador(es)</div></div>
       <div style="display:flex;gap:8px">
-        <button onclick="exportarFolhaPDF('${folhaClinicaAtiva}',${mes},${ano})" style="font-size:12px;padding:6px 14px;border-radius:99px;background:none;color:#A32D2D;border:1px solid #F7C1C1;cursor:pointer;font-weight:500;font-family:var(--font-sans)"><i class="ti ti-file-text" aria-hidden="true" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>PDF</button>
-        <button onclick="abrirModalFolha()" style="font-size:12px;padding:6px 14px;border-radius:99px;background:#534AB7;color:#fff;border:none;cursor:pointer;font-weight:500;font-family:var(--font-sans)"><i class="ti ti-plus" aria-hidden="true" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Novo cargo</button>
+        <button onclick="exportarFolhaPDF('${folhaClinicaAtiva}',${mes},${ano})" style="font-size:12px;padding:6px 14px;border-radius:99px;background:none;color:#a32d2d;border:1px solid #f7c1c1;cursor:pointer;font-weight:500;font-family:'DM Sans',sans-serif">📄 PDF</button>
+        <button onclick="abrirModalFolhaExtra()" style="font-size:12px;padding:6px 14px;border-radius:99px;background:#534AB7;color:#fff;border:none;cursor:pointer;font-weight:500;font-family:'DM Sans',sans-serif">+ Novo cargo</button>
       </div>
     </div>
     <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;min-width:620px">
-      <colgroup><col style="width:22%"><col style="width:15%"><col style="width:12%"><col style="width:13%"><col style="width:12%"><col style="width:15%"><col style="width:11%"></colgroup>
-      <thead><tr style="background:var(--color-background-secondary)">
-        <th style="padding:9px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">Cargo / Nome</th>
-        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">Valor base</th>
-        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">VT</th>
-        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:#A32D2D;text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">Desconto</th>
-        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:#3B6D11;text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">Extra</th>
-        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)">Total</th>
-        <th style="padding:9px 14px;border-bottom:0.5px solid var(--color-border-tertiary)"></th>
+      <colgroup><col style="width:22%"><col style="width:15%"><col style="width:11%"><col style="width:13%"><col style="width:11%"><col style="width:15%"><col style="width:13%"></colgroup>
+      <thead><tr style="background:#efefeb">
+        <th style="padding:9px 14px;text-align:left;font-size:11px;font-weight:500;color:#6b6b66;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e0dfd8">Cargo / Nome</th>
+        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:#6b6b66;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e0dfd8">Valor base</th>
+        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:#6b6b66;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e0dfd8">VT</th>
+        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:#a32d2d;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e0dfd8">Desconto</th>
+        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:#3b6d11;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e0dfd8">Extra</th>
+        <th style="padding:9px 14px;text-align:right;font-size:11px;font-weight:500;color:#6b6b66;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e0dfd8">Total</th>
+        <th style="padding:9px 14px;border-bottom:1px solid #e0dfd8"></th>
       </tr></thead>
-      <tbody>${rows||`<tr><td colspan="7" style="padding:2rem;text-align:center;color:var(--color-text-secondary)">Nenhum dado para ${MESES[mes-1]}/${ano}<br><small>Atualize o Dashboard para carregar os lançamentos do mês</small></td></tr>`}</tbody>
+      <tbody>${rows}</tbody>
     </table></div>
-    <div style="padding:12px 1.25rem;background:var(--color-background-secondary);border-top:0.5px solid var(--color-border-tertiary);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-      <span style="font-size:12px;color:var(--color-text-secondary)"><i class="ti ti-lock" aria-hidden="true" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>Psicóloga/Médica via Pagamentos · Diarista via Contas</span>
-      <span style="font-size:13px;color:var(--color-text-secondary)">Total: <strong style="font-size:16px;font-weight:500;font-family:var(--font-mono);color:var(--color-text-primary)">${fmt(totalGeral)}</strong></span>
+    <div style="padding:12px 1.25rem;background:#efefeb;border-top:1px solid #e0dfd8;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <span style="font-size:12px;color:#6b6b66">🔒 Psicóloga/Médica via Pagamentos · 🔒 Diarista via Contas (quando cadastrada)</span>
+      <span style="font-size:13px;color:#6b6b66">Total: <strong style="font-size:16px;font-weight:600;font-family:'DM Mono',monospace;color:#1a1a18">${fmt(totalGeral)}</strong></span>
     </div>
   </div>`;
 }
+
+// Edita linha fixa (estagiária ou diarista_manual)
+function editarLinhaFixa(tipo){
+  const{k}=getFolhaMes();
+  const folhaCl=folhaData[k]?.[folhaClinicaAtiva]||{};
+  const found=Object.entries(folhaCl).find(([id,item])=>item.tipo===tipo);
+  const id=found?found[0]:null;
+  const item=found?found[1]:null;
+  document.getElementById('folha-item-id').value=id||'';
+  document.getElementById('folha-tipo-hidden').value=tipo;
+  const labelCargo=tipo==='estagiaria'?'Estagiária':'Diarista';
+  document.getElementById('folha-cargo').value=item?.nome||item?.cargo||labelCargo;
+  document.getElementById('folha-valor').value=item?.valor||'';
+  document.getElementById('folha-vt').value=item?.vt||'';
+  document.getElementById('folha-desconto').value=item?.desconto||'';
+  document.getElementById('folha-extra').value=item?.extra||'';
+  document.getElementById('modal-folha-titulo').textContent=(tipo==='estagiaria'?'Estagiária':'Diarista')+' — '+folhaClinicaAtiva;
+  document.getElementById('btn-excluir-folha').style.display=id?'inline-flex':'none';
+  document.getElementById('modal-folha').style.display='flex';
+}
+window['_m_editarLinhaFixa']=editarLinhaFixa;
+
+// Abre modal para novo cargo EXTRA
+function abrirModalFolhaExtra(){
+  document.getElementById('folha-item-id').value='';
+  document.getElementById('folha-tipo-hidden').value='extra';
+  document.getElementById('folha-cargo').value='';
+  document.getElementById('folha-valor').value='';
+  document.getElementById('folha-vt').value='';
+  document.getElementById('folha-desconto').value='';
+  document.getElementById('folha-extra').value='';
+  document.getElementById('modal-folha-titulo').textContent='Novo cargo extra — '+folhaClinicaAtiva;
+  document.getElementById('btn-excluir-folha').style.display='none';
+  document.getElementById('modal-folha').style.display='flex';
+}
+window['_m_abrirModalFolhaExtra']=abrirModalFolhaExtra;
+
 
 function abrirModalFolha(){
   document.getElementById('folha-item-id').value='';
@@ -2234,11 +2359,18 @@ async function salvarItemFolha(){
   const cargo=document.getElementById('folha-cargo').value.trim();
   if(!cargo){alert('Digite o cargo/nome.');return;}
   const{k,mes,ano}=getFolhaMes();
+  const tipo=document.getElementById('folha-tipo-hidden').value||'extra';
   const idExist=document.getElementById('folha-item-id').value;
   const id=idExist||'f_'+Date.now();
   if(!folhaData[k])folhaData[k]={};
   if(!folhaData[k][folhaClinicaAtiva])folhaData[k][folhaClinicaAtiva]={};
-  folhaData[k][folhaClinicaAtiva][id]={cargo,valor:parseFloat(document.getElementById('folha-valor').value)||0,vt:parseFloat(document.getElementById('folha-vt').value)||0,desconto:parseFloat(document.getElementById('folha-desconto').value)||0,extra:parseFloat(document.getElementById('folha-extra').value)||0};
+  folhaData[k][folhaClinicaAtiva][id]={
+    tipo, cargo, nome:cargo,
+    valor:parseFloat(document.getElementById('folha-valor').value)||0,
+    vt:parseFloat(document.getElementById('folha-vt').value)||0,
+    desconto:parseFloat(document.getElementById('folha-desconto').value)||0,
+    extra:parseFloat(document.getElementById('folha-extra').value)||0
+  };
   fecharModalFolha();await salvarFolhaDB(mes,ano);renderFolhaTabela();renderFolhaTabs();
 }
 window['_m_salvarItemFolha']=salvarItemFolha;
