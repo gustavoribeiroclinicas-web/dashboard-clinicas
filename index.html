@@ -284,6 +284,7 @@ input:checked+.slider:before{transform:translateX(20px)}
     <div class="nav-tab" id="tab-lanc" onclick="showPage('lancamento',this)">Lançamento</div>
     <div class="nav-tab" id="tab-cfg" onclick="showPage('config',this)">Configurações</div>
     <div class="nav-tab" id="tab-contas" onclick="showPage('contas',this)">Contas</div>
+    <div class="nav-tab" id="tab-folha" onclick="showPage('folha',this)">Folha</div>
     <div class="topbar-right">
       <div class="user-chip" id="user-chip"></div>
       <button class="btn btn-sm" onclick="sair()">Sair</button>
@@ -368,12 +369,13 @@ input:checked+.slider:before{transform:translateX(20px)}
   <div id="page-config" class="page">
     <div class="cfg-card">
       <div class="cfg-title">💾 Backup</div>
-      <p class="hint" style="margin-bottom:.75rem">Exporta todos os dados em JSON para backup local.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-purple" onclick="exportarBackup()">⬇ Exportar backup</button>
+      <p class="hint" style="margin-bottom:.75rem">Exporte o backup mensalmente para manter um histórico seguro dos dados. Recomendado no último dia útil de cada mês.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="btn btn-purple" onclick="exportarBackupCompleto()">⬇ Exportar backup completo</button>
         <button class="btn" onclick="document.getElementById('inp-importar').click()">⬆ Importar backup</button>
         <input type="file" id="inp-importar" accept=".json" style="display:none" onchange="importarBackup(this)">
       </div>
+      <p class="hint">Último backup: <span id="ultimo-backup-data" style="font-weight:500;color:var(--text)">nunca</span></p>
     </div>
     <div class="cfg-card">
       <div class="cfg-title">💰 Valores por atendimento</div>
@@ -401,6 +403,51 @@ input:checked+.slider:before{transform:translateX(20px)}
     </div>
   </div>
 
+
+
+<!-- MODAL CARGO FOLHA -->
+<div id="modal-folha" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:1rem" onclick="if(event.target===this)fecharModalFolha()">
+  <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);max-width:420px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)">
+    <div style="padding:1rem 1.25rem;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--color-background-primary)">
+      <span style="font-size:15px;font-weight:500" id="modal-folha-titulo">Novo cargo</span>
+      <button onclick="fecharModalFolha()" style="width:28px;height:28px;border-radius:50%;border:none;background:var(--color-background-secondary);cursor:pointer;font-size:16px;color:var(--color-text-secondary)">×</button>
+    </div>
+    <div style="padding:1.25rem">
+      <input type="hidden" id="folha-item-id">
+      <div style="margin-bottom:12px">
+        <label style="display:block;font-size:11px;color:var(--color-text-secondary);margin-bottom:5px;text-transform:uppercase;font-weight:500">Cargo / Nome</label>
+        <input type="text" id="folha-cargo" placeholder="Ex: Recepção — Ana Paula"
+          style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary)">
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="display:block;font-size:11px;color:var(--color-text-secondary);margin-bottom:5px;text-transform:uppercase;font-weight:500">Valor base (R$)</label>
+        <input type="number" id="folha-valor" placeholder="0,00" min="0" step="0.01"
+          style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary)">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+        <div>
+          <label style="display:block;font-size:11px;color:var(--color-text-secondary);margin-bottom:5px;text-transform:uppercase;font-weight:500">VT (R$)</label>
+          <input type="number" id="folha-vt" placeholder="0,00" min="0" step="0.01"
+            style="width:100%;padding:8px 10px;font-size:13px;border:1.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary)">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;color:#A32D2D;margin-bottom:5px;text-transform:uppercase;font-weight:500">Desconto (R$)</label>
+          <input type="number" id="folha-desconto" placeholder="0,00" min="0" step="0.01"
+            style="width:100%;padding:8px 10px;font-size:13px;border:1.5px solid #F7C1C1;border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary)">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;color:#3B6D11;margin-bottom:5px;text-transform:uppercase;font-weight:500">Extra (R$)</label>
+          <input type="number" id="folha-extra" placeholder="0,00" min="0" step="0.01"
+            style="width:100%;padding:8px 10px;font-size:13px;border:1.5px solid #C0DD97;border-radius:var(--border-radius-md);font-family:var(--font-sans);background:var(--color-background-primary);color:var(--color-text-primary)">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="salvarItemFolha()" style="flex:1;padding:11px;font-size:14px;font-weight:500;font-family:var(--font-sans);background:#534AB7;color:#fff;border:none;border-radius:99px;cursor:pointer">✓ Salvar</button>
+        <button id="btn-excluir-folha" onclick="excluirItemFolha()" style="padding:11px 16px;font-size:13px;font-family:var(--font-sans);background:none;color:#A32D2D;border:1px solid #F7C1C1;border-radius:99px;cursor:pointer;display:none">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL CONTA A PAGAR -->
 <div id="modal-conta" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem" onclick="if(event.target===this)fecharModalConta()">
@@ -479,6 +526,27 @@ input:checked+.slider:before{transform:translateX(20px)}
   </div>
 </div>
 
+
+  <!-- FOLHA DE PAGAMENTO -->
+  <div id="page-folha" class="page">
+    <div class="page-header">
+      <h2>Folha de pagamento</h2>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <select class="sel" id="mes-folha" onchange="trocarMesFolha()">
+          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+          <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+          <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+          <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+        <select class="sel" id="ano-folha" onchange="trocarMesFolha()">
+          <option value="2025">2025</option><option value="2026" selected>2026</option>
+        </select>
+      </div>
+    </div>
+    <div class="clinica-tabs" id="folha-clinica-tabs"></div>
+    <div id="folha-area"></div>
+  </div>
+
   <!-- CONTAS A PAGAR -->
   <div id="page-contas" class="page">
     <div class="page-header">
@@ -550,6 +618,7 @@ function salvarSheets(){ _exec('salvarSheets',[]); }
 function addSenha(t){ _exec('addSenha',[t]); }
 function renderSenhasConfig(){ _exec('renderSenhasConfig',[]); }
 function exportarBackup(){ _exec('exportarBackup',[]); }
+function exportarBackupCompleto(){ _exec('exportarBackupCompleto',[]); }
 function importarBackup(el){ _exec('importarBackup',[el]); }
 function initLancamento(c){ _exec('initLancamento',[c]); }
 function gerarPDF(){ _exec('gerarPDF',[]); }
@@ -564,6 +633,14 @@ function handleArquivoConta(el){ _exec('handleArquivoConta',[el]); }
 function salvarConta(){ _exec('salvarConta',[]); }
 function excluirConta(){ _exec('excluirConta',[]); }
 function exportarContasPDF(cl,m,a){ _exec('exportarContasPDF',[cl,m,a]); }
+function trocarMesFolha(){ _exec('trocarMesFolha',[]); }
+function selecionarClinicaFolha(c){ _exec('selecionarClinicaFolha',[c]); }
+function abrirModalFolha(){ _exec('abrirModalFolha',[]); }
+function fecharModalFolha(){ _exec('fecharModalFolha',[]); }
+function editarItemFolha(id){ _exec('editarItemFolha',[id]); }
+function salvarItemFolha(){ _exec('salvarItemFolha',[]); }
+function excluirItemFolha(){ _exec('excluirItemFolha',[]); }
+function exportarFolhaPDF(cl,m,a){ _exec('exportarFolhaPDF',[cl,m,a]); }
 </script>
 
 <!-- Firebase -->
@@ -727,7 +804,7 @@ function iniciarGestor() {
   document.getElementById('tela-login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-chip').textContent = '👤 Gestor';
-  ['tab-dash','tab-pag','tab-lanc','tab-cfg','tab-contas'].forEach(id => document.getElementById(id).style.display = '');
+  ['tab-dash','tab-pag','tab-lanc','tab-cfg','tab-contas','tab-folha'].forEach(id => document.getElementById(id).style.display = '');
   initConfig();
   const agora = hoje();
   document.getElementById('mes-sel').value = agora.getMonth()+1;
@@ -743,7 +820,7 @@ function iniciarContabilidade() {
   document.getElementById('tela-login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-chip').textContent = '📊 Contabilidade';
-  ['tab-dash','tab-lanc','tab-cfg','tab-contas'].forEach(id => document.getElementById(id).style.display = 'none');
+  ['tab-dash','tab-lanc','tab-cfg','tab-contas','tab-folha'].forEach(id => document.getElementById(id).style.display = 'none');
   document.getElementById('tab-pag').style.display = '';
   const agora = hoje();
   document.getElementById('mes-pag').value = agora.getMonth()+1;
@@ -756,7 +833,7 @@ function iniciarRecepcao(clinica) {
   document.getElementById('tela-login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-chip').textContent = '🏥 ' + clinica;
-  ['tab-dash','tab-pag','tab-cfg','tab-contas'].forEach(id => document.getElementById(id).style.display = 'none');
+  ['tab-dash','tab-pag','tab-cfg','tab-contas','tab-folha'].forEach(id => document.getElementById(id).style.display = 'none');
   document.getElementById('tab-lanc').style.display = '';
   showPage('lancamento', document.getElementById('tab-lanc'));
   initLancamento(clinica);
@@ -1431,6 +1508,9 @@ window['_m_zerarDia']=zerarDia;
 
 // ── CONFIG ────────────────────────────────────────────
 function initConfig(){
+  const ub=localStorage.getItem('cl_ultimo_backup');
+  const elUb=document.getElementById('ultimo-backup-data');
+  if(elUb&&ub)elUb.textContent=ub;
   document.getElementById('vp').value=cfg.valP;
   document.getElementById('vm').value=cfg.valM;
   document.getElementById('vi').value=cfg.imp;
@@ -2075,9 +2155,11 @@ const _s=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
 _s('mes-sel',agora.getMonth()+1);
 _s('mes-pag',agora.getMonth()+1);
 _s('mes-contas',agora.getMonth()+1);
+_s('mes-folha',agora.getMonth()+1);
 _s('ano-sel',agora.getFullYear());
 _s('ano-pag',agora.getFullYear());
 _s('ano-contas',agora.getFullYear());
+_s('ano-folha',agora.getFullYear());
 </script>
 </body>
 </html>
