@@ -313,7 +313,7 @@ input:checked+.slider:before{transform:translateX(20px)}
           <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
         </select>
         <select class="sel" id="ano-sel" onchange="trocarMesDash()">
-          <option value="2025">2025</option><option value="2026" selected>2026</option>
+          <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
         </select>
         <button class="btn" onclick="atualizarDados()">↻ Atualizar</button>
         <button class="btn" onclick="abrirModal()" style="color:var(--purple);border-color:var(--purple)">✏️ Editar dias</button>
@@ -336,7 +336,7 @@ input:checked+.slider:before{transform:translateX(20px)}
         <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
       </select>
       <select class="sel" id="ano-pag" onchange="trocarMesPag()">
-        <option value="2025">2025</option><option value="2026" selected>2026</option>
+        <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
       </select>
       <button class="btn" onclick="gerarPDF()" style="color:var(--red);border-color:var(--red-border);background:var(--red-bg)">📄 Exportar PDF</button>
     </div>
@@ -540,7 +540,7 @@ input:checked+.slider:before{transform:translateX(20px)}
           <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
         </select>
         <select class="sel" id="ano-folha" onchange="trocarMesFolha()">
-          <option value="2025">2025</option><option value="2026" selected>2026</option>
+          <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
         </select>
       </div>
     </div>
@@ -560,7 +560,7 @@ input:checked+.slider:before{transform:translateX(20px)}
           <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
         </select>
         <select class="sel" id="ano-contas" onchange="trocarMesContas()">
-          <option value="2025">2025</option><option value="2026" selected>2026</option>
+          <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
         </select>
 
       </div>
@@ -1579,7 +1579,7 @@ function renderSheetsGrid(){
   const el=document.getElementById('sheets-grid');if(!el)return;
   let html='<div style="margin-bottom:8px"><div class="fg"><label>Chave de API do Google Sheets</label><input type="text" id="inp-apikey" placeholder="AIza..." value="${cfg.apiKey||\'\'}" style="font-family:\'DM Mono\',monospace" oninput="cfg.apiKey=this.value.trim()"></div></div>';
   html=`<div style="margin-bottom:8px"><div class="fg"><label>Chave de API do Google Sheets</label><input type="text" id="inp-apikey" placeholder="AIza..." value="${cfg.apiKey||''}" style="font-family:'DM Mono',monospace" oninput="cfg.apiKey=this.value.trim()"></div></div>`;
-  [2025,2026].forEach(ano=>{
+  [2025,2026,2027].forEach(ano=>{
     html+=`<div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;margin:10px 0 6px">${ano}</div>`;
     for(let m=1;m<=12;m++){
       const k=chave(m,ano),val=cfg.sheets?.[k]||'';
