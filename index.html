@@ -626,6 +626,7 @@ function gerarPDF(){ _exec('gerarPDF',[]); }
 function trocarMesContas(){ _exec('trocarMesContas',[]); }
 function selecionarClinicaContas(c){ _exec('selecionarClinicaContas',[c]); }
 function togglePagoConta(id){ _exec('togglePagoConta',[id]); }
+function abrirArquivoConta(id){ _exec('abrirArquivoConta',[id]); }
 function abrirModalConta(c){ _exec('abrirModalConta',[c]); }
 function abrirModalContaDescricao(d){ _exec('abrirModalContaDescricao',[d]); }
 function fecharModalConta(){ _exec('fecharModalConta',[]); }
@@ -690,16 +691,25 @@ async function dbGet(path) {
 }
 
 // ── CARREGAR TUDO DA NUVEM ────────────────────────────
+// Cache de estado — evita buscas repetidas
+let _dadosCarregados = false;
+let _mesAtivo = null;
+
 async function carregarTudo() {
-  const [cfgData, lancData, pagEditData] = await Promise.all([
-    dbGet('config'),
-    dbGet('lancamentos'),
-    dbGet('pagEdit')
-  ]);
-  if (cfgData) cfg = Object.assign(cfg, cfgData);
-  if (lancData) dadosLanc = lancData;
-  if (pagEditData) pagEdit = pagEditData;
+  if(_dadosCarregados) return; // já carregado, não busca de novo
+  // Busca TUDO em uma única roundtrip ao Firebase
+  const snapshot = await dbGet('/');
+  if(!snapshot) return;
+  if(snapshot.config) cfg = Object.assign(cfg, snapshot.config);
+  if(snapshot.lancamentos) dadosLanc = snapshot.lancamentos;
+  if(snapshot.pagEdit) pagEdit = snapshot.pagEdit;
+  if(snapshot.contas) contasData = snapshot.contas;
+  if(snapshot.folha) folhaData = snapshot.folha;
+  _dadosCarregados = true;
 }
+
+// Invalidar cache quando salva dados
+function invalidarCache(){ _dadosCarregados = false; }
 
 async function salvarCfg() {
   await dbSet('config', cfg);
@@ -1279,6 +1289,8 @@ async function trocarMesPag(){
   const mes=parseInt(document.getElementById('mes-pag').value);
   const ano=parseInt(document.getElementById('ano-pag').value);
   const k=chave(mes,ano);
+  // Se já tem dados em cache, renderiza direto
+  if(dadosLanc[k]&&pagEdit[k]){renderPag();return;}
   const pl=document.getElementById('pag-load');
   if(pl){pl.style.display='block';pl.textContent='⏳ Carregando...';}
   const [lancData,pagData]=await Promise.all([dbGet('lancamentos/'+k),dbGet('pagEdit/'+k)]);
@@ -1804,7 +1816,9 @@ let contaArquivoNome = '';
 async function initContas(){
   const mes=parseInt(document.getElementById('mes-contas').value);
   const ano=parseInt(document.getElementById('ano-contas').value);
-  await carregarContas(mes,ano);
+  const k=chave(mes,ano);
+  // Só busca se não tem em cache
+  if(!contasData[k])await carregarContas(mes,ano);
   renderContasTabs();
   renderContasTabela();
   const btn=document.getElementById('btn-nova-conta');
@@ -1826,7 +1840,9 @@ async function salvarContasDB(mes,ano){
 async function trocarMesContas(){
   const mes=parseInt(document.getElementById('mes-contas').value);
   const ano=parseInt(document.getElementById('ano-contas').value);
-  await carregarContas(mes,ano);
+  const k=chave(mes,ano);
+  // Cache: só busca se não tem dados
+  if(!contasData[k])await carregarContas(mes,ano);
   renderContasTabs();
   renderContasTabela();
 }
@@ -1904,8 +1920,8 @@ function renderContasTabela(){
     else if(isV){sCls='background:#FCEBEB;color:#A32D2D;border:0.5px solid #F7C1C1';sTxt='⚠ Vencida';}
     else if(isA){sCls='background:#FAEEDA;color:#854F0B;border:0.5px solid #FAC775';sTxt='🔔 Amanhã';}
     else{sCls='background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)';sTxt='○ Pendente';}
-    const arqHtml=c.arquivo
-      ?`<a href="${c.arquivo}" download="${c.arquivoNome||'arquivo'}" target="_blank" style="font-size:11px;padding:2px 8px;border-radius:99px;background:#E6F1FB;color:#0C447C;font-weight:500;text-decoration:none">📄 ${(c.arquivoNome||'Ver').substring(0,12)}</a>`
+    const arqHtml=c.arquivoNome
+      ?`<button onclick="abrirArquivoConta('${c.id}')" style="font-size:11px;padding:2px 8px;border-radius:99px;background:#E6F1FB;color:#0C447C;font-weight:500;text-decoration:none;border:none;cursor:pointer">📄 ${(c.arquivoNome||'Ver').substring(0,12)}</button>`
       :'<span style="color:var(--color-text-secondary);font-size:12px">—</span>';
     const icon=icones[c.desc]||'ti-receipt';
     const vencStyle=isV?'color:#A32D2D;font-weight:500':isA?'color:#854F0B;font-weight:500':'color:var(--color-text-primary)';
@@ -1969,6 +1985,16 @@ async function togglePagoConta(id){
   c.pago=!c.pago;c.dataPago=c.pago?new Date().toLocaleDateString('pt-BR'):null;
   await salvarContasDB(mes,ano);renderContasTabela();renderContasTabs();
 }
+
+function abrirArquivoConta(id){
+  const{k}=getContasMes();
+  const c=contasData[k]?.[contasClinicaAtiva]?.[id];
+  if(!c||!c.arquivo)return;
+  const a=document.createElement('a');
+  a.href=c.arquivo;a.download=c.arquivoNome||'arquivo';a.target='_blank';
+  a.click();
+}
+window['_m_abrirArquivoConta']=abrirArquivoConta;
 window['_m_togglePagoConta']=togglePagoConta;
 
 function abrirModalConta(clinica){
@@ -2129,13 +2155,17 @@ async function trocarMesFolha(){
   const mes=parseInt(document.getElementById('mes-folha').value);
   const ano=parseInt(document.getElementById('ano-folha').value);
   const k=chave(mes,ano);
-  const [lancData,pagData,contasDb,folhaDb]=await Promise.all([
-    dbGet('lancamentos/'+k),dbGet('pagEdit/'+k),dbGet('contas/'+k),dbGet('folha/'+k)
-  ]);
-  if(lancData)dadosLanc[k]=lancData;
-  if(pagData)pagEdit[k]=pagData;
-  if(contasDb){if(!contasData[k])contasData[k]={};Object.assign(contasData[k],contasDb);}
-  folhaData[k]=folhaDb||{};
+  // Cache: só busca se não tem dados
+  const precisaBuscar=!dadosLanc[k]||!contasData[k]||!folhaData[k];
+  if(precisaBuscar){
+    const [lancData,pagData,contasDb,folhaDb]=await Promise.all([
+      dbGet('lancamentos/'+k),dbGet('pagEdit/'+k),dbGet('contas/'+k),dbGet('folha/'+k)
+    ]);
+    if(lancData)dadosLanc[k]=lancData;
+    if(pagData)pagEdit[k]=pagData;
+    if(contasDb){if(!contasData[k])contasData[k]={};Object.assign(contasData[k],contasDb);}
+    folhaData[k]=folhaDb||{};
+  }
   renderFolhaTabs();renderFolhaTabela();
 }
 window['_m_trocarMesFolha']=trocarMesFolha;
