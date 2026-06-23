@@ -696,16 +696,18 @@ let _dadosCarregados = false;
 let _mesAtivo = null;
 
 async function carregarTudo() {
-  if(_dadosCarregados) return; // já carregado, não busca de novo
-  // Busca TUDO em uma única roundtrip ao Firebase
-  const snapshot = await dbGet('/');
-  if(!snapshot) return;
-  if(snapshot.config) cfg = Object.assign(cfg, snapshot.config);
-  if(snapshot.lancamentos) dadosLanc = snapshot.lancamentos;
-  if(snapshot.pagEdit) pagEdit = snapshot.pagEdit;
-  if(snapshot.contas) contasData = snapshot.contas;
-  if(snapshot.folha) folhaData = snapshot.folha;
-  _dadosCarregados = true;
+  if(_dadosCarregados) return;
+  // Carrega dados leves primeiro (sem PDFs)
+  const [cfgData,lancData,pagData,folhaDb]=await Promise.all([
+    dbGet('config'),dbGet('lancamentos'),dbGet('pagEdit'),dbGet('folha')
+  ]);
+  if(cfgData) cfg=Object.assign(cfg,cfgData);
+  if(lancData) dadosLanc=lancData;
+  if(pagData) pagEdit=pagData;
+  if(folhaDb) folhaData=folhaDb;
+  _dadosCarregados=true;
+  // Contas carregam em background (podem ter PDFs pesados em base64 antigo)
+  dbGet('contas').then(d=>{if(d)contasData=d;}).catch(()=>{});
 }
 
 // Invalidar cache quando salva dados
@@ -1920,7 +1922,7 @@ function renderContasTabela(){
     else if(isV){sCls='background:#FCEBEB;color:#A32D2D;border:0.5px solid #F7C1C1';sTxt='⚠ Vencida';}
     else if(isA){sCls='background:#FAEEDA;color:#854F0B;border:0.5px solid #FAC775';sTxt='🔔 Amanhã';}
     else{sCls='background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)';sTxt='○ Pendente';}
-    const arqHtml=c.arquivoNome
+    const arqHtml=(c.arquivoNome||c.arquivoUrl)
       ?`<button onclick="abrirArquivoConta('${c.id}')" style="font-size:11px;padding:2px 8px;border-radius:99px;background:#E6F1FB;color:#0C447C;font-weight:500;text-decoration:none;border:none;cursor:pointer">📄 ${(c.arquivoNome||'Ver').substring(0,12)}</button>`
       :'<span style="color:var(--color-text-secondary);font-size:12px">—</span>';
     const icon=icones[c.desc]||'ti-receipt';
@@ -1989,10 +1991,15 @@ async function togglePagoConta(id){
 function abrirArquivoConta(id){
   const{k}=getContasMes();
   const c=contasData[k]?.[contasClinicaAtiva]?.[id];
-  if(!c||!c.arquivo)return;
-  const a=document.createElement('a');
-  a.href=c.arquivo;a.download=c.arquivoNome||'arquivo';a.target='_blank';
-  a.click();
+  if(!c)return;
+  const url=c.arquivoUrl||c.arquivo||''; // suporta Storage URL e base64 antigo
+  if(!url){alert('Nenhum arquivo anexado.');return;}
+  if(url.startsWith('http')){
+    window.open(url,'_blank'); // URL do Storage — abre direto
+  } else {
+    const a=document.createElement('a');
+    a.href=url;a.download=c.arquivoNome||'arquivo';a.click();
+  }
 }
 window['_m_abrirArquivoConta']=abrirArquivoConta;
 window['_m_togglePagoConta']=togglePagoConta;
@@ -2498,13 +2505,27 @@ window['_m_editarConta']=editarConta;
 
 function handleArquivoConta(input){
   const file=input.files[0];if(!file)return;
-  if(file.size>5*1024*1024){alert('Máximo 5MB.');return;}
+  if(file.size>10*1024*1024){alert('Máximo 10MB.');return;}
   contaArquivoNome=file.name;
-  const r=new FileReader();
-  r.onload=e=>{contaArquivoBase64=e.target.result;const p=document.getElementById('upload-preview-conta');p.style.display='block';p.textContent='📎 '+file.name;};
-  r.readAsDataURL(file);
+  contaArquivoBase64='';
+  const p=document.getElementById('upload-preview-conta');
+  p.style.display='block';p.textContent='📎 '+file.name;
+  window._contaArquivoFile=file;
 }
 window['_m_handleArquivoConta']=handleArquivoConta;
+
+async function uploadCloudinary(file){
+  const CLOUD='dicoo9wqg';
+  const PRESET='clinicas_upload'; // upload preset sem assinatura
+  const form=new FormData();
+  form.append('file',file);
+  form.append('upload_preset',PRESET);
+  form.append('folder','contas_clinicas');
+  const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/auto/upload`,{method:'POST',body:form});
+  if(!r.ok)throw new Error('Erro upload Cloudinary: '+r.status);
+  const d=await r.json();
+  return{url:d.secure_url,nome:file.name,publicId:d.public_id};
+}
 
 async function salvarConta(){
   const desc=document.getElementById('conta-desc').value.trim();if(!desc){alert('Digite a descrição.');return;}
