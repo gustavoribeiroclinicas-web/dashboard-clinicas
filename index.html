@@ -1602,12 +1602,51 @@ window['_m_salvarSheets']=salvarSheets;
 
 // ── BACKUP ────────────────────────────────────────────
 function exportarBackup(){
-  const backup={versao:'2.0',exportadoEm:new Date().toLocaleString('pt-BR'),cfg,lancamentos:dadosLanc,pagEdit};
-  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');
-  a.href=url;a.download=`backup_clinicas_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'_')}.json`;
-  a.click();URL.revokeObjectURL(url);
+  exportarBackupCompleto();
 }
+
+async function exportarBackupCompleto(){
+  const btn=document.querySelector('button[onclick="exportarBackupCompleto()"]');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Gerando...';}
+  try{
+    // Busca TUDO do Firebase — lançamentos, pagamentos, contas, folha, config
+    const [cfgData,lancData,pagData,contasDb,folhaDb]=await Promise.all([
+      dbGet('config'),
+      dbGet('lancamentos'),
+      dbGet('pagEdit'),
+      dbGet('contas'),
+      dbGet('folha')
+    ]);
+    const agora=new Date();
+    const backup={
+      versao:'3.0',
+      exportadoEm:agora.toLocaleString('pt-BR'),
+      mes:agora.getMonth()+1,
+      ano:agora.getFullYear(),
+      cfg:cfgData||cfg,
+      lancamentos:lancData||dadosLanc,
+      pagEdit:pagData||pagEdit,
+      contas:contasDb||contasData,
+      folha:folhaDb||folhaData
+    };
+    const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const dataStr=agora.toLocaleDateString('pt-BR').replace(/\//g,'_');
+    a.href=url;a.download=`backup_clinicas_${dataStr}.json`;
+    a.click();URL.revokeObjectURL(url);
+    // Registra data do último backup
+    localStorage.setItem('cl_ultimo_backup',agora.toLocaleString('pt-BR'));
+    const el=document.getElementById('ultimo-backup-data');
+    if(el)el.textContent=agora.toLocaleString('pt-BR');
+    alert('✅ Backup gerado com sucesso!\nInclui: lançamentos, pagamentos, contas, folha e configurações.');
+  }catch(e){
+    alert('Erro ao gerar backup: '+e.message);
+    console.error(e);
+  }
+  if(btn){btn.disabled=false;btn.textContent='⬇ Exportar backup completo';}
+}
+window['_m_exportarBackupCompleto']=exportarBackupCompleto;
 async function importarBackup(input){
   const file=input.files[0];if(!file)return;
   if(!confirm('Importar backup? Isso vai substituir todos os dados atuais.'))return;
@@ -1618,10 +1657,14 @@ async function importarBackup(input){
       if(backup.cfg)cfg=Object.assign(cfg,backup.cfg);
       if(backup.lancamentos)dadosLanc=backup.lancamentos;
       if(backup.pagEdit)pagEdit=backup.pagEdit;
+      if(backup.contas)contasData=backup.contas;
+      if(backup.folha)folhaData=backup.folha;
       await salvarCfg();
       for(const k of Object.keys(dadosLanc))await dbSet('lancamentos/'+k,dadosLanc[k]);
       for(const k of Object.keys(pagEdit))await dbSet('pagEdit/'+k,pagEdit[k]);
-      alert('✅ Backup restaurado!');renderDash();renderAlertas();
+      for(const k of Object.keys(contasData))await dbSet('contas/'+k,contasData[k]);
+      for(const k of Object.keys(folhaData))await dbSet('folha/'+k,folhaData[k]);
+      alert('✅ Backup restaurado!\nExportado em: '+(backup.exportadoEm||'—'));renderDash();renderAlertas();
     }catch(err){alert('Erro: '+err.message);}
   };
   reader.readAsText(file);input.value='';
