@@ -1988,24 +1988,38 @@ async function togglePagoConta(id){
   await salvarContasDB(mes,ano);renderContasTabela();renderContasTabs();
 }
 
-function abrirArquivoConta(id){
+async function abrirArquivoConta(id){
   const{k}=getContasMes();
   const c=contasData[k]?.[contasClinicaAtiva]?.[id];
   if(!c)return;
-  let url=c.arquivoUrl||c.arquivo||'';
+  const url=c.arquivoUrl||c.arquivo||'';
   if(!url){alert('Nenhum arquivo anexado.');return;}
-  // Para URLs do Cloudinary — adiciona fl_attachment para forçar download correto
-  if(url.includes('cloudinary.com')&&url.includes('/image/upload/')){
-    url=url.replace('/image/upload/','/image/upload/fl_attachment/');
+
+  // Base64 antigo — abre direto
+  if(url.startsWith('data:')){
+    const a=document.createElement('a');
+    a.href=url;a.download=c.arquivoNome||'arquivo';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    return;
   }
-  // Para URLs raw já corretas — mantém como está
-  const a=document.createElement('a');
-  a.href=url;
-  a.download=c.arquivoNome||'arquivo';
-  a.target='_blank';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+
+  // URL do Cloudinary — busca via fetch e abre como blob
+  try{
+    const btn=document.querySelector(`button[onclick="abrirArquivoConta('${id}')"]`);
+    if(btn){btn.textContent='⏳';btn.disabled=true;}
+    const resp=await fetch(url);
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const blob=await resp.blob();
+    const blobUrl=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=blobUrl;a.download=c.arquivoNome||'arquivo';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(blobUrl),5000);
+    if(btn){btn.textContent='📄 '+(c.arquivoNome||'Ver').substring(0,12);btn.disabled=false;}
+  }catch(e){
+    // Fallback — abre em nova aba
+    window.open(url,'_blank');
+  }
 }
 window['_m_abrirArquivoConta']=abrirArquivoConta;
 window['_m_togglePagoConta']=togglePagoConta;
