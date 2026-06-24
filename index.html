@@ -1994,10 +1994,11 @@ function abrirArquivoConta(id){
   if(!c)return;
   let url=c.arquivoUrl||c.arquivo||'';
   if(!url){alert('Nenhum arquivo anexado.');return;}
-  // Corrige URLs antigas do Cloudinary que usavam /image/upload/ para PDFs
+  // Para URLs do Cloudinary — adiciona fl_attachment para forçar download correto
   if(url.includes('cloudinary.com')&&url.includes('/image/upload/')){
-    url=url.replace('/image/upload/','/raw/upload/');
+    url=url.replace('/image/upload/','/image/upload/fl_attachment/');
   }
+  // Para URLs raw já corretas — mantém como está
   const a=document.createElement('a');
   a.href=url;
   a.download=c.arquivoNome||'arquivo';
