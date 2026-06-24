@@ -1992,14 +1992,19 @@ function abrirArquivoConta(id){
   const{k}=getContasMes();
   const c=contasData[k]?.[contasClinicaAtiva]?.[id];
   if(!c)return;
-  const url=c.arquivoUrl||c.arquivo||''; // suporta Storage URL e base64 antigo
+  let url=c.arquivoUrl||c.arquivo||'';
   if(!url){alert('Nenhum arquivo anexado.');return;}
-  if(url.startsWith('http')){
-    window.open(url,'_blank'); // URL do Storage — abre direto
-  } else {
-    const a=document.createElement('a');
-    a.href=url;a.download=c.arquivoNome||'arquivo';a.click();
+  // Corrige URLs antigas do Cloudinary que usavam /image/upload/ para PDFs
+  if(url.includes('cloudinary.com')&&url.includes('/image/upload/')){
+    url=url.replace('/image/upload/','/raw/upload/');
   }
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=c.arquivoNome||'arquivo';
+  a.target='_blank';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 window['_m_abrirArquivoConta']=abrirArquivoConta;
 window['_m_togglePagoConta']=togglePagoConta;
@@ -2521,7 +2526,7 @@ async function uploadCloudinary(file){
   form.append('file',file);
   form.append('upload_preset',PRESET);
   form.append('folder','contas_clinicas');
-  const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/auto/upload`,{method:'POST',body:form});
+  const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/raw/upload`,{method:'POST',body:form});
   if(!r.ok)throw new Error('Erro upload Cloudinary: '+r.status);
   const d=await r.json();
   return{url:d.secure_url,nome:file.name,publicId:d.public_id};
