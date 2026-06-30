@@ -594,8 +594,6 @@ async function carregarTudo() {
   if(pagData) pagEdit=pagData;
   if(folhaDb) folhaData=folhaDb;
   _dadosCarregados=true;
-  // Contas carregam em background (podem ter PDFs pesados em base64 antigo)
-  dbGet('contas').then(d=>{if(d)contasData=d;}).catch(()=>{});
 }
 
 // Invalidar cache quando salva dados
@@ -1153,13 +1151,8 @@ function renderAlertas(){
     const faltando=uteis.filter(d=>!lancados.includes(d));
     if(faltando.length)problemas.push(`<strong>${cl}</strong>: ${faltando.map(d=>'dia '+d).join(', ')}`);
   });
-  // Alertas de contas
-  let contasAlertas = {vencidas:[], proximas:[]};
-  try { contasAlertas = renderAlertasContas() || {vencidas:[],proximas:[]}; } catch(e){}
   let html='';
   if(problemas.length)html+=`<div class="alerta-box aviso"><span style="font-size:16px">⚠️</span><span><strong>Dias sem lançamento:</strong><br>${problemas.join('<br>')}</span></div>`;
-  if(contasAlertas.vencidas?.length) html+=`<div class="alerta-box erro"><span style="font-size:16px">🔴</span><span><strong>Contas vencidas:</strong><br>${contasAlertas.vencidas.join('<br>')}</span></div>`;
-  if(contasAlertas.proximas?.length) html+=`<div class="alerta-box aviso"><span style="font-size:16px">🟡</span><span><strong>Vencem amanhã:</strong><br>${contasAlertas.proximas.join('<br>')}</span></div>`;
   if(!html)html=`<div class="alerta-box ok"><span>✅</span><span>Todos os lançamentos em dia!</span></div>`;
   area.innerHTML=html;
 }
@@ -1288,9 +1281,6 @@ function renderDiasEdicao(){
   if(!clinica){lista.innerHTML='';return;}
   const agora=hoje();
   const lancados=getDiasLancados(clinica,mes,ano);
-  // Alertas de contas
-  let contasAlertas = {vencidas:[], proximas:[]};
-  try { contasAlertas = renderAlertasContas() || {vencidas:[],proximas:[]}; } catch(e){}
   let html='';const totalDias=new Date(ano,mes,0).getDate();
   for(let d=1;d<=totalDias;d++){
     const data=new Date(ano,mes-1,d);
@@ -1511,12 +1501,11 @@ async function exportarBackupCompleto(){
   const btn=document.querySelector('button[onclick="exportarBackupCompleto()"]');
   if(btn){btn.disabled=true;btn.textContent='⏳ Gerando...';}
   try{
-    // Busca TUDO do Firebase — lançamentos, pagamentos, contas, folha, config
-    const [cfgData,lancData,pagData,contasDb,folhaDb]=await Promise.all([
+    // Busca TUDO do Firebase — lançamentos, pagamentos, folha, config
+    const [cfgData,lancData,pagData,folhaDb]=await Promise.all([
       dbGet('config'),
       dbGet('lancamentos'),
       dbGet('pagEdit'),
-      dbGet('contas'),
       dbGet('folha')
     ]);
     const agora=new Date();
@@ -1528,7 +1517,6 @@ async function exportarBackupCompleto(){
       cfg:cfgData||cfg,
       lancamentos:lancData||dadosLanc,
       pagEdit:pagData||pagEdit,
-      contas:contasDb||contasData,
       folha:folhaDb||folhaData
     };
     const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
@@ -1707,12 +1695,11 @@ async function initFolha(){
   const mes=parseInt(document.getElementById('mes-folha').value);
   const ano=parseInt(document.getElementById('ano-folha').value);
   const k=chave(mes,ano);
-  const [lancData,pagData,contasDb,folhaDb]=await Promise.all([
-    dbGet('lancamentos/'+k),dbGet('pagEdit/'+k),dbGet('contas/'+k),dbGet('folha/'+k)
+  const [lancData,pagData,folhaDb]=await Promise.all([
+    dbGet('lancamentos/'+k),dbGet('pagEdit/'+k),dbGet('folha/'+k)
   ]);
   if(lancData)dadosLanc[k]=lancData;
   if(pagData)pagEdit[k]=pagData;
-  if(contasDb){if(!contasData[k])contasData[k]={};Object.assign(contasData[k],contasDb);}
   folhaData[k]=folhaDb||{};
   folhaClinicaAtiva=CLINICAS[0];
   renderFolhaTabs();
@@ -1731,14 +1718,13 @@ async function trocarMesFolha(){
   const ano=parseInt(document.getElementById('ano-folha').value);
   const k=chave(mes,ano);
   // Cache: só busca se não tem dados
-  const precisaBuscar=!dadosLanc[k]||!contasData[k]||!folhaData[k];
+  const precisaBuscar=!dadosLanc[k]||!folhaData[k];
   if(precisaBuscar){
-    const [lancData,pagData,contasDb,folhaDb]=await Promise.all([
-      dbGet('lancamentos/'+k),dbGet('pagEdit/'+k),dbGet('contas/'+k),dbGet('folha/'+k)
+    const [lancData,pagData,folhaDb]=await Promise.all([
+      dbGet('lancamentos/'+k),dbGet('pagEdit/'+k),dbGet('folha/'+k)
     ]);
     if(lancData)dadosLanc[k]=lancData;
     if(pagData)pagEdit[k]=pagData;
-    if(contasDb){if(!contasData[k])contasData[k]={};Object.assign(contasData[k],contasDb);}
     folhaData[k]=folhaDb||{};
   }
   renderFolhaTabs();renderFolhaTabela();
@@ -1755,9 +1741,6 @@ function calcTotalFolhaClinica(cl,k){
   const{mes,ano}=getFolhaMes();
   const d=getTotais(cl,mes,ano);let total=0;
   d.profs.forEach(p=>{const ed=getPagEdit(mes,ano,cl,p.nome);const pg=ed!==undefined?ed:p.total;total+=p.tipo==='psico'?pg*cfg.valP:pg*cfg.valM;});
-  const contasK=chave(mes,ano);
-  const diarista=Object.values(contasData[contasK]?.[cl]||{}).find(c=>c.desc&&c.desc.trim().toLowerCase()==='diarista'&&!c.padrao&&c.valor);
-  if(diarista)total+=parseFloat(diarista.valor)||0;
   Object.values(folhaData[k]?.[cl]||{}).forEach(item=>{total+=(parseFloat(item.valor)||0)+(parseFloat(item.vt)||0)-(parseFloat(item.desconto)||0)+(parseFloat(item.extra)||0);});
   return total;
 }
@@ -1793,10 +1776,6 @@ function renderFolhaTabela(){
   const findLinha=(tipo)=>Object.entries(folhaCl).find(([id,item])=>item.tipo===tipo);
   const linhaEstag=findLinha('estagiaria');
   const linhaDiar=findLinha('diarista_manual');
-  // Diarista automática de Contas
-  const contasK=chave(mes,ano);
-  const contasDiarista=Object.values(contasData[contasK]?.[folhaClinicaAtiva]||{}).find(c=>c.desc&&c.desc.trim().toLowerCase()==='diarista'&&!c.padrao&&c.valor);
-  const valorDiaristaAuto=contasDiarista?parseFloat(contasDiarista.valor)||0:0;
 
   const renderLinhaAuto=(nome,cargo,cor,valor,origem)=>{
     totalGeral+=valor;
@@ -1847,38 +1826,12 @@ function renderFolhaTabela(){
     linhaEstag?linhaEstag[0]:null,linhaEstag?linhaEstag[1]:null,'estagiaria'
   );
 
-  // 2. Diarista — automática se veio de Contas, senão editável manualmente
-  if(valorDiaristaAuto>0){
-    rows+=renderLinhaAuto('Diarista','Diarista','#6b6b66',valorDiaristaAuto,'via Contas');
-    // Permite ajuste manual também (desconto/extra)
-    if(linhaDiar){
-      const desc=parseFloat(linhaDiar[1].desconto)||0;
-      const extra=parseFloat(linhaDiar[1].extra)||0;
-      if(desc>0||extra>0){
-        totalGeral+=(-desc+extra);
-        rows+=`<tr style="background:#f5f4f0">
-          <td style="padding:6px 14px 10px 30px;border-bottom:0.5px solid #e0dfd8;color:#6b6b66;font-size:12px">↳ Ajuste diarista</td>
-          <td style="padding:6px 14px 10px;border-bottom:0.5px solid #e0dfd8"></td>
-          <td style="padding:6px 14px 10px;border-bottom:0.5px solid #e0dfd8"></td>
-          <td style="padding:6px 14px 10px;border-bottom:0.5px solid #e0dfd8;text-align:right;color:#a32d2d;font-family:'DM Mono',monospace;font-size:12px">${desc>0?'–'+fmt(desc):''}</td>
-          <td style="padding:6px 14px 10px;border-bottom:0.5px solid #e0dfd8;text-align:right;color:#3b6d11;font-family:'DM Mono',monospace;font-size:12px">${extra>0?'+'+fmt(extra):''}</td>
-          <td colspan="2" style="padding:6px 14px 10px;border-bottom:0.5px solid #e0dfd8;text-align:right">
-            <button onclick="editarLinhaFixa('diarista_manual')" style="background:none;border:none;cursor:pointer;font-size:13px">✏️</button>
-          </td>
-        </tr>`;
-      }
-    } else {
-      rows+=`<tr style="background:#f5f4f0"><td colspan="7" style="padding:6px 14px 10px 30px;border-bottom:0.5px solid #e0dfd8;font-size:12px;color:#a0a09a">
-        ↳ <button onclick="editarLinhaFixa('diarista_manual')" style="background:none;border:none;cursor:pointer;color:#534AB7;font-size:12px;text-decoration:underline">+ Adicionar desconto/extra para diarista</button>
-      </td></tr>`;
-    }
-  } else {
-    rows+=renderLinhaEditavel(
-      linhaDiar?linhaDiar[1].nome||'Diarista':'Diarista',
-      'Diarista','#6b6b66',
-      linhaDiar?linhaDiar[0]:null,linhaDiar?linhaDiar[1]:null,'diarista_manual'
-    );
-  }
+  // 2. Diarista (sempre aparece, editável)
+  rows+=renderLinhaEditavel(
+    linhaDiar?linhaDiar[1].nome||'Diarista':'Diarista',
+    'Diarista','#6b6b66',
+    linhaDiar?linhaDiar[0]:null,linhaDiar?linhaDiar[1]:null,'diarista_manual'
+  );
 
   // 3. Psicólogas e Médicas (automáticas de Pagamentos)
   d.profs.forEach(p=>{
@@ -1930,7 +1883,7 @@ function renderFolhaTabela(){
       <tbody>${rows}</tbody>
     </table></div>
     <div style="padding:12px 1.25rem;background:#efefeb;border-top:1px solid #e0dfd8;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-      <span style="font-size:12px;color:#6b6b66">🔒 Psicóloga/Médica via Pagamentos · 🔒 Diarista via Contas (quando cadastrada)</span>
+      <span style="font-size:12px;color:#6b6b66">🔒 Psicóloga/Médica via Pagamentos</span>
       <span style="font-size:13px;color:#6b6b66">Total: <strong style="font-size:16px;font-weight:600;font-family:'DM Mono',monospace;color:#1a1a18">${fmt(totalGeral)}</strong></span>
     </div>
   </div>`;
@@ -2041,10 +1994,12 @@ function exportarFolhaPDF(clinica,mes,ano){
     rows+=`<tr><td style="padding:8px 12px;border-bottom:1px solid #f0efe8"><span style="font-size:10px;color:#888;text-transform:uppercase;font-weight:600">${cargo}</span><br><strong>${nome}</strong></td><td style="padding:8px 12px;border-bottom:1px solid #f0efe8;text-align:right;font-family:'Courier New',monospace">${fmtN(valor)}</td><td style="padding:8px 12px;border-bottom:1px solid #f0efe8;text-align:right;font-family:'Courier New',monospace">${vtN>0?'+'+fmtN(vtN):'—'}</td><td style="padding:8px 12px;border-bottom:1px solid #f0efe8;text-align:right;font-family:'Courier New',monospace;color:#A32D2D">${descN>0?'–'+fmtN(descN):'—'}</td><td style="padding:8px 12px;border-bottom:1px solid #f0efe8;text-align:right;font-family:'Courier New',monospace;color:#3B6D11">${extraN>0?'+'+fmtN(extraN):'—'}</td><td style="padding:8px 12px;border-bottom:1px solid #f0efe8;text-align:right;font-weight:700;font-family:'Courier New',monospace">${fmtN(total)}</td></tr>`;
   };
   d.profs.forEach(p=>{const ed=getPagEdit(mes,ano,clinica,p.nome);const pg=ed!==undefined?ed:p.total;addLinha(p.nome,p.tipo==='psico'?'Psicóloga':'Médica',p.tipo==='psico'?pg*cfg.valP:pg*cfg.valM,0,0,0);});
-  const contasK=chave(mes,ano);
-  const diarista=Object.values(contasData[contasK]?.[clinica]||{}).find(c=>c.desc&&c.desc.trim().toLowerCase()==='diarista'&&!c.padrao&&c.valor);
-  if(diarista&&diarista.valor)addLinha('Diarista','Diarista',parseFloat(diarista.valor)||0,0,0,0);
-  Object.values(folhaData[k]?.[clinica]||{}).forEach(item=>addLinha(item.cargo,'Cargo',parseFloat(item.valor)||0,item.vt,item.desconto,item.extra));
+  const folhaClPdf=folhaData[k]?.[clinica]||{};
+  const estagPdf=Object.values(folhaClPdf).find(item=>item.tipo==='estagiaria');
+  if(estagPdf)addLinha(estagPdf.nome||'Estagiária','Estagiária',parseFloat(estagPdf.valor)||0,estagPdf.vt,estagPdf.desconto,estagPdf.extra);
+  const diarPdf=Object.values(folhaClPdf).find(item=>item.tipo==='diarista_manual');
+  if(diarPdf)addLinha(diarPdf.nome||'Diarista','Diarista',parseFloat(diarPdf.valor)||0,diarPdf.vt,diarPdf.desconto,diarPdf.extra);
+  Object.values(folhaClPdf).filter(item=>item.tipo==='extra').forEach(item=>addLinha(item.cargo,'Cargo',parseFloat(item.valor)||0,item.vt,item.desconto,item.extra));
   const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Folha — ${clinica} — ${MESES[mes-1]} ${ano}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;font-size:12px;color:#1a1a18;padding:28px}.header{display:flex;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #534AB7}h1{font-size:20px;font-weight:700;color:#534AB7;margin-bottom:2px}table{width:100%;border-collapse:collapse;margin-bottom:16px}thead tr{background:#f5f4f0}th{padding:9px 12px;text-align:left;font-size:10px;font-weight:600;color:#6b6b66;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #e0dfd8}th.r{text-align:right}tbody tr:nth-child(even){background:#fafaf8}.total-box{background:#534AB7;color:#fff;border-radius:8px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}.rodape{margin-top:20px;font-size:10px;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:10px}@media print{body{padding:14px}}</style></head><body><div class="header"><div><h1>${clinica}</h1><p style="font-size:12px;color:#6b6b66">Folha de pagamento — ${MESES[mes-1]} de ${ano}</p></div><div style="font-size:11px;color:#888">Gerado em ${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</div></div><table><thead><tr><th>Cargo / Nome</th><th class="r">Valor base</th><th class="r">VT</th><th class="r">Desconto</th><th class="r">Extra</th><th class="r">Total</th></tr></thead><tbody>${rows}</tbody></table><div class="total-box"><span>Total da folha — ${clinica}</span><span style="font-size:20px;font-weight:700;font-family:'Courier New',monospace">${fmtN(totalGeral)}</span></div><div class="rodape">Sistema de Clínicas — documento gerado automaticamente</div></body></html>`;
   const w=window.open('','_blank');w.document.write(html);w.document.close();w.focus();setTimeout(()=>w.print(),500);
 }
