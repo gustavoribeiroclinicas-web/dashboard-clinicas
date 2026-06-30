@@ -283,7 +283,6 @@ input:checked+.slider:before{transform:translateX(20px)}
     <div class="nav-tab" id="tab-pag" onclick="showPage('pagamentos',this)">Pagamentos</div>
     <div class="nav-tab" id="tab-lanc" onclick="showPage('lancamento',this)">Lançamento</div>
     <div class="nav-tab" id="tab-cfg" onclick="showPage('config',this)">Configurações</div>
-    <div class="nav-tab" id="tab-contas" onclick="showPage('contas',this)">Contas</div>
     <div class="nav-tab" id="tab-folha" onclick="showPage('folha',this)">Folha</div>
     <div class="topbar-right">
       <div class="user-chip" id="user-chip"></div>
@@ -450,85 +449,6 @@ input:checked+.slider:before{transform:translateX(20px)}
   </div>
 </div>
 
-<!-- MODAL CONTA A PAGAR -->
-<div id="modal-conta" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem" onclick="if(event.target===this)fecharModalConta()">
-  <div style="background:var(--surface);border-radius:var(--radius);max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)">
-    <div style="padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1">
-      <span style="font-size:15px;font-weight:600" id="modal-conta-titulo">Nova conta</span>
-      <button onclick="fecharModalConta()" style="width:30px;height:30px;border-radius:50%;border:none;background:var(--surface2);cursor:pointer;font-size:18px;color:var(--muted)">×</button>
-    </div>
-    <div style="padding:1.25rem">
-      <input type="hidden" id="conta-id">
-      <input type="hidden" id="conta-clinica-hidden">
-
-      <div style="margin-bottom:14px">
-        <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Clínica</label>
-        <select id="conta-clinica-sel" style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);cursor:pointer">
-          <option value="">Selecione a clínica...</option>
-          <option value="Boa Vista">Boa Vista</option><option value="Bacacheri">Bacacheri</option>
-          <option value="ColomboMed">ColomboMed</option><option value="Etika SJP">Etika SJP</option>
-          <option value="FRG">FRG</option><option value="GPTRAN">GPTRAN</option>
-          <option value="Galeb">Galeb</option><option value="Hauer">Hauer</option>
-          <option value="Lifetran">Lifetran</option><option value="MM">MM</option>
-          <option value="PrimeMed">PrimeMed</option><option value="PPTRAN">PPTRAN</option>
-          <option value="Rio Sul">Rio Sul</option><option value="São José">São José</option>
-          <option value="Tolmac">Tolmac</option>
-        </select>
-      </div>
-
-      <div style="margin-bottom:14px">
-        <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Descrição</label>
-        <input type="text" id="conta-desc" placeholder="Ex: Aluguel, Copel, Sanepar..."
-          style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text)"
-          onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='var(--border)'">
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
-        <div>
-          <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Vencimento</label>
-          <input type="date" id="conta-venc"
-            style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text)"
-            onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='var(--border)'">
-        </div>
-        <div>
-          <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Valor (R$)</label>
-          <input type="number" id="conta-valor" placeholder="0,00" min="0" step="0.01"
-            style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text)"
-            onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='var(--border)'">
-        </div>
-      </div>
-
-      <div style="margin-bottom:14px">
-        <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Arquivo (PDF ou imagem)</label>
-        <div id="upload-area-conta" onclick="document.getElementById('conta-arquivo-input').click()"
-          style="border:2px dashed var(--border);border-radius:var(--radius-sm);padding:1.2rem;text-align:center;cursor:pointer;transition:all .15s;background:var(--surface2)"
-          onmouseover="this.style.borderColor='var(--purple)';this.style.background='var(--purple-light)'"
-          onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'">
-          <input type="file" id="conta-arquivo-input" accept=".pdf,image/*" style="display:none" onchange="handleArquivoConta(this)">
-          <div style="font-size:22px;margin-bottom:4px">📎</div>
-          <div style="font-size:13px;color:var(--muted)">Clique para anexar</div>
-          <div style="font-size:11px;color:var(--hint);margin-top:2px">PDF ou imagem • máx. 5MB</div>
-          <div id="upload-preview-conta" style="display:none;font-size:12px;color:var(--green);margin-top:6px;font-weight:500"></div>
-        </div>
-      </div>
-
-      <div style="margin-bottom:18px">
-        <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600">Observação</label>
-        <textarea id="conta-obs" placeholder="Informações adicionais..." rows="2"
-          style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);resize:vertical"
-          onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='var(--border)'"></textarea>
-      </div>
-
-      <div style="display:flex;gap:8px">
-        <button onclick="salvarConta()" class="btn btn-purple" style="flex:1;justify-content:center;padding:11px;font-size:14px">✓ Salvar conta</button>
-        <button id="btn-excluir-conta" onclick="excluirConta()" class="btn" style="color:var(--red);border-color:var(--red-border);display:none;padding:11px">🗑 Excluir</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-  <!-- FOLHA DE PAGAMENTO -->
   <div id="page-folha" class="page">
     <div class="page-header">
       <h2>Folha de pagamento</h2>
@@ -548,26 +468,6 @@ input:checked+.slider:before{transform:translateX(20px)}
     <div id="folha-area"></div>
   </div>
 
-  <!-- CONTAS A PAGAR -->
-  <div id="page-contas" class="page">
-    <div class="page-header">
-      <h2>Contas a pagar</h2>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <select class="sel" id="mes-contas" onchange="trocarMesContas()">
-          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
-          <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
-          <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
-          <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-        </select>
-        <select class="sel" id="ano-contas" onchange="trocarMesContas()">
-          <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
-        </select>
-
-      </div>
-    </div>
-    <div class="clinica-tabs" id="contas-clinica-tabs"></div>
-    <div id="contas-area"></div>
-  </div>
 
 </div>
 
@@ -623,18 +523,6 @@ function exportarBackupCompleto(){ _exec('exportarBackupCompleto',[]); }
 function importarBackup(el){ _exec('importarBackup',[el]); }
 function initLancamento(c){ _exec('initLancamento',[c]); }
 function gerarPDF(){ _exec('gerarPDF',[]); }
-function trocarMesContas(){ _exec('trocarMesContas',[]); }
-function selecionarClinicaContas(c){ _exec('selecionarClinicaContas',[c]); }
-function togglePagoConta(id){ _exec('togglePagoConta',[id]); }
-function abrirArquivoConta(id){ _exec('abrirArquivoConta',[id]); }
-function abrirModalConta(c){ _exec('abrirModalConta',[c]); }
-function abrirModalContaDescricao(d){ _exec('abrirModalContaDescricao',[d]); }
-function fecharModalConta(){ _exec('fecharModalConta',[]); }
-function editarConta(id){ _exec('editarConta',[id]); }
-function handleArquivoConta(el){ _exec('handleArquivoConta',[el]); }
-function salvarConta(){ _exec('salvarConta',[]); }
-function excluirConta(){ _exec('excluirConta',[]); }
-function exportarContasPDF(cl,m,a){ _exec('exportarContasPDF',[cl,m,a]); }
 function trocarMesFolha(){ _exec('trocarMesFolha',[]); }
 function selecionarClinicaFolha(c){ _exec('selecionarClinicaFolha',[c]); }
 function abrirModalFolha(){ _exec('abrirModalFolha',[]); }
@@ -819,7 +707,7 @@ function iniciarGestor() {
   document.getElementById('tela-login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-chip').textContent = '👤 Gestor';
-  ['tab-dash','tab-pag','tab-lanc','tab-cfg','tab-contas','tab-folha'].forEach(id => document.getElementById(id).style.display = '');
+  ['tab-dash','tab-pag','tab-lanc','tab-cfg','tab-folha'].forEach(id => document.getElementById(id).style.display = '');
   initConfig();
   const agora = hoje();
   document.getElementById('mes-sel').value = agora.getMonth()+1;
@@ -835,7 +723,7 @@ function iniciarContabilidade() {
   document.getElementById('tela-login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-chip').textContent = '📊 Contabilidade';
-  ['tab-dash','tab-lanc','tab-cfg','tab-contas','tab-folha'].forEach(id => document.getElementById(id).style.display = 'none');
+  ['tab-dash','tab-lanc','tab-cfg','tab-folha'].forEach(id => document.getElementById(id).style.display = 'none');
   document.getElementById('tab-pag').style.display = '';
   const agora = hoje();
   document.getElementById('mes-pag').value = agora.getMonth()+1;
@@ -848,7 +736,7 @@ function iniciarRecepcao(clinica) {
   document.getElementById('tela-login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-chip').textContent = '🏥 ' + clinica;
-  ['tab-dash','tab-pag','tab-cfg','tab-contas','tab-folha'].forEach(id => document.getElementById(id).style.display = 'none');
+  ['tab-dash','tab-pag','tab-cfg','tab-folha'].forEach(id => document.getElementById(id).style.display = 'none');
   document.getElementById('tab-lanc').style.display = '';
   showPage('lancamento', document.getElementById('tab-lanc'));
   initLancamento(clinica);
@@ -1809,348 +1697,8 @@ function gerarPDF(){
 function fmtN(v){return'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 window['_m_gerarPDF']=gerarPDF;
 
-// ── CONTAS A PAGAR ────────────────────────────────────
+// ── CONTAS (apenas dados, usado pela Folha para Diarista) ────
 let contasData = {};
-let contasClinicaAtiva = CLINICAS[0];
-let contaArquivoBase64 = '';
-let contaArquivoNome = '';
-
-async function initContas(){
-  const mes=parseInt(document.getElementById('mes-contas').value);
-  const ano=parseInt(document.getElementById('ano-contas').value);
-  const k=chave(mes,ano);
-  // Só busca se não tem em cache
-  if(!contasData[k])await carregarContas(mes,ano);
-  renderContasTabs();
-  renderContasTabela();
-  const btn=document.getElementById('btn-nova-conta');
-  if(btn)btn.style.display=perfilAtual==='gestor'?'inline-flex':'none';
-}
-window['_m_initContas']=initContas;
-
-async function carregarContas(mes,ano){
-  const k=chave(mes,ano);
-  const data=await dbGet('contas/'+k);
-  contasData[k]=data||{};
-}
-
-async function salvarContasDB(mes,ano){
-  const k=chave(mes,ano);
-  await dbSet('contas/'+k,contasData[k]||{});
-}
-
-async function trocarMesContas(){
-  const mes=parseInt(document.getElementById('mes-contas').value);
-  const ano=parseInt(document.getElementById('ano-contas').value);
-  const k=chave(mes,ano);
-  // Cache: só busca se não tem dados
-  if(!contasData[k])await carregarContas(mes,ano);
-  renderContasTabs();
-  renderContasTabela();
-}
-window['_m_trocarMesContas']=trocarMesContas;
-
-function getContasMes(){
-  const mes=parseInt(document.getElementById('mes-contas').value);
-  const ano=parseInt(document.getElementById('ano-contas').value);
-  return{k:chave(mes,ano),mes,ano};
-}
-
-function renderContasTabs(){
-  const el=document.getElementById('contas-clinica-tabs');if(!el)return;
-  const{k}=getContasMes();
-  const hoje=new Date();hoje.setHours(0,0,0,0);
-  const amanha=new Date(hoje);amanha.setDate(amanha.getDate()+1);
-  el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:1.25rem">`+
-  CLINICAS.map(cl=>{
-    const contas=Object.values(contasData[k]?.[cl]||{}).filter(c=>!c.padrao);
-    const temV=contas.some(c=>!c.pago&&c.venc&&new Date(c.venc+'T00:00:00')<hoje);
-    const temA=contas.some(c=>!c.pago&&c.venc&&new Date(c.venc+'T00:00:00').getTime()===amanha.getTime());
-    const total=contas.reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
-    const isAtivo=cl===contasClinicaAtiva;
-    const bgAtivo='background:var(--purple,#534AB7);color:#fff;border-color:var(--purple,#534AB7)';
-    const bgVenc='background:#FCEBEB;color:#A32D2D;border-color:#F7C1C1';
-    const bgAmanha='background:#FAEEDA;color:#854F0B;border-color:#FAC775';
-    const bgNormal='background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-tertiary)';
-    const estilo=isAtivo?bgAtivo:temV?bgVenc:temA?bgAmanha:bgNormal;
-    const badge=temV?'<span style="font-size:9px;background:#A32D2D;color:#fff;border-radius:99px;padding:1px 5px;margin-left:4px">⚠</span>':temA?'<span style="font-size:9px;background:#854F0B;color:#fff;border-radius:99px;padding:1px 5px;margin-left:4px">!</span>':'';
-    const totalStr=total>0?`<div style="font-size:11px;margin-top:2px;font-family:var(--font-mono,monospace);opacity:.85">${fmt(total)}</div>`:'<div style="font-size:11px;margin-top:2px;opacity:.5">—</div>';
-    return`<button onclick="selecionarClinicaContas('${cl}')"
-      style="padding:10px 12px;border-radius:10px;border:1px solid;cursor:pointer;text-align:left;font-family:var(--font-sans,sans-serif);transition:all .15s;${estilo}">
-      <div style="font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:space-between">${cl}${badge}</div>
-      ${totalStr}
-    </button>`;
-  }).join('')+'</div>';
-}
-
-function selecionarClinicaContas(clinica){contasClinicaAtiva=clinica;renderContasTabs();renderContasTabela();}
-window['_m_selecionarClinicaContas']=selecionarClinicaContas;
-
-function renderContasTabela(){
-  const area=document.getElementById('contas-area');if(!area)return;
-  const{k,mes,ano}=getContasMes();
-  const contasObj=contasData[k]?.[contasClinicaAtiva]||{};
-
-  // Itens padrão — garante que aparecem sempre
-  const PADRAO=['Copel','Sanepar','Internet','Aluguel','Diarista','CIEE','Sapiens','Pedido de Material'];
-  const contas=Object.entries(contasObj).map(([id,c])=>({...c,id}));
-  const nomesExist=new Set(contas.map(c=>c.desc));
-  PADRAO.forEach(nome=>{
-    if(!nomesExist.has(nome)) contas.push({id:'padrao_'+nome.replace(/\s/g,'_'),desc:nome,venc:'',valor:'',arquivo:'',arquivoNome:'',obs:'',pago:false,padrao:true});
-  });
-  contas.sort((a,b)=>{
-    const ia=PADRAO.indexOf(a.desc),ib=PADRAO.indexOf(b.desc);
-    if(ia>=0&&ib>=0)return ia-ib;
-    if(ia>=0)return -1;if(ib>=0)return 1;
-    return (a.desc||'').localeCompare(b.desc||'');
-  });
-
-  const hoje=new Date();hoje.setHours(0,0,0,0);
-  const amanha=new Date(hoje);amanha.setDate(amanha.getDate()+1);
-  const totalG=contas.filter(c=>!c.padrao&&c.valor).reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
-
-  const icones={'Copel':'ti-bolt','Sanepar':'ti-droplet','Internet':'ti-wifi','Aluguel':'ti-building','Diarista':'ti-user','CIEE':'ti-certificate','Sapiens':'ti-device-desktop','Pedido de Material':'ti-shopping-cart'};
-
-  const rows=contas.map((c,idx)=>{
-    const vd=c.venc?new Date(c.venc+'T00:00:00'):null;
-    const isV=vd&&vd<hoje&&!c.pago;
-    const isA=vd&&vd.getTime()===amanha.getTime()&&!c.pago;
-    const vStr=vd?vd.toLocaleDateString('pt-BR'):'—';
-    const valStr=c.valor?fmt(parseFloat(c.valor)):'—';
-    let sCls,sTxt;
-    if(c.pago){sCls='background:#EAF3DE;color:#3B6D11;border:0.5px solid #C0DD97';sTxt='✓ Pago';}
-    else if(isV){sCls='background:#FCEBEB;color:#A32D2D;border:0.5px solid #F7C1C1';sTxt='⚠ Vencida';}
-    else if(isA){sCls='background:#FAEEDA;color:#854F0B;border:0.5px solid #FAC775';sTxt='🔔 Amanhã';}
-    else{sCls='background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)';sTxt='○ Pendente';}
-    const arqHtml=(c.arquivoNome||c.arquivoUrl)
-      ?`<button onclick="abrirArquivoConta('${c.id}')" style="font-size:11px;padding:2px 8px;border-radius:99px;background:#E6F1FB;color:#0C447C;font-weight:500;text-decoration:none;border:none;cursor:pointer">📄 ${(c.arquivoNome||'Ver').substring(0,12)}</button>`
-      :'<span style="color:var(--color-text-secondary);font-size:12px">—</span>';
-    const icon=icones[c.desc]||'ti-receipt';
-    const vencStyle=isV?'color:#A32D2D;font-weight:500':isA?'color:#854F0B;font-weight:500':'color:var(--color-text-primary)';
-    const editBtn=c.padrao
-      ?`<button onclick="abrirModalContaDescricao('${c.desc}')" style="background:none;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;color:var(--color-text-secondary);font-size:12px;padding:3px 8px">+ Preencher</button>`
-      :`<button onclick="editarConta('${c.id}')" style="background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:15px">✏️</button>`;
-    const toggleBtn=!c.padrao
-      ?`<button onclick="togglePagoConta('${c.id}')" style="display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:99px;${sCls};cursor:pointer;font-family:var(--font-sans);white-space:nowrap">${sTxt}</button>`
-      :`<span style="color:var(--color-text-secondary);font-size:12px">—</span>`;
-    const rowBg=idx%2===0?'var(--color-background-primary)':'var(--color-background-secondary)';
-    return`<tr style="background:${rowBg}">
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);font-weight:500;color:var(--color-text-primary)"><i class="ti ${icon}" style="font-size:15px;vertical-align:-2px;margin-right:6px;color:var(--color-text-secondary)" aria-hidden="true"></i>${c.desc||'—'}</td>
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);${vencStyle}">${vStr}</td>
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:right;font-family:var(--font-mono);color:var(--color-text-primary)">${valStr}</td>
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary)">${arqHtml}</td>
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:center">${toggleBtn}</td>
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.obs||''}">${c.obs||'—'}</td>
-      <td style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary);text-align:center">${editBtn}</td>
-    </tr>`;
-  }).join('');
-
-  area.innerHTML=`<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.04)">
-    <div style="padding:1rem 1.25rem;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-      <div>
-        <div style="font-size:15px;font-weight:500;color:var(--color-text-primary)">${contasClinicaAtiva}</div>
-        <div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px">${MESES[mes-1]} ${ano} · ${contas.filter(c=>!c.padrao).length} conta(s) cadastrada(s)</div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button onclick="exportarContasPDF('${contasClinicaAtiva}',${mes},${ano})" style="font-size:12px;padding:6px 14px;border-radius:99px;background:none;color:#A32D2D;border:1px solid #F7C1C1;cursor:pointer;font-family:var(--font-sans,sans-serif);font-weight:500">📄 Exportar PDF</button>
-        <button onclick="abrirModalConta()" style="font-size:12px;padding:6px 14px;border-radius:99px;background:var(--purple,#534AB7);color:#fff;border:none;cursor:pointer;font-family:var(--font-sans,sans-serif);font-weight:500">+ Nova conta</button>
-      </div>
-    </div>
-    <div style="overflow-x:auto">
-      <table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed">
-        <colgroup><col style="width:20%"><col style="width:13%"><col style="width:12%"><col style="width:15%"><col style="width:13%"><col style="width:18%"><col style="width:9%"></colgroup>
-        <thead>
-          <tr style="background:var(--color-background-secondary)">
-            <th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Descrição</th>
-            <th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Vencimento</th>
-            <th style="padding:8px 14px;text-align:right;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Valor</th>
-            <th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Arquivo</th>
-            <th style="padding:8px 14px;text-align:center;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Status</th>
-            <th style="padding:8px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary);text-transform:uppercase">Observação</th>
-            <th style="padding:8px 14px;border-bottom:0.5px solid var(--color-border-tertiary)"></th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-    <div style="padding:12px 1.25rem;background:var(--color-background-secondary);border-top:0.5px solid var(--color-border-tertiary);display:flex;justify-content:flex-end;align-items:center;gap:1rem;font-size:13px">
-      <span style="color:var(--color-text-secondary)">Total do mês:</span>
-      <span style="font-size:16px;font-weight:500;font-family:var(--font-mono,monospace);color:var(--color-text-primary)">${fmt(totalG)}</span>
-    </div>
-  </div>`;
-}
-
-async function togglePagoConta(id){
-  const{k,mes,ano}=getContasMes();
-  if(!contasData[k]?.[contasClinicaAtiva]?.[id])return;
-  const c=contasData[k][contasClinicaAtiva][id];
-  c.pago=!c.pago;c.dataPago=c.pago?new Date().toLocaleDateString('pt-BR'):null;
-  await salvarContasDB(mes,ano);renderContasTabela();renderContasTabs();
-}
-
-async function abrirArquivoConta(id){
-  const{k}=getContasMes();
-  const c=contasData[k]?.[contasClinicaAtiva]?.[id];
-  if(!c)return;
-  const url=c.arquivoUrl||c.arquivo||'';
-  if(!url){alert('Nenhum arquivo anexado.');return;}
-
-  // Base64 antigo — abre direto
-  if(url.startsWith('data:')){
-    const a=document.createElement('a');
-    a.href=url;a.download=c.arquivoNome||'arquivo';
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    return;
-  }
-
-  // URL do Cloudinary — busca via fetch e abre como blob
-  try{
-    const btn=document.querySelector(`button[onclick="abrirArquivoConta('${id}')"]`);
-    if(btn){btn.textContent='⏳';btn.disabled=true;}
-    const resp=await fetch(url);
-    if(!resp.ok)throw new Error('HTTP '+resp.status);
-    const blob=await resp.blob();
-    const blobUrl=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=blobUrl;a.download=c.arquivoNome||'arquivo';
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    setTimeout(()=>URL.revokeObjectURL(blobUrl),5000);
-    if(btn){btn.textContent='📄 '+(c.arquivoNome||'Ver').substring(0,12);btn.disabled=false;}
-  }catch(e){
-    // Fallback — abre em nova aba
-    window.open(url,'_blank');
-  }
-}
-window['_m_abrirArquivoConta']=abrirArquivoConta;
-window['_m_togglePagoConta']=togglePagoConta;
-
-function abrirModalConta(clinica){
-  contaArquivoBase64='';contaArquivoNome='';
-  document.getElementById('conta-id').value='';
-  const sel=document.getElementById('conta-clinica-sel');
-  if(sel)sel.value=clinica||contasClinicaAtiva;
-  document.getElementById('conta-clinica-hidden').value=clinica||contasClinicaAtiva;
-  document.getElementById('conta-desc').value='';
-  document.getElementById('conta-venc').value='';
-  document.getElementById('conta-valor').value='';
-  document.getElementById('conta-obs').value='';
-  const prev=document.getElementById('upload-preview-conta');
-  if(prev){prev.style.display='none';prev.textContent='';}
-  document.getElementById('modal-conta-titulo').textContent='Nova conta';
-  document.getElementById('btn-excluir-conta').style.display='none';
-  const m=document.getElementById('modal-conta');
-  m.style.display='flex';
-}
-window['_m_abrirModalConta']=abrirModalConta;
-
-function abrirModalContaDescricao(desc){
-  abrirModalConta(contasClinicaAtiva);
-  setTimeout(()=>{
-    const el=document.getElementById('conta-desc');
-    if(el)el.value=desc;
-  },50);
-}
-window['_m_abrirModalContaDescricao']=abrirModalContaDescricao;
-
-// ── EXPORTAR PDF CONTAS ────────────────────────────────
-function exportarContasPDF(clinica, mes, ano){
-  const k=chave(mes,ano);
-  const PADRAO=['Copel','Sanepar','Internet','Aluguel','Diarista','CIEE','Sapiens','Pedido de Material'];
-  const contasObj=contasData[k]?.[clinica]||{};
-  const contas=Object.entries(contasObj).map(([id,c])=>({...c,id}));
-  const nomesExist=new Set(contas.map(c=>c.desc));
-  PADRAO.forEach(nome=>{
-    if(!nomesExist.has(nome)) contas.push({desc:nome,venc:'',valor:'',obs:'',pago:false,padrao:true});
-  });
-  contas.sort((a,b)=>{
-    const ia=PADRAO.indexOf(a.desc),ib=PADRAO.indexOf(b.desc);
-    if(ia>=0&&ib>=0)return ia-ib;
-    if(ia>=0)return -1;if(ib>=0)return 1;
-    return (a.desc||'').localeCompare(b.desc||'');
-  });
-
-  const hoje=new Date();hoje.setHours(0,0,0,0);
-  const totalG=contas.filter(c=>!c.padrao&&c.valor).reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
-
-  const rows=contas.map(c=>{
-    const vd=c.venc?new Date(c.venc+'T00:00:00'):null;
-    const isV=vd&&vd<hoje&&!c.pago;
-    const vStr=vd?vd.toLocaleDateString('pt-BR'):'—';
-    const valStr=c.valor?fmtN(parseFloat(c.valor)):'—';
-    let statusCor='#888',statusTxt='Pendente';
-    if(c.padrao){statusCor='#bbb';statusTxt='—';}
-    else if(c.pago){statusCor='#3B6D11';statusTxt='✓ Pago';}
-    else if(isV){statusCor='#A32D2D';statusTxt='⚠ Vencida';}
-    return`<tr>
-      <td style="padding:8px 12px;border-bottom:1px solid #f0efe8;font-weight:${c.padrao?'400':'500'};color:${c.padrao?'#aaa':'#1a1a18'}">${c.desc||'—'}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #f0efe8;color:${isV?'#A32D2D':'#444'}">${vStr}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #f0efe8;text-align:right;font-family:'Courier New',monospace;color:${c.padrao?'#bbb':'#1a1a18'}">${valStr}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #f0efe8;color:${statusCor};font-size:11px;font-weight:500">${statusTxt}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #f0efe8;color:#888;font-size:11px;max-width:160px">${c.obs||'—'}</td>
-    </tr>`;
-  }).join('');
-
-  const html=`<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Contas — ${clinica} — ${MESES[mes-1]} ${ano}</title>
-<style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:Arial,sans-serif;font-size:12px;color:#1a1a18;padding:28px}
-  .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #534AB7}
-  .header-left h1{font-size:20px;font-weight:700;color:#534AB7;margin-bottom:2px}
-  .header-left p{font-size:12px;color:#6b6b66}
-  .header-right{text-align:right}
-  .header-right .data{font-size:11px;color:#888}
-  table{width:100%;border-collapse:collapse;margin-bottom:16px}
-  thead tr{background:#f5f4f0}
-  th{padding:9px 12px;text-align:left;font-size:10px;font-weight:600;color:#6b6b66;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #e0dfd8}
-  th.right{text-align:right}
-  tbody tr:nth-child(even){background:#fafaf8}
-  td{padding:9px 12px;border-bottom:1px solid #f0efe8;vertical-align:middle}
-  .total-box{background:#534AB7;color:#fff;border-radius:8px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;margin-top:8px}
-  .total-label{font-size:13px;opacity:.85}
-  .total-val{font-size:20px;font-weight:700;font-family:'Courier New',monospace}
-  .rodape{margin-top:20px;font-size:10px;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:10px}
-  @media print{body{padding:14px}}
-</style>
-</head>
-<body>
-  <div class="header">
-    <div class="header-left">
-      <h1>${clinica}</h1>
-      <p>Contas a pagar — ${MESES[mes-1]} de ${ano}</p>
-    </div>
-    <div class="header-right">
-      <div class="data">Gerado em ${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</div>
-    </div>
-  </div>
-  <table>
-    <thead><tr>
-      <th>Descrição</th>
-      <th>Vencimento</th>
-      <th class="right">Valor</th>
-      <th>Status</th>
-      <th>Observação</th>
-    </tr></thead>
-    <tbody>${rows}</tbody>
-  </table>
-  <div class="total-box">
-    <span class="total-label">Total do mês</span>
-    <span class="total-val">${fmtN(totalG)}</span>
-  </div>
-  <div class="rodape">Sistema de Clínicas — documento gerado automaticamente</div>
-</body>
-</html>`;
-
-  const w=window.open('','_blank');
-  w.document.write(html);
-  w.document.close();
-  w.focus();
-  setTimeout(()=>w.print(),500);
-}
-window['_m_exportarContasPDF']=exportarContasPDF;
 // ── FOLHA DE PAGAMENTO ────────────────────────────────
 let folhaData = {};
 let folhaClinicaAtiva = CLINICAS[0];
@@ -2208,7 +1756,7 @@ function calcTotalFolhaClinica(cl,k){
   const d=getTotais(cl,mes,ano);let total=0;
   d.profs.forEach(p=>{const ed=getPagEdit(mes,ano,cl,p.nome);const pg=ed!==undefined?ed:p.total;total+=p.tipo==='psico'?pg*cfg.valP:pg*cfg.valM;});
   const contasK=chave(mes,ano);
-  const diarista=Object.values(contasData[contasK]?.[cl]||{}).find(c=>c.desc==='Diarista'&&!c.padrao);
+  const diarista=Object.values(contasData[contasK]?.[cl]||{}).find(c=>c.desc&&c.desc.trim().toLowerCase()==='diarista'&&!c.padrao&&c.valor);
   if(diarista)total+=parseFloat(diarista.valor)||0;
   Object.values(folhaData[k]?.[cl]||{}).forEach(item=>{total+=(parseFloat(item.valor)||0)+(parseFloat(item.vt)||0)-(parseFloat(item.desconto)||0)+(parseFloat(item.extra)||0);});
   return total;
@@ -2247,7 +1795,7 @@ function renderFolhaTabela(){
   const linhaDiar=findLinha('diarista_manual');
   // Diarista automática de Contas
   const contasK=chave(mes,ano);
-  const contasDiarista=Object.values(contasData[contasK]?.[folhaClinicaAtiva]||{}).find(c=>c.desc==='Diarista'&&!c.padrao);
+  const contasDiarista=Object.values(contasData[contasK]?.[folhaClinicaAtiva]||{}).find(c=>c.desc&&c.desc.trim().toLowerCase()==='diarista'&&!c.padrao&&c.valor);
   const valorDiaristaAuto=contasDiarista?parseFloat(contasDiarista.valor)||0:0;
 
   const renderLinhaAuto=(nome,cargo,cor,valor,origem)=>{
@@ -2494,7 +2042,7 @@ function exportarFolhaPDF(clinica,mes,ano){
   };
   d.profs.forEach(p=>{const ed=getPagEdit(mes,ano,clinica,p.nome);const pg=ed!==undefined?ed:p.total;addLinha(p.nome,p.tipo==='psico'?'Psicóloga':'Médica',p.tipo==='psico'?pg*cfg.valP:pg*cfg.valM,0,0,0);});
   const contasK=chave(mes,ano);
-  const diarista=Object.values(contasData[contasK]?.[clinica]||{}).find(c=>c.desc==='Diarista'&&!c.padrao);
+  const diarista=Object.values(contasData[contasK]?.[clinica]||{}).find(c=>c.desc&&c.desc.trim().toLowerCase()==='diarista'&&!c.padrao&&c.valor);
   if(diarista&&diarista.valor)addLinha('Diarista','Diarista',parseFloat(diarista.valor)||0,0,0,0);
   Object.values(folhaData[k]?.[clinica]||{}).forEach(item=>addLinha(item.cargo,'Cargo',parseFloat(item.valor)||0,item.vt,item.desconto,item.extra));
   const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Folha — ${clinica} — ${MESES[mes-1]} ${ano}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;font-size:12px;color:#1a1a18;padding:28px}.header{display:flex;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #534AB7}h1{font-size:20px;font-weight:700;color:#534AB7;margin-bottom:2px}table{width:100%;border-collapse:collapse;margin-bottom:16px}thead tr{background:#f5f4f0}th{padding:9px 12px;text-align:left;font-size:10px;font-weight:600;color:#6b6b66;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #e0dfd8}th.r{text-align:right}tbody tr:nth-child(even){background:#fafaf8}.total-box{background:#534AB7;color:#fff;border-radius:8px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}.rodape{margin-top:20px;font-size:10px;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:10px}@media print{body{padding:14px}}</style></head><body><div class="header"><div><h1>${clinica}</h1><p style="font-size:12px;color:#6b6b66">Folha de pagamento — ${MESES[mes-1]} de ${ano}</p></div><div style="font-size:11px;color:#888">Gerado em ${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</div></div><table><thead><tr><th>Cargo / Nome</th><th class="r">Valor base</th><th class="r">VT</th><th class="r">Desconto</th><th class="r">Extra</th><th class="r">Total</th></tr></thead><tbody>${rows}</tbody></table><div class="total-box"><span>Total da folha — ${clinica}</span><span style="font-size:20px;font-weight:700;font-family:'Courier New',monospace">${fmtN(totalGeral)}</span></div><div class="rodape">Sistema de Clínicas — documento gerado automaticamente</div></body></html>`;
@@ -2502,78 +2050,6 @@ function exportarFolhaPDF(clinica,mes,ano){
 }
 window['_m_exportarFolhaPDF']=exportarFolhaPDF;
 
-
-function fecharModalConta(){document.getElementById('modal-conta').style.display='none';}
-window['_m_fecharModalConta']=fecharModalConta;
-
-function editarConta(id){
-  const{k}=getContasMes();const c=contasData[k]?.[contasClinicaAtiva]?.[id];if(!c)return;
-  contaArquivoBase64=c.arquivo||'';contaArquivoNome=c.arquivoNome||'';
-  document.getElementById('conta-id').value=id;
-  document.getElementById('conta-clinica-hidden').value=contasClinicaAtiva;
-  const sel2=document.getElementById('conta-clinica-sel');if(sel2)sel2.value=contasClinicaAtiva;
-  document.getElementById('conta-desc').value=c.desc||'';
-  document.getElementById('conta-venc').value=c.venc||'';
-  document.getElementById('conta-valor').value=c.valor||'';
-  document.getElementById('conta-obs').value=c.obs||'';
-  if(c.arquivoNome){const p=document.getElementById('upload-preview-conta');p.style.display='block';p.textContent='📎 '+c.arquivoNome;}
-  document.getElementById('modal-conta-titulo').textContent='Editar conta — '+contasClinicaAtiva;
-  document.getElementById('btn-excluir-conta').style.display='inline-flex';
-  document.getElementById('modal-conta').style.display='flex';
-}
-window['_m_editarConta']=editarConta;
-
-function handleArquivoConta(input){
-  const file=input.files[0];if(!file)return;
-  if(file.size>10*1024*1024){alert('Máximo 10MB.');return;}
-  contaArquivoNome=file.name;
-  contaArquivoBase64='';
-  const p=document.getElementById('upload-preview-conta');
-  p.style.display='block';p.textContent='📎 '+file.name;
-  window._contaArquivoFile=file;
-}
-window['_m_handleArquivoConta']=handleArquivoConta;
-
-async function uploadCloudinary(file){
-  const CLOUD='dicoo9wqg';
-  const PRESET='clinicas_upload'; // upload preset sem assinatura
-  const form=new FormData();
-  form.append('file',file);
-  form.append('upload_preset',PRESET);
-  form.append('folder','contas_clinicas');
-  const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/raw/upload`,{method:'POST',body:form});
-  if(!r.ok)throw new Error('Erro upload Cloudinary: '+r.status);
-  const d=await r.json();
-  return{url:d.secure_url,nome:file.name,publicId:d.public_id};
-}
-
-async function salvarConta(){
-  const desc=document.getElementById('conta-desc').value.trim();if(!desc){alert('Digite a descrição.');return;}
-  const{k,mes,ano}=getContasMes();
-  // Pega clínica do select (modal) ou do hidden field
-  const selCl=document.getElementById('conta-clinica-sel');
-  const clinica=(selCl&&selCl.value?selCl.value:document.getElementById('conta-clinica-hidden').value)||contasClinicaAtiva;
-  const idExist=document.getElementById('conta-id').value;
-  const id=idExist||'c_'+Date.now();
-  const venc=document.getElementById('conta-venc').value;
-  const valor=parseFloat(document.getElementById('conta-valor').value.replace(',','.'))||0;
-  const obs=document.getElementById('conta-obs').value.trim();
-  if(!contasData[k])contasData[k]={};if(!contasData[k][clinica])contasData[k][clinica]={};
-  const exist=contasData[k][clinica][idExist]||{};
-  contasData[k][clinica][id]={desc,venc,valor,obs,arquivo:contaArquivoBase64||exist.arquivo||'',arquivoNome:contaArquivoNome||exist.arquivoNome||'',pago:exist.pago||false,dataPago:exist.dataPago||null,criadoEm:exist.criadoEm||new Date().toLocaleDateString('pt-BR')};
-  fecharModalConta();await salvarContasDB(mes,ano);renderContasTabela();renderContasTabs();
-}
-window['_m_salvarConta']=salvarConta;
-
-async function excluirConta(){
-  if(!confirm('Excluir esta conta?'))return;
-  const{k,mes,ano}=getContasMes();
-  const id=document.getElementById('conta-id').value;
-  const clinica=document.getElementById('conta-clinica-hidden').value;
-  if(contasData[k]?.[clinica]?.[id])delete contasData[k][clinica][id];
-  fecharModalConta();await salvarContasDB(mes,ano);renderContasTabela();renderContasTabs();
-}
-window['_m_excluirConta']=excluirConta;
 // Registra todas as funções com prefixo e processa fila
 window['_m_setLoginTipo'] = setLoginTipo;
 window['_m_handleLoginGoogle'] = handleLoginGoogle;
