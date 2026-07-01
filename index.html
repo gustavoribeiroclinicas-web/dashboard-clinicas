@@ -2225,6 +2225,10 @@ async function initPonto(){
     if(area)area.innerHTML='<div style="padding:2rem;text-align:center;color:#a32d2d">Erro ao carregar ponto: '+e.message+'</div>';
   }
 }
+window['_m_initPonto']=initPonto;
+
+async function carregarPonto(){
+  const mes=parseInt(document.getElementById('ponto-mes-sel')?.value||new Date().getMonth()+1);
   const ano=parseInt(document.getElementById('ponto-ano-sel')?.value||new Date().getFullYear());
   const k=chave(mes,ano);
   if(!pontoData[k]){const data=await dbGet('ponto/'+k);pontoData[k]=data||{};}
