@@ -523,6 +523,7 @@ function exportarBackupCompleto(){ _exec('exportarBackupCompleto',[]); }
 function importarBackup(el){ _exec('importarBackup',[el]); }
 function initLancamento(c){ _exec('initLancamento',[c]); }
 function gerarPDF(){ _exec('gerarPDF',[]); }
+function gerarPDFClinica(cl,m,a){ _exec('gerarPDFClinica',[cl,m,a]); }
 function trocarMesFolha(){ _exec('trocarMesFolha',[]); }
 function selecionarClinicaFolha(c){ _exec('selecionarClinicaFolha',[c]); }
 function abrirModalFolha(){ _exec('abrirModalFolha',[]); }
@@ -1225,7 +1226,10 @@ function renderPag(){
     if(!rows)return;tgContado+=tcContado;tgPago+=tcPago;
     const temDiff=Math.abs(tcPago-tcContado)>0.01;
     html+=`<div class="pag-section"><div class="pag-head"><span class="pag-head-name">${cl}</span>
-      <span class="pag-tot" id="tot-${clId}">Total a pagar: <strong>${fmt(tcPago)}</strong>${temDiff?` <span style="font-size:11px;color:var(--muted)">(contado: ${fmt(tcContado)})</span>`:''}</span></div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span class="pag-tot" id="tot-${clId}">Total a pagar: <strong>${fmt(tcPago)}</strong>${temDiff?` <span style="font-size:11px;color:var(--muted)">(contado: ${fmt(tcContado)})</span>`:''}</span>
+        <button onclick="gerarPDFClinica('${cl}',${mes},${ano})" style="font-size:11px;padding:4px 10px;border-radius:99px;background:none;color:var(--red);border:1px solid var(--red-border);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap">📄 PDF</button>
+      </div></div>
       <div style="overflow-x:auto"><table class="pt"><thead><tr><th>Profissional</th><th style="text-align:center">Atend. contados</th><th style="text-align:center">Atend. pagos (DETRAN)</th><th>Valor bruto</th><th>Imposto (info)</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
   });
   if(!html)html=`<div class="loading-msg">Nenhum dado para ${MESES[mes-1]}/${ano}.</div>`;
@@ -1684,6 +1688,56 @@ function gerarPDF(){
 
 function fmtN(v){return'R$ '+(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 window['_m_gerarPDF']=gerarPDF;
+
+function gerarPDFClinica(cl,mes,ano){
+  const vp=cfg.valP,vm=cfg.valM,imp=cfg.imp/100;
+  const d=getTotais(cl,mes,ano);
+  if(!d.profs.length){alert('Nenhum dado para '+cl+' em '+MESES[mes-1]+'/'+ano);return;}
+  let tcPago=0,tcContado=0,rows='';
+  d.profs.forEach(p=>{
+    const contado=p.total;
+    const editado=getPagEdit(mes,ano,cl,p.nome);
+    const pago=editado!==undefined?editado:contado;
+    const diff=pago-contado;
+    if(p.tipo==='psico'){
+      const br=pago*vp,iv=br*imp;tcContado+=contado*vp;tcPago+=br;
+      rows+=`<tr><td>${p.nome} <span class="tag psico">Psicóloga</span></td><td class="num">${contado}</td><td class="num">${pago}${diff!==0?` <span style="color:#A32D2D;font-size:10px">(${diff})</span>`:''}</td><td class="num">${fmtN(br)}</td><td class="num imp">${fmtN(iv)} (${cfg.imp}%)</td></tr>`;
+    } else {
+      const br=pago*vm;tcContado+=contado*vm;tcPago+=br;
+      rows+=`<tr><td>${p.nome} <span class="tag med">Médica</span></td><td class="num">${contado}</td><td class="num">${pago}${diff!==0?` <span style="color:#A32D2D;font-size:10px">(${diff})</span>`:''}</td><td class="num">${fmtN(br)}</td><td class="num">—</td></tr>`;
+    }
+  });
+  const temDiff=Math.abs(tcPago-tcContado)>0.01;
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Pagamentos — ${cl} — ${MESES[mes-1]} ${ano}</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;font-size:12px;color:#1a1a18;padding:28px}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #534AB7}
+h1{font-size:20px;font-weight:700;color:#534AB7;margin-bottom:2px}
+table{width:100%;border-collapse:collapse;margin-bottom:16px}
+thead tr{background:#f5f4f0}th{padding:9px 12px;text-align:left;font-size:10px;font-weight:600;color:#6b6b66;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #e0dfd8}
+td{padding:9px 12px;border-bottom:1px solid #f0efe8;vertical-align:middle}
+tbody tr:nth-child(even){background:#fafaf8}
+.num{text-align:right;font-family:'Courier New',monospace}
+.tag{font-size:9px;font-weight:700;padding:1px 5px;border-radius:99px;margin-left:4px}
+.tag.psico{background:#FBEAF0;color:#72243E}.tag.med{background:#E6F1FB;color:#0C447C}
+.imp{color:#a32d2d;font-size:10px}
+.total-box{background:#534AB7;color:#fff;border-radius:8px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.total-val{font-size:20px;font-weight:700;font-family:'Courier New',monospace}
+.rodape{margin-top:20px;font-size:10px;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:10px}
+@media print{body{padding:14px}}</style></head><body>
+<div class="header">
+  <div><h1>${cl}</h1><p style="font-size:12px;color:#6b6b66">Pagamentos — ${MESES[mes-1]} de ${ano}</p></div>
+  <div style="text-align:right;font-size:11px;color:#888">Gerado em ${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</div>
+</div>
+<table><thead><tr><th>Profissional</th><th class="num">Atend. contados</th><th class="num">Atend. pagos (DETRAN)</th><th class="num">Valor bruto</th><th class="num">Imposto (info)</th></tr></thead><tbody>${rows}</tbody></table>
+<div class="total-box">
+  <div><div style="font-size:13px;opacity:.85">Total a pagar — ${cl}</div>${temDiff?`<div style="font-size:11px;opacity:.7">Contado: ${fmtN(tcContado)}</div>`:''}</div>
+  <div class="total-val">${fmtN(tcPago)}</div>
+</div>
+<div class="rodape">Sistema de Clínicas — documento gerado automaticamente</div>
+</body></html>`;
+  const w=window.open('','_blank');w.document.write(html);w.document.close();w.focus();setTimeout(()=>w.print(),500);
+}
+window['_m_gerarPDFClinica']=gerarPDFClinica;
 
 // ── CONTAS (apenas dados, usado pela Folha para Diarista) ────
 let contasData = {};
