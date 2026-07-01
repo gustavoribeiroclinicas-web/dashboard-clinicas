@@ -851,6 +851,8 @@ function showPage(p, el) {
   if (el) el.classList.add('active');
   if (p === 'pagamentos') renderPag();
   if (p === 'lancamento' && perfilAtual === 'gestor') initLancamento(null);
+  if (p === 'folha') { if(window['_m_initFolha']) window['_m_initFolha'](); }
+  if (p === 'ponto') { if(window['_m_initPonto']) window['_m_initPonto'](); }
 }
 window['_m_showPage'] = showPage;
 
@@ -1017,11 +1019,22 @@ async function buscarProfs(clinica) {
 
 function getFallbackProfs(clinica) {
   const agora = hoje();
-  const k = chave(agora.getMonth()+1, agora.getFullYear());
-  const local = dadosLanc[k]?.[clinica]?.dias||{};
-  const nomes = {};
-  Object.values(local).forEach(dia => { Object.entries(dia).forEach(([nome,v]) => { nomes[nome]=v.tipo; }); });
-  return Object.entries(nomes).map(([nome,tipo])=>({nome,tipo,colEntrev:null,colEstrang:null}));
+  // Tenta mês atual e até 3 meses anteriores
+  for(let i = 0; i < 4; i++){
+    const d = new Date(agora.getFullYear(), agora.getMonth() - i, 1);
+    const k = chave(d.getMonth()+1, d.getFullYear());
+    const local = dadosLanc[k]?.[clinica]?.dias||{};
+    const nomes = {};
+    Object.values(local).forEach(dia => {
+      if(!dia||typeof dia!=='object')return;
+      Object.entries(dia).forEach(([nome,v]) => {
+        if(v&&v.tipo&&!v.extra) nomes[nome]=v.tipo;
+      });
+    });
+    const profs = Object.entries(nomes).map(([nome,tipo])=>({nome,tipo,colEntrev:null,colEstrang:null}));
+    if(profs.length) return profs;
+  }
+  return [];
 }
 
 function parseProfs(rows) {
