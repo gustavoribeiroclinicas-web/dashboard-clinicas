@@ -284,6 +284,7 @@ input:checked+.slider:before{transform:translateX(20px)}
     <div class="nav-tab" id="tab-lanc" onclick="showPage('lancamento',this)">Lançamento</div>
     <div class="nav-tab" id="tab-cfg" onclick="showPage('config',this)">Configurações</div>
     <div class="nav-tab" id="tab-folha" onclick="showPage('folha',this)">Folha</div>
+    <div class="nav-tab" id="tab-ponto" onclick="showPage('ponto',this)">Ponto</div>
     <div class="topbar-right">
       <div class="user-chip" id="user-chip"></div>
       <button class="btn btn-sm" onclick="sair()">Sair</button>
@@ -449,6 +450,99 @@ input:checked+.slider:before{transform:translateX(20px)}
   </div>
 </div>
 
+
+  <!-- PONTO ESTAGIÁRIAS -->
+  <div id="page-ponto" class="page">
+    <div id="ponto-gestor-view" style="display:none">
+      <div class="page-header">
+        <h2>Controle de ponto</h2>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select class="sel" id="ponto-clinica-sel" onchange="trocarClinicaPonto()">
+            <option value="">Selecione a clínica...</option>
+            <option value="Boa Vista">Boa Vista</option><option value="Bacacheri">Bacacheri</option>
+            <option value="ColomboMed">ColomboMed</option><option value="Etika SJP">Etika SJP</option>
+            <option value="FRG">FRG</option><option value="GPTRAN">GPTRAN</option>
+            <option value="Galeb">Galeb</option><option value="Hauer">Hauer</option>
+            <option value="Lifetran">Lifetran</option><option value="MM">MM</option>
+            <option value="PrimeMed">PrimeMed</option><option value="PPTRAN">PPTRAN</option>
+            <option value="Rio Sul">Rio Sul</option><option value="São José">São José</option>
+            <option value="Tolmac">Tolmac</option>
+          </select>
+          <select class="sel" id="ponto-mes-sel" onchange="trocarClinicaPonto()">
+            <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+            <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+            <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+            <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <select class="sel" id="ponto-ano-sel" onchange="trocarClinicaPonto()">
+            <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
+          </select>
+          <button class="btn" onclick="exportarPontoPDF()" style="color:var(--red);border-color:var(--red-border)">📄 PDF</button>
+        </div>
+      </div>
+      <div id="ponto-gestor-area"></div>
+    </div>
+    <div id="ponto-recepcao-view" style="display:none">
+      <div class="lanc-wrap">
+        <div class="lanc-header">
+          <h2>Registro de ponto</h2>
+          <div id="ponto-data-chip" class="data-chip"></div>
+        </div>
+        <div id="ponto-recepcao-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL JUSTIFICATIVA PONTO -->
+  <div id="modal-justificativa" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:1rem" onclick="if(event.target===this)fecharModalJustif()">
+    <div style="background:#fff;border-radius:12px;max-width:420px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.2)">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid #e0dfd8;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:15px;font-weight:600;color:#1a1a18" id="modal-justif-titulo">Justificativa</span>
+        <button onclick="fecharModalJustif()" style="width:28px;height:28px;border-radius:50%;border:none;background:#efefeb;cursor:pointer;font-size:18px;color:#6b6b66">x</button>
+      </div>
+      <div style="padding:1.25rem">
+        <input type="hidden" id="justif-clinica">
+        <input type="hidden" id="justif-dia">
+        <div style="margin-bottom:12px">
+          <label style="display:block;font-size:11px;color:#6b6b66;margin-bottom:5px;text-transform:uppercase;font-weight:600">Horário registrado pelo gestor</label>
+          <input type="time" id="justif-horario" style="width:100%;padding:10px 12px;font-size:14px;border:1.5px solid #e0dfd8;border-radius:8px;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a18">
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="display:block;font-size:11px;color:#6b6b66;margin-bottom:5px;text-transform:uppercase;font-weight:600">Justificativa</label>
+          <select id="justif-motivo" style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid #e0dfd8;border-radius:8px;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a18">
+            <option value="">Selecione...</option>
+            <optgroup label="Atraso">
+              <option value="Atestado médico">Atestado médico</option>
+              <option value="Declaração médica">Declaração médica</option>
+              <option value="Atraso sem justificativa">Atraso sem justificativa</option>
+              <option value="Problema pessoal">Problema pessoal</option>
+              <option value="Transporte público">Transporte público</option>
+            </optgroup>
+            <optgroup label="Saída antecipada">
+              <option value="Estágio obrigatório faculdade">Estágio obrigatório faculdade</option>
+              <option value="Horário de aula">Horário de aula</option>
+              <option value="Liberado pelo gestor">Liberado pelo gestor</option>
+              <option value="Consulta médica">Consulta médica</option>
+              <option value="Emergência familiar">Emergência familiar</option>
+            </optgroup>
+            <optgroup label="Outros">
+              <option value="Falta justificada">Falta justificada</option>
+              <option value="Falta injustificada">Falta injustificada</option>
+              <option value="Outro">Outro</option>
+            </optgroup>
+          </select>
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:11px;color:#6b6b66;margin-bottom:5px;text-transform:uppercase;font-weight:600">Observação (opcional)</label>
+          <textarea id="justif-obs" rows="2" placeholder="Informações adicionais..." style="width:100%;padding:10px 12px;font-size:13px;border:1.5px solid #e0dfd8;border-radius:8px;font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a18;resize:vertical"></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="salvarJustificativa()" style="flex:1;padding:11px;font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;background:#534AB7;color:#fff;border:none;border-radius:99px;cursor:pointer">Salvar</button>
+          <button onclick="removerPontoDia()" id="btn-remover-ponto" style="padding:11px 14px;font-size:13px;font-family:'DM Sans',sans-serif;background:none;color:#a32d2d;border:1px solid #f7c1c1;border-radius:99px;cursor:pointer;display:none">Remover</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="page-folha" class="page">
     <div class="page-header">
       <h2>Folha de pagamento</h2>
@@ -534,6 +628,13 @@ function editarItemFolha(id){ _exec('editarItemFolha',[id]); }
 function salvarItemFolha(){ _exec('salvarItemFolha',[]); }
 function excluirItemFolha(){ _exec('excluirItemFolha',[]); }
 function exportarFolhaPDF(cl,m,a){ _exec('exportarFolhaPDF',[cl,m,a]); }
+function trocarClinicaPonto(){ _exec('trocarClinicaPonto',[]); }
+function registrarPontoRecepcao(tipo){ _exec('registrarPontoRecepcao',[tipo]); }
+function abrirModalJustif(dia,tipo){ _exec('abrirModalJustif',[dia,tipo]); }
+function fecharModalJustif(){ _exec('fecharModalJustif',[]); }
+function salvarJustificativa(){ _exec('salvarJustificativa',[]); }
+function removerPontoDia(){ _exec('removerPontoDia',[]); }
+function exportarPontoPDF(){ _exec('exportarPontoPDF',[]); }
 </script>
 
 <!-- Firebase -->
@@ -2059,6 +2160,229 @@ function exportarFolhaPDF(clinica,mes,ano){
 }
 window['_m_exportarFolhaPDF']=exportarFolhaPDF;
 
+window['_m_exportarFolhaPDF']=exportarFolhaPDF;
+
+// ── CONTROLE DE PONTO ────────────────────────────────
+const PONTO_ENTRADA_ESPERADA = '08:00';
+const PONTO_SAIDA_ESPERADA   = '17:00';
+const JANELA_ENTRADA_INI = '07:00';
+const JANELA_ENTRADA_FIM = '09:00';
+const JANELA_SAIDA_INI   = '15:00';
+const JANELA_SAIDA_FIM   = '18:00';
+
+let pontoData = {};
+let pontoClinicaAtiva = '';
+
+function horaParaMin(h){ if(!h)return 0; const [hh,mm]=h.split(':').map(Number); return hh*60+mm; }
+function horaAtual(){ const n=new Date(); return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'); }
+function dentroJanela(ini,fim){ const agora=horaParaMin(horaAtual()); return agora>=horaParaMin(ini)&&agora<=horaParaMin(fim); }
+
+async function initPonto(){
+  const agora=new Date();
+  const _sv=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
+  _sv('ponto-mes-sel',agora.getMonth()+1);
+  _sv('ponto-ano-sel',agora.getFullYear());
+  if(perfilAtual==='gestor'){
+    document.getElementById('ponto-gestor-view').style.display='block';
+    document.getElementById('ponto-recepcao-view').style.display='none';
+    const sel=document.getElementById('ponto-clinica-sel');
+    if(sel&&!sel.value){sel.value='Boa Vista';pontoClinicaAtiva='Boa Vista';}
+    await carregarPonto();renderPontoGestor();
+  } else {
+    document.getElementById('ponto-gestor-view').style.display='none';
+    document.getElementById('ponto-recepcao-view').style.display='block';
+    const semana=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+    const chip=document.getElementById('ponto-data-chip');
+    if(chip)chip.textContent=semana[agora.getDay()]+', '+agora.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+    pontoClinicaAtiva=perfilAtual;
+    await carregarPonto();renderPontoRecepcao();
+  }
+}
+window['_m_initPonto']=initPonto;
+
+async function carregarPonto(){
+  const mes=parseInt(document.getElementById('ponto-mes-sel')?.value||new Date().getMonth()+1);
+  const ano=parseInt(document.getElementById('ponto-ano-sel')?.value||new Date().getFullYear());
+  const k=chave(mes,ano);
+  if(!pontoData[k]){const data=await dbGet('ponto/'+k);pontoData[k]=data||{};}
+}
+async function salvarPontoDB(mes,ano){
+  const k=chave(mes,ano);await dbSet('ponto/'+k,pontoData[k]||{});
+}
+async function trocarClinicaPonto(){
+  const sel=document.getElementById('ponto-clinica-sel');if(sel)pontoClinicaAtiva=sel.value;
+  const mes=parseInt(document.getElementById('ponto-mes-sel').value);
+  const ano=parseInt(document.getElementById('ponto-ano-sel').value);
+  const k=chave(mes,ano);
+  if(!pontoData[k]){const data=await dbGet('ponto/'+k);pontoData[k]=data||{};}
+  renderPontoGestor();
+}
+window['_m_trocarClinicaPonto']=trocarClinicaPonto;
+
+function renderPontoRecepcao(){
+  const area=document.getElementById('ponto-recepcao-area');if(!area)return;
+  const agora=new Date();
+  if(agora.getDay()===0||agora.getDay()===6){area.innerHTML=`<div class="fds-box">🏖️ Fim de semana — sem registro de ponto!</div>`;return;}
+  const dia=agora.getDate(),mes=agora.getMonth()+1,ano=agora.getFullYear();
+  const k=chave(mes,ano);
+  const regDia=pontoData[k]?.[pontoClinicaAtiva]?.[dia]||{};
+  const temEntrada=!!regDia.entrada,temSaida=!!regDia.saida;
+  const janelaE=dentroJanela(JANELA_ENTRADA_INI,JANELA_ENTRADA_FIM);
+  const janelaS=dentroJanela(JANELA_SAIDA_INI,JANELA_SAIDA_FIM);
+  let html=`<div class="lanc-card">`;
+  if(temEntrada){
+    html+=`<div style="background:#eaf3de;border:1px solid #b5d98a;border-radius:8px;padding:1rem;margin-bottom:10px;text-align:center"><div style="font-size:13px;color:#3b6d11;font-weight:600">✅ Entrada registrada</div><div style="font-size:24px;font-weight:700;font-family:'DM Mono',monospace;color:#3b6d11;margin-top:4px">${regDia.entrada.hora}</div><div style="font-size:11px;color:#6b6b66;margin-top:2px">Registrado às ${regDia.entrada.registradaEm}</div></div>`;
+  } else if(janelaE){
+    html+=`<div style="margin-bottom:14px"><div style="font-size:13px;font-weight:600;color:#1a1a18;margin-bottom:6px">🕐 Registrar entrada</div><div style="font-size:12px;color:#6b6b66;margin-bottom:10px">Janela aberta das ${JANELA_ENTRADA_INI} às ${JANELA_ENTRADA_FIM}</div><div style="display:flex;gap:8px;align-items:flex-end"><div style="flex:1"><label style="font-size:11px;color:#6b6b66;display:block;margin-bottom:4px;text-transform:uppercase;font-weight:600">Horário de chegada</label><input type="time" id="inp-entrada-hora" value="${horaAtual()}" style="width:100%;padding:10px 12px;font-size:16px;border:1.5px solid #e0dfd8;border-radius:8px;font-family:'DM Mono',monospace;background:#fff;color:#1a1a18"></div><button onclick="registrarPontoRecepcao('entrada')" class="btn btn-purple" style="padding:10px 16px;font-size:14px">✓ Confirmar</button></div></div>`;
+  } else if(!temEntrada){
+    html+=`<div style="background:#faeeda;border:1px solid #f5c842;border-radius:8px;padding:1rem;margin-bottom:10px;text-align:center"><div style="font-size:13px;color:#854f0b;font-weight:600">⚠️ Janela de entrada encerrada</div><div style="font-size:12px;color:#854f0b;margin-top:4px">Solicite justificativa ao gestor</div></div>`;
+  }
+  if(temSaida){
+    html+=`<div style="background:#eaf3de;border:1px solid #b5d98a;border-radius:8px;padding:1rem;text-align:center"><div style="font-size:13px;color:#3b6d11;font-weight:600">✅ Saída registrada</div><div style="font-size:24px;font-weight:700;font-family:'DM Mono',monospace;color:#3b6d11;margin-top:4px">${regDia.saida.hora}</div><div style="font-size:11px;color:#6b6b66;margin-top:2px">Registrado às ${regDia.saida.registradaEm}</div></div>`;
+  } else if(janelaS&&temEntrada){
+    html+=`<div><div style="font-size:13px;font-weight:600;color:#1a1a18;margin-bottom:6px">🕔 Registrar saída</div><div style="font-size:12px;color:#6b6b66;margin-bottom:10px">Janela aberta das ${JANELA_SAIDA_INI} às ${JANELA_SAIDA_FIM}</div><div style="display:flex;gap:8px;align-items:flex-end"><div style="flex:1"><label style="font-size:11px;color:#6b6b66;display:block;margin-bottom:4px;text-transform:uppercase;font-weight:600">Horário de saída</label><input type="time" id="inp-saida-hora" value="${horaAtual()}" style="width:100%;padding:10px 12px;font-size:16px;border:1.5px solid #e0dfd8;border-radius:8px;font-family:'DM Mono',monospace;background:#fff;color:#1a1a18"></div><button onclick="registrarPontoRecepcao('saida')" class="btn btn-purple" style="padding:10px 16px;font-size:14px">✓ Confirmar</button></div></div>`;
+  } else if(!temSaida&&horaParaMin(horaAtual())>horaParaMin(JANELA_SAIDA_FIM)){
+    html+=`<div style="background:#faeeda;border:1px solid #f5c842;border-radius:8px;padding:1rem;text-align:center"><div style="font-size:13px;color:#854f0b;font-weight:600">⚠️ Janela de saída encerrada</div><div style="font-size:12px;color:#854f0b;margin-top:4px">Solicite justificativa ao gestor</div></div>`;
+  }
+  html+=`</div>`;area.innerHTML=html;
+}
+async function registrarPontoRecepcao(tipo){
+  const agora=new Date();const dia=agora.getDate(),mes=agora.getMonth()+1,ano=agora.getFullYear();
+  const k=chave(mes,ano);
+  const horaDec=document.getElementById(tipo==='entrada'?'inp-entrada-hora':'inp-saida-hora')?.value;
+  if(!horaDec){alert('Informe o horário.');return;}
+  if(!pontoData[k])pontoData[k]={};if(!pontoData[k][pontoClinicaAtiva])pontoData[k][pontoClinicaAtiva]={};if(!pontoData[k][pontoClinicaAtiva][dia])pontoData[k][pontoClinicaAtiva][dia]={};
+  pontoData[k][pontoClinicaAtiva][dia][tipo]={hora:horaDec,registradaEm:horaAtual(),timestamp:Date.now()};
+  await salvarPontoDB(mes,ano);renderPontoRecepcao();
+}
+window['_m_registrarPontoRecepcao']=registrarPontoRecepcao;
+
+function renderPontoGestor(){
+  const area=document.getElementById('ponto-gestor-area');if(!area||!pontoClinicaAtiva)return;
+  const mes=parseInt(document.getElementById('ponto-mes-sel').value);
+  const ano=parseInt(document.getElementById('ponto-ano-sel').value);
+  const k=chave(mes,ano);const regCl=pontoData[k]?.[pontoClinicaAtiva]||{};
+  const agora=new Date();const totalDias=new Date(ano,mes,0).getDate();
+  let totalMin=0,diasAtraso=0,diasSaidaAnt=0,diasReg=0,rows='';
+  for(let d=1;d<=totalDias;d++){
+    const data=new Date(ano,mes-1,d);if(data.getDay()===0||data.getDay()===6)continue;
+    const isFuturo=data>agora;const semana=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'][data.getDay()];
+    const reg=regCl[d]||{};const justif=reg.justif||null;
+    if(isFuturo){rows+=`<tr style="opacity:.35"><td style="padding:8px 12px;border-bottom:0.5px solid #e0dfd8;font-size:12px;color:#6b6b66">${d} ${semana}</td><td colspan="6" style="padding:8px 12px;border-bottom:0.5px solid #e0dfd8;font-size:12px;color:#a0a09a;font-style:italic">Ainda não ocorreu</td></tr>`;continue;}
+    let minP=0;
+    if(reg.entrada){const at=horaParaMin(reg.entrada.hora)-horaParaMin(PONTO_ENTRADA_ESPERADA);if(at>0){minP+=at;diasAtraso++;}}
+    if(reg.saida){const at=horaParaMin(PONTO_SAIDA_ESPERADA)-horaParaMin(reg.saida.hora);if(at>0){minP+=at;diasSaidaAnt++;}}
+    if(reg.entrada||reg.saida)diasReg++;
+    totalMin-=minP;
+    let ocorr='Sem registro',oc='#a32d2d',ocbg='#fcebeb',ocbd='#f7c1c1';
+    if(justif){ocorr=justif.motivo;oc='#6b6b66';ocbg='#f5f4f0';ocbd='#e0dfd8';}
+    else if(reg.entrada||reg.saida){if(minP===0){ocorr='Normal';oc='#3b6d11';ocbg='#eaf3de';ocbd='#b5d98a';}else{const p=[];if(reg.entrada&&horaParaMin(reg.entrada.hora)>horaParaMin(PONTO_ENTRADA_ESPERADA))p.push('Atraso');if(reg.saida&&horaParaMin(reg.saida.hora)<horaParaMin(PONTO_SAIDA_ESPERADA))p.push('Saída antecipada');ocorr=p.join(' + ');oc='#854f0b';ocbg='#faeeda';ocbd='#fac775';}}
+    const bgRow=!reg.entrada&&!reg.saida&&!justif?'background:#fff5f5':minP>0?'background:#fffbf0':'';
+    const eC=reg.entrada?`<div style="font-family:'DM Mono',monospace">${reg.entrada.hora}</div><div style="font-size:10px;color:#a0a09a">reg. ${reg.entrada.registradaEm}</div>`:`<span style="color:#a0a09a;font-size:12px">—</span>`;
+    const sC=reg.saida?`<div style="font-family:'DM Mono',monospace">${reg.saida.hora}</div><div style="font-size:10px;color:#a0a09a">reg. ${reg.saida.registradaEm}</div>`:`<span style="color:#a0a09a;font-size:12px">—</span>`;
+    rows+=`<tr style="${bgRow}"><td style="padding:9px 12px;border-bottom:0.5px solid #e0dfd8;font-size:12px;color:#6b6b66;white-space:nowrap">${d} ${semana}</td><td style="padding:9px 12px;border-bottom:0.5px solid #e0dfd8;font-size:13px">${eC}</td><td style="padding:9px 12px;border-bottom:0.5px solid #e0dfd8;font-size:13px">${sC}</td><td style="padding:9px 12px;border-bottom:0.5px solid #e0dfd8;text-align:center"><span style="font-size:11px;padding:2px 8px;border-radius:99px;background:${ocbg};color:${oc};font-weight:500;border:0.5px solid ${ocbd}">${ocorr}</span></td><td style="padding:9px 12px;border-bottom:0.5px solid #e0dfd8;text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:${minP>0?'#a32d2d':'#6b6b66'}">${minP>0?'−'+minP+' min':'—'}</td><td style="padding:9px 12px;border-bottom:0.5px solid #e0dfd8;font-size:12px;color:#6b6b66">${justif?.obs||''}</td><td style="padding:9px 12px;border-bottom:0.5px solid #e0dfd8;text-align:center"><button onclick="abrirModalJustif(${d},'${pontoClinicaAtiva}')" style="background:none;border:0.5px solid #e0dfd8;border-radius:6px;cursor:pointer;font-size:12px;padding:3px 8px;color:#534AB7;font-family:'DM Sans',sans-serif">${justif?'✏️':'+ Justif.'}</button></td></tr>`;
+  }
+  const hh=Math.floor(Math.abs(totalMin)/60),mm2=Math.abs(totalMin)%60;
+  const totStr=totalMin===0?'Sem pendências':`−${hh}h ${mm2}min`;
+  area.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.25rem">
+    <div style="background:#fff;border:0.5px solid #e0dfd8;border-radius:10px;padding:1rem"><div style="font-size:12px;color:#6b6b66;margin-bottom:4px">Dias registrados</div><div style="font-size:22px;font-weight:500">${diasReg}</div></div>
+    <div style="background:#fff;border:0.5px solid #e0dfd8;border-radius:10px;padding:1rem"><div style="font-size:12px;color:#6b6b66;margin-bottom:4px">Atrasos</div><div style="font-size:22px;font-weight:500;color:${diasAtraso>0?'#854f0b':'#3b6d11'}">${diasAtraso}</div></div>
+    <div style="background:#fff;border:0.5px solid #e0dfd8;border-radius:10px;padding:1rem"><div style="font-size:12px;color:#6b6b66;margin-bottom:4px">Saídas antecipadas</div><div style="font-size:22px;font-weight:500;color:${diasSaidaAnt>0?'#854f0b':'#3b6d11'}">${diasSaidaAnt}</div></div>
+    <div style="background:#fff;border:0.5px solid #e0dfd8;border-radius:10px;padding:1rem"><div style="font-size:12px;color:#6b6b66;margin-bottom:4px">Total perdido</div><div style="font-size:22px;font-weight:500;color:${totalMin<0?'#a32d2d':'#3b6d11'}">${totStr}</div></div>
+  </div>
+  <div style="background:#fff;border:0.5px solid #e0dfd8;border-radius:12px;overflow:hidden">
+    <div style="padding:.9rem 1.25rem;border-bottom:0.5px solid #e0dfd8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div style="font-size:14px;font-weight:500">${pontoClinicaAtiva} — ${MESES[mes-1]} ${ano}</div>
+      <div style="font-size:12px;color:#6b6b66">Entrada: ${PONTO_ENTRADA_ESPERADA} · Saída: ${PONTO_SAIDA_ESPERADA}</div>
+    </div>
+    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;min-width:640px">
+      <colgroup><col style="width:10%"><col style="width:17%"><col style="width:17%"><col style="width:18%"><col style="width:11%"><col style="width:17%"><col style="width:10%"></colgroup>
+      <thead><tr style="background:#efefeb">
+        <th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:500;color:#6b6b66;text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid #e0dfd8">Dia</th>
+        <th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:500;color:#6b6b66;text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid #e0dfd8">Entrada</th>
+        <th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:500;color:#6b6b66;text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid #e0dfd8">Saída</th>
+        <th style="padding:8px 12px;text-align:center;font-size:11px;font-weight:500;color:#6b6b66;text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid #e0dfd8">Ocorrência</th>
+        <th style="padding:8px 12px;text-align:center;font-size:11px;font-weight:500;color:#6b6b66;text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid #e0dfd8">Minutos</th>
+        <th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:500;color:#6b6b66;text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid #e0dfd8">Observação</th>
+        <th style="padding:8px 12px;border-bottom:0.5px solid #e0dfd8"></th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    <div style="padding:10px 1.25rem;background:#efefeb;border-top:0.5px solid #e0dfd8;display:flex;justify-content:flex-end;font-size:13px">
+      <span style="color:#6b6b66">Total do mês: <strong style="color:${totalMin<0?'#a32d2d':'#3b6d11'};font-family:'DM Mono',monospace">${totStr}</strong></span>
+    </div>
+  </div>`;
+}
+
+function abrirModalJustif(dia,clinica){
+  const mes=parseInt(document.getElementById('ponto-mes-sel').value);
+  const ano=parseInt(document.getElementById('ponto-ano-sel').value);
+  const k=chave(mes,ano);const reg=pontoData[k]?.[clinica]?.[dia]||{};const justif=reg.justif||{};
+  document.getElementById('justif-clinica').value=clinica;
+  document.getElementById('justif-dia').value=dia;
+  document.getElementById('justif-horario').value=justif.horario||'';
+  document.getElementById('justif-motivo').value=justif.motivo||'';
+  document.getElementById('justif-obs').value=justif.obs||'';
+  document.getElementById('modal-justif-titulo').textContent=(reg.entrada||reg.saida?'Editar ponto':'Registrar manualmente')+' — dia '+dia;
+  document.getElementById('btn-remover-ponto').style.display=(reg.entrada||reg.saida)?'inline-flex':'none';
+  document.getElementById('modal-justificativa').style.display='flex';
+}
+window['_m_abrirModalJustif']=abrirModalJustif;
+
+function fecharModalJustif(){document.getElementById('modal-justificativa').style.display='none';}
+window['_m_fecharModalJustif']=fecharModalJustif;
+
+async function salvarJustificativa(){
+  const mes=parseInt(document.getElementById('ponto-mes-sel').value);
+  const ano=parseInt(document.getElementById('ponto-ano-sel').value);
+  const k=chave(mes,ano);
+  const clinica=document.getElementById('justif-clinica').value;
+  const dia=parseInt(document.getElementById('justif-dia').value);
+  const horario=document.getElementById('justif-horario').value;
+  const motivo=document.getElementById('justif-motivo').value;
+  const obs=document.getElementById('justif-obs').value.trim();
+  if(!motivo){alert('Selecione uma justificativa.');return;}
+  if(!pontoData[k])pontoData[k]={};if(!pontoData[k][clinica])pontoData[k][clinica]={};if(!pontoData[k][clinica][dia])pontoData[k][clinica][dia]={};
+  pontoData[k][clinica][dia].justif={motivo,obs,horario,registradoPor:'gestor',timestamp:Date.now()};
+  if(horario&&!pontoData[k][clinica][dia].entrada){pontoData[k][clinica][dia].entrada={hora:horario,registradaEm:'gestor',timestamp:Date.now()};}
+  fecharModalJustif();await salvarPontoDB(mes,ano);renderPontoGestor();
+}
+window['_m_salvarJustificativa']=salvarJustificativa;
+
+async function removerPontoDia(){
+  if(!confirm('Remover o registro deste dia?'))return;
+  const mes=parseInt(document.getElementById('ponto-mes-sel').value);
+  const ano=parseInt(document.getElementById('ponto-ano-sel').value);
+  const k=chave(mes,ano);
+  const clinica=document.getElementById('justif-clinica').value;
+  const dia=parseInt(document.getElementById('justif-dia').value);
+  if(pontoData[k]?.[clinica]?.[dia])delete pontoData[k][clinica][dia];
+  fecharModalJustif();await salvarPontoDB(mes,ano);renderPontoGestor();
+}
+window['_m_removerPontoDia']=removerPontoDia;
+
+function exportarPontoPDF(){
+  const mes=parseInt(document.getElementById('ponto-mes-sel').value);
+  const ano=parseInt(document.getElementById('ponto-ano-sel').value);
+  const k=chave(mes,ano);const regCl=pontoData[k]?.[pontoClinicaAtiva]||{};
+  const agora=new Date();const totalDias=new Date(ano,mes,0).getDate();
+  let totalMin=0,rows='';
+  for(let d=1;d<=totalDias;d++){
+    const data=new Date(ano,mes-1,d);if(data.getDay()===0||data.getDay()===6)continue;if(data>agora)continue;
+    const semana=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'][data.getDay()];
+    const reg=regCl[d]||{};const justif=reg.justif||null;let minP=0;
+    if(reg.entrada){const at=horaParaMin(reg.entrada.hora)-horaParaMin(PONTO_ENTRADA_ESPERADA);if(at>0)minP+=at;}
+    if(reg.saida){const at=horaParaMin(PONTO_SAIDA_ESPERADA)-horaParaMin(reg.saida.hora);if(at>0)minP+=at;}
+    let ocorr=justif?justif.motivo:reg.entrada||reg.saida?minP>0?'Irregularidade':'Normal':'Sem registro';
+    totalMin-=minP;
+    rows+=`<tr><td style="padding:7px 10px;border-bottom:1px solid #f0efe8;font-size:11px;color:#888">${d} ${semana}</td><td style="padding:7px 10px;border-bottom:1px solid #f0efe8;font-family:'Courier New',monospace;font-size:12px">${reg.entrada?.hora||'—'}${reg.entrada?.registradaEm?`<br><span style="font-size:10px;color:#aaa">reg. ${reg.entrada.registradaEm}</span>`:''}</td><td style="padding:7px 10px;border-bottom:1px solid #f0efe8;font-family:'Courier New',monospace;font-size:12px">${reg.saida?.hora||'—'}${reg.saida?.registradaEm?`<br><span style="font-size:10px;color:#aaa">reg. ${reg.saida.registradaEm}</span>`:''}</td><td style="padding:7px 10px;border-bottom:1px solid #f0efe8;font-size:11px;color:${ocorr==='Normal'?'#3b6d11':ocorr==='Sem registro'?'#a32d2d':'#854f0b'}">${ocorr}</td><td style="padding:7px 10px;border-bottom:1px solid #f0efe8;font-family:'Courier New',monospace;font-size:11px;color:${minP>0?'#a32d2d':'#888'}">${minP>0?'−'+minP+' min':'—'}</td><td style="padding:7px 10px;border-bottom:1px solid #f0efe8;font-size:11px;color:#888">${justif?.obs||''}</td></tr>`;
+  }
+  const hh=Math.floor(Math.abs(totalMin)/60),mm2=Math.abs(totalMin)%60;
+  const html=`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Ponto — ${pontoClinicaAtiva} — ${MESES[mes-1]} ${ano}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;font-size:12px;color:#1a1a18;padding:28px}.header{display:flex;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #534AB7}h1{font-size:20px;font-weight:700;color:#534AB7;margin-bottom:2px}table{width:100%;border-collapse:collapse}thead tr{background:#f5f4f0}th{padding:8px 10px;text-align:left;font-size:10px;font-weight:600;color:#6b6b66;text-transform:uppercase;border-bottom:2px solid #e0dfd8}tbody tr:nth-child(even){background:#fafaf8}.total{background:#534AB7;color:#fff;border-radius:8px;padding:12px 16px;display:flex;justify-content:space-between;margin-top:12px}.rodape{margin-top:16px;font-size:10px;color:#aaa;text-align:center;border-top:1px solid #eee;padding-top:8px}@media print{body{padding:14px}}</style></head><body><div class="header"><div><h1>${pontoClinicaAtiva}</h1><p style="font-size:12px;color:#6b6b66">Controle de ponto — ${MESES[mes-1]} de ${ano}</p><p style="font-size:11px;color:#888;margin-top:2px">Entrada: ${PONTO_ENTRADA_ESPERADA} · Saída: ${PONTO_SAIDA_ESPERADA}</p></div><div style="font-size:11px;color:#888">Gerado em ${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</div></div><table><thead><tr><th>Dia</th><th>Entrada</th><th>Saída</th><th>Ocorrência</th><th>Minutos</th><th>Observação</th></tr></thead><tbody>${rows}</tbody></table><div class="total"><span>Total perdido — ${MESES[mes-1]} ${ano}</span><span style="font-size:18px;font-weight:700;font-family:'Courier New',monospace">${totalMin<0?'−'+hh+'h '+mm2+'min':'Sem pendências'}</span></div><div class="rodape">Sistema de Clínicas — documento gerado automaticamente</div></body></html>`;
+  const w=window.open('','_blank');w.document.write(html);w.document.close();w.focus();setTimeout(()=>w.print(),500);
+}
+window['_m_exportarPontoPDF']=exportarPontoPDF;
+
 // Registra todas as funções com prefixo e processa fila
 window['_m_setLoginTipo'] = setLoginTipo;
 window['_m_handleLoginGoogle'] = handleLoginGoogle;
@@ -2105,10 +2429,12 @@ _s('mes-sel',agora.getMonth()+1);
 _s('mes-pag',agora.getMonth()+1);
 _s('mes-contas',agora.getMonth()+1);
 _s('mes-folha',agora.getMonth()+1);
+_s('ponto-mes-sel',agora.getMonth()+1);
 _s('ano-sel',agora.getFullYear());
 _s('ano-pag',agora.getFullYear());
 _s('ano-contas',agora.getFullYear());
 _s('ano-folha',agora.getFullYear());
+_s('ponto-ano-sel',agora.getFullYear());
 </script>
 </body>
 </html>
