@@ -2182,6 +2182,10 @@ async function initPonto(){
   const _sv=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
   _sv('ponto-mes-sel',agora.getMonth()+1);
   _sv('ponto-ano-sel',agora.getFullYear());
+  // Garante que os elementos existem
+  const gView=document.getElementById('ponto-gestor-view');
+  const rView=document.getElementById('ponto-recepcao-view');
+  if(!gView||!rView)return;
   if(perfilAtual==='gestor'){
     document.getElementById('ponto-gestor-view').style.display='block';
     document.getElementById('ponto-recepcao-view').style.display='none';
@@ -2194,7 +2198,9 @@ async function initPonto(){
     const semana=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
     const chip=document.getElementById('ponto-data-chip');
     if(chip)chip.textContent=semana[agora.getDay()]+', '+agora.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-    pontoClinicaAtiva=perfilAtual;
+    // Para recepção, perfilAtual é o nome da clínica
+  pontoClinicaAtiva=perfilAtual;
+  if(!pontoClinicaAtiva||pontoClinicaAtiva==='gestor'){const el=document.getElementById('ponto-recepcao-area');if(el)el.innerHTML='<div style="padding:2rem;text-align:center;color:#a0a09a">Clínica não identificada.</div>';return;}
     await carregarPonto();renderPontoRecepcao();
   }
 }
