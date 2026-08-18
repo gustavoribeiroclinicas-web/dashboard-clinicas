@@ -1,6 +1,6 @@
 const FIREBASE_DB_URL = 'https://dashboard-clinicas-b471f-default-rtdb.firebaseio.com';
 const EMAIL_GERAL = 'notificacoes.clinicas@gmail.com';
-const EMAILJS_SERVICE_ID = 'service_rivigcl';
+const EMAILJS_SERVICE_ID = 'service_rrvigcl';
 const EMAILJS_TEMPLATE_ID = 'template_l619esm';
 const EMAILJS_PUBLIC_KEY = '9_sWrO7qr5CGeK8ru';
 const LINK_SISTEMA = 'https://splendid-sprite-50bf63.netlify.app/';
