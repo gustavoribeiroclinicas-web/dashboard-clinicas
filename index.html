@@ -212,7 +212,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
   <div class="topbar">
     <div class="topbar-brand"><div class="topbar-brand-icon">🏥</div>Clínicas</div>
     <button class="nav-tab active" id="tab-folha" onclick="showPage('folha',this)">Folha</button>
-    <button class="nav-tab" id="tab-ponto" onclick="showPage('ponto',this)">Ponto</button>
     <button class="nav-tab" id="tab-contas" onclick="showPage('contas',this)">Contas</button>
     <button class="nav-tab" id="tab-extrator" onclick="showPage('extrator',this)">Extrator DETRAN</button>
     <button class="nav-tab" id="tab-cfg" onclick="showPage('config',this)">Configurações</button>
@@ -240,94 +239,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
     </div>
     <div class="clinica-grid" id="folha-clinicas"></div>
     <div id="folha-tabela"></div>
-  </div>
-
-  <!-- PONTO -->
-  <div id="page-ponto" class="page">
-    <div id="ponto-gestor" style="display:none">
-      <div class="page-header">
-        <h2>Controle de ponto</h2>
-        <div class="page-controls">
-          <select class="sel" id="ponto-cl-sel" onchange="renderPontoGestor()">
-            <option value="">Selecione a clínica...</option>
-            <option>Boa Vista</option><option>Bacacheri</option><option>ColomboMed</option>
-            <option>Etika SJP</option><option>FRG</option><option>GPTRAN</option>
-            <option>Galeb</option><option>Hauer</option><option>Lifetran</option>
-            <option>MM</option><option>PrimeMed</option><option>PPTRAN</option>
-            <option>Rio Sul</option><option>São José</option><option>Tolmac</option>
-          </select>
-          <select class="sel" id="ponto-mes-sel" onchange="renderPontoGestor()">
-            <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
-            <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
-            <option value="7" selected>Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
-            <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-          </select>
-          <select class="sel" id="ponto-ano-sel" onchange="renderPontoGestor()">
-            <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
-          </select>
-          <button class="btn" onclick="exportarPontoPDF()" style="color:var(--red);border-color:var(--red-bd)">📄 PDF</button>
-        </div>
-      </div>
-      <div class="stat-grid" id="ponto-stats"></div>
-      <div id="ponto-tabela"></div>
-    </div>
-    <div id="ponto-recepcao" style="display:none">
-      <div class="ponto-reg-card">
-        <div id="ponto-rec-data" style="font-size:13px;color:var(--muted);margin-bottom:.25rem"></div>
-        <div id="ponto-rec-clinica" style="font-size:16px;font-weight:600;margin-bottom:1rem"></div>
-        <div id="ponto-rec-area"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CONTAS A PAGAR -->
-  <div id="page-contas" class="page">
-    <div class="page-header">
-      <h2>Contas a pagar</h2>
-      <div class="page-controls">
-        <select class="sel" id="mes-contas" onchange="trocarMesContas()">
-          <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
-          <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
-          <option value="7" selected>Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
-          <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-        </select>
-        <select class="sel" id="ano-contas" onchange="trocarMesContas()">
-          <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
-        </select>
-        <span id="contas-perfil-badge"></span>
-      </div>
-    </div>
-    <div class="stat-grid" id="contas-stats"></div>
-    <div class="clinica-grid" id="contas-clinica-tabs"></div>
-    <div id="contas-tabela"></div>
-  </div>
-
-  <!-- MODAL CONTA -->
-  <div id="modal-conta" class="modal-overlay" onclick="if(event.target===this)fecharModalConta()">
-    <div class="modal">
-      <div class="modal-hdr">
-        <span class="modal-title" id="modal-conta-titulo">Nova conta</span>
-        <button class="modal-close" onclick="fecharModalConta()">×</button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="conta-id">
-        <div class="fg"><label>Descrição</label><input type="text" id="conta-desc" placeholder="Ex: Copel, Aluguel..."></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div class="fg"><label>Vencimento</label><input type="date" id="conta-venc"></div>
-          <div class="fg"><label>Valor (R$)</label><input type="number" id="conta-valor" placeholder="0,00" min="0" step="0.01"></div>
-        </div>
-        <div class="fg">
-          <label>Link do PDF (Google Drive)</label>
-          <input type="url" id="conta-pdf" placeholder="https://drive.google.com/file/d/...">
-          <div class="hint">Suba o PDF no Google Drive → Compartilhar → "Qualquer pessoa com o link" → cole aqui</div>
-        </div>
-        <div class="fg"><label>Observação</label><input type="text" id="conta-obs" placeholder="Informações adicionais..."></div>
-        <div style="display:flex;gap:8px;margin-top:4px">
-          <button class="btn btn-primary" style="flex:1" onclick="salvarConta()">✓ Salvar</button>
-          <button class="btn" id="btn-excluir-conta" style="color:var(--red);border-color:var(--red-bd);display:none" onclick="excluirConta()">Excluir</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- EXTRATOR -->
@@ -370,36 +281,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
         <input type="file" id="inp-importar" accept=".json" style="display:none" onchange="importarBackup(this)">
       </div>
       <div class="hint" style="margin-top:8px">Último backup: <span id="ultimo-backup">nunca</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL JUSTIFICATIVA PONTO -->
-<div id="modal-justif" class="modal-overlay" onclick="if(event.target===this)fecharModalJustif()">
-  <div class="modal">
-    <div class="modal-hdr">
-      <span class="modal-title" id="modal-justif-titulo">Registrar / justificar</span>
-      <button class="modal-close" onclick="fecharModalJustif()">×</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="jf-clinica">
-      <input type="hidden" id="jf-dia">
-      <div class="fg"><label>Horário registrado pelo gestor</label><input type="time" id="jf-entrada" placeholder="Entrada"></div>
-      <div class="fg"><label>Saída registrada pelo gestor</label><input type="time" id="jf-saida" placeholder="Saída"></div>
-      <div class="fg">
-        <label>Justificativa</label>
-        <select id="jf-motivo" class="inp">
-          <option value="">Selecione...</option>
-          <optgroup label="Atraso"><option>Atestado médico</option><option>Declaração médica</option><option>Atraso sem justificativa</option><option>Problema pessoal</option><option>Transporte público</option></optgroup>
-          <optgroup label="Saída antecipada"><option>Estágio obrigatório faculdade</option><option>Horário de aula</option><option>Liberado pelo gestor</option><option>Consulta médica</option><option>Emergência familiar</option></optgroup>
-          <optgroup label="Outros"><option>Falta justificada</option><option>Falta injustificada</option><option>Outro</option></optgroup>
-        </select>
-      </div>
-      <div class="fg"><label>Observação (opcional)</label><input type="text" id="jf-obs" placeholder="Detalhes adicionais..."></div>
-      <div style="display:flex;gap:8px;margin-top:4px">
-        <button class="btn btn-primary" style="flex:1" onclick="salvarJustif()">✓ Salvar</button>
-        <button class="btn" id="btn-remover-justif" style="color:var(--red);border-color:var(--red-bd)" onclick="removerPontoDia()">Remover</button>
-      </div>
     </div>
   </div>
 </div>
@@ -554,9 +435,7 @@ function iniciarRecepcao(clinica){
   ['tab-folha','tab-extrator','tab-cfg'].forEach(id=>{
 const el=document.getElementById(id);if(el)el.style.display='none';
   });
-  document.getElementById('tab-ponto').style.display='';
-  showPage('ponto',document.getElementById('tab-ponto'));
-  initPontoRecepcao(clinica);
+  showPage('folha',document.getElementById('tab-folha'));
 }
 
 function sair(){
@@ -1067,75 +946,40 @@ if(bk.pontoData){pontoData=bk.pontoData;for(const k of Object.keys(pontoData))aw
   reader.readAsText(file);inp.value='';
 }
 
-// ── EMAILJS / NOTIFICAÇÕES DE VENCIMENTO ─────────────
-const EJS_SVC='service_rivigcl';
-const EJS_TPL='template_l619esm';
+// ── EMAILJS ───────────────────────────────────────────
+const EJS_SVC='service_rrvigcl';
+const EJS_TPL='template_loaw4wm';
 const EJS_KEY='9_sWrO7qr5CGeK8ru';
-
-// E-mail geral: recebe aviso de TODAS as clínicas.
-const EMAIL_GERAL='notificacoes.clinicas@gmail.com';
-
-// Todas as notificações são enviadas somente para o e-mail geral.
-
-function dataLocalISO(d=new Date()){
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,'0');
-  const dia=String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${dia}`;
-}
-
-function linkAtualSistema(){
-  // Abre o próprio sistema. Depois do login, o diretor acessa a aba Contas.
-  return window.location.href.split('#')[0];
-}
-
-async function enviarAvisoVencimento(toEmail,clinica){
-  return emailjs.send(EJS_SVC,EJS_TPL,{
-    to_email:toEmail,
-    clinica:clinica,
-    link_sistema:linkAtualSistema(),
-    name:'Sistema de Gerenciamento de Clínicas'
-  });
-}
+const NOTIF_EMAIL='notificacoes.clinicas@gmail.com';
 
 async function verificarNotificacoes(){
-  // Verifica as contas com vencimento HOJE e ainda não pagas.
-  // Uma única notificação é enviada por clínica, mesmo se houver mais de uma conta vencendo no dia.
-  const agora=hoje();
-  const hojeStr=dataLocalISO(agora);
-  const mes=agora.getMonth()+1,ano=agora.getFullYear();
-  const k=chave(mes,ano);
-  if(!contasData[k]){const d=await dbGet('contas/'+k);contasData[k]=d||{};}
-
-  const porClinica={};
+// Roda uma vez por sessão — verifica contas vencidas ontem não pagas
+const agora=hoje();
+const ontem=new Date(agora);ontem.setDate(ontem.getDate()-1);
+const ontemStr=ontem.toISOString().split('T')[0];
+const mes=ontem.getMonth()+1,ano=ontem.getFullYear();
+const k=chave(mes,ano);
+if(!contasData[k]){const d=await dbGet('contas/'+k);contasData[k]=d||{};}
+const vencidas=[];
   CLINICAS.forEach(cl=>{
-    const itens=Object.entries(contasData[k]?.[cl]||{});
-    itens.forEach(([id,c])=>{
-      if(!c.pago && c.venc===hojeStr && !c.padrao && c.desc && c.avisoVencimentoEm!==hojeStr){
-        if(!porClinica[cl])porClinica[cl]=[];
-        porClinica[cl].push({id,c});
+const itens=Object.values(contasData[k]?.[cl]||{});
+    itens.forEach(c=>{
+if(!c.pago&&c.venc&&c.venc===ontemStr&&!c.padrao&&c.desc){
+        vencidas.push(`• ${cl} — ${c.desc} — R$ ${parseFloat(c.valor||0).toFixed(2).replace('.',',')} (venceu ${ontem.toLocaleDateString('pt-BR')})`);
       }
     });
   });
-
-  const clinicas=Object.keys(porClinica);
-  if(!clinicas.length)return;
-
-  emailjs.init(EJS_KEY);
-
-  for(const cl of clinicas){
-    try{
-      // Todas as clínicas notificam somente o e-mail geral.
-      await enviarAvisoVencimento(EMAIL_GERAL,cl);
-
-      // Marca no Firebase para não repetir o aviso desta conta no mesmo dia.
-      porClinica[cl].forEach(({c})=>{c.avisoVencimentoEm=hojeStr;});
-      await dbSet('contas/'+k,contasData[k]);
-      console.log(`Aviso de vencimento enviado: ${cl}`);
-    }catch(e){
-      console.warn(`EmailJS erro em ${cl}:`,e);
-    }
-  }
+if(!vencidas.length)return;
+  try{
+    emailjs.init(EJS_KEY);
+await emailjs.send(EJS_SVC,EJS_TPL,{
+      to_email:NOTIF_EMAIL,
+      data:agora.toLocaleDateString('pt-BR'),
+      contas:vencidas.join('\n'),
+      name:'Sistema Clínicas'
+    });
+    console.log('Notificação enviada:',vencidas.length,'conta(s)');
+  }catch(e){console.warn('EmailJS erro:',e);}
 }
 
 // ── CONTAS A PAGAR ────────────────────────────────────
@@ -1276,7 +1120,7 @@ if(isGestor){
 
 const rowBg=c._padrao?'opacity:.55;':isVenc?'background:var(--red-bg);':'';
 return`<tr style="${rowBg}">
-      <td style="padding:9px 12px;border-bottom:1px solid var(--surface2);font-weight:${c._padrao?'400':'500'}">${c.desc}</td>
+      <td style="padding:9px 12px;border-bottom:1px solid var(--surface2);font-weight:${c._padrao?'400':'500'}">${moveHtml}${c.desc}</td>
       <td style="padding:9px 12px;border-bottom:1px solid var(--surface2);color:${isVenc?'var(--red)':isAmanha?'var(--amber)':'var(--text)'};font-weight:${isVenc||isAmanha?'500':'400'}">${venc?new Date(venc+'T12:00:00').toLocaleDateString('pt-BR'):'—'}</td>
       <td style="padding:9px 12px;border-bottom:1px solid var(--surface2);font-family:var(--mono);font-size:12px;text-align:right">${valor>0?fmt(valor):'—'}</td>
       <td style="padding:9px 12px;border-bottom:1px solid var(--surface2)">${pdfHtml}</td>
@@ -1350,30 +1194,20 @@ const id=idEx||'ct_'+Date.now();
 if(!contasData[k])contasData[k]={};
 if(!contasData[k][contasClinicaAtiva])contasData[k][contasClinicaAtiva]={};
 const exist=contasData[k][contasClinicaAtiva][idEx]||{};
-const novoVenc=document.getElementById('conta-venc').value;
   contasData[k][contasClinicaAtiva][id]={
     desc,
-    venc:novoVenc,
+    venc:document.getElementById('conta-venc').value,
     valor:parseFloat(document.getElementById('conta-valor').value)||0,
     pdf:document.getElementById('conta-pdf').value.trim(),
     obs:document.getElementById('conta-obs').value.trim(),
     pago:exist.pago||false,
     dataPago:exist.dataPago||null,
-    avisoVencimentoEm:(exist.venc===novoVenc ? (exist.avisoVencimentoEm||null) : null),
   };
   fecharModalConta();
 await dbSet('contas/'+k,contasData[k]);
   renderContasTabela(k,mes,ano);
   renderContasTabs(k,mes,ano);
   renderContasStats(k);
-
-  // Se a conta salva vencer hoje, tenta enviar a notificação imediatamente.
-  // Isso evita depender de fechar e reabrir o sistema.
-  const contaSalva=contasData[k]?.[contasClinicaAtiva]?.[id];
-  if(contaSalva && !contaSalva.pago && contaSalva.venc===dataLocalISO() && typeof emailjs!=='undefined'){
-    try{await verificarNotificacoes();}
-    catch(e){console.warn('Erro ao enviar aviso após salvar conta:',e);}
-  }
 }
 
 async function excluirConta(){
@@ -1388,6 +1222,30 @@ await dbSet('contas/'+k,contasData[k]);
   renderContasTabela(k,mes,ano);
   renderContasTabs(k,mes,ano);
   renderContasStats(k);
+}
+
+async function moverConta(desc,dir){
+  const mes=parseInt(document.getElementById('mes-contas').value);
+  const ano=parseInt(document.getElementById('ano-contas').value);
+  const k=chave(mes,ano);
+  if(!contasData[k])contasData[k]={};
+  if(!contasData[k][contasClinicaAtiva])contasData[k][contasClinicaAtiva]={};
+  const existentes=contasData[k][contasClinicaAtiva];
+  const porDesc={};
+  Object.entries(existentes).forEach(([id,c])=>{if(c.desc&&c.desc!=='_ordem')porDesc[c.desc]={...c,id};});
+  const linhasBase=CONTAS_PADRAO.map(d=>porDesc[d]||{desc:d,_padrao:true});
+  const extras=Object.values(porDesc).filter(c=>!CONTAS_PADRAO.includes(c.desc));
+  const todas=[...linhasBase,...extras].map(l=>l.desc);
+  const ordemAtual=existentes._ordem||todas;
+  const idx=ordemAtual.indexOf(desc);
+  if(idx===-1)return;
+  const novaOrdem=[...ordemAtual];
+  const destino=idx+dir;
+  if(destino<0||destino>=novaOrdem.length)return;
+  [novaOrdem[idx],novaOrdem[destino]]=[novaOrdem[destino],novaOrdem[idx]];
+  contasData[k][contasClinicaAtiva]._ordem=novaOrdem;
+  await dbSet('contas/'+k+'/'+contasClinicaAtiva+'/_ordem',novaOrdem);
+  renderContasTabela(k,mes,ano);
 }
 
 async function marcarPago(id,desc){
@@ -1450,18 +1308,8 @@ Object.assign(window,{
 });
 
 // ── INIT ─────────────────────────────────────────────
-// Verifica notificações somente depois que TODA a página e as bibliotecas externas carregarem.
-// O registro no Firebase evita repetição do mesmo aviso no mesmo dia.
-window.addEventListener('load',()=>{
-  setTimeout(async()=>{
-    if(typeof emailjs==='undefined'){
-      console.warn('EmailJS ainda não carregou; notificação não executada.');
-      return;
-    }
-    try{await verificarNotificacoes();}
-    catch(e){console.warn('Erro ao verificar notificações:',e);}
-  },1000);
-});
+// Verifica notificações ao iniciar (roda uma vez por dia)
+const _ujn=localStorage.getItem('cl_notif_dt');const _hj=new Date().toDateString();if(_ujn!==_hj){localStorage.setItem('cl_notif_dt',_hj);setTimeout(()=>{if(typeof emailjs!=='undefined')verificarNotificacoes();},3000);}
 const ub=localStorage.getItem('ultimo_backup');
 if(ub)document.getElementById('ultimo-backup').textContent=ub;
 const agr=hoje();
