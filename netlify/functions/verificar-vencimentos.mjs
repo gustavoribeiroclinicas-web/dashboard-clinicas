@@ -32,11 +32,6 @@ async function firebasePut(path, value) {
 }
 
 async function enviarEmail(clinica) {
-  const privateKey = process.env.EMAILJS_PRIVATE_KEY;
-  if (!privateKey) {
-    throw new Error('EMAILJS_PRIVATE_KEY não está disponível nas variáveis de ambiente do Netlify.');
-  }
-
   const r = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -44,7 +39,6 @@ async function enviarEmail(clinica) {
       service_id: EMAILJS_SERVICE_ID,
       template_id: EMAILJS_TEMPLATE_ID,
       user_id: EMAILJS_PUBLIC_KEY,
-      accessToken: privateKey,
       template_params: {
         to_email: EMAIL_GERAL,
         clinica,
